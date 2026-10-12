@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -9,6 +8,7 @@ import {
   X,
   Leaf,
   ChevronRight,
+  LogIn,
 } from "lucide-react";
 
 const navLinks = [
@@ -34,11 +34,7 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = menuOpen ? "hidden" : "";
 
     return () => {
       document.body.style.overflow = "";
@@ -114,9 +110,23 @@ export default function Navbar() {
             </Link>
           ))}
 
+          {/* Login */}
+          <Link
+            href="/login"
+            className={`ml-2 inline-flex items-center gap-2 whitespace-nowrap rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors ${
+              lightHeader
+                ? "border-emerald-200 text-emerald-800 hover:bg-emerald-100"
+                : "border-white/30 text-white hover:bg-white/10"
+            }`}
+          >
+            <LogIn size={16} />
+            Login
+          </Link>
+
+          {/* Get Involved */}
           <Link
             href="#contact"
-            className={`ml-2 inline-flex items-center gap-2 whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-semibold transition-colors ${
+            className={`inline-flex items-center gap-2 whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-semibold transition-colors ${
               lightHeader
                 ? "bg-emerald-700 text-white hover:bg-emerald-800"
                 : "bg-white text-emerald-950 hover:bg-emerald-50"
@@ -144,7 +154,7 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile navigation: solid background, no hero image showing through */}
+      {/* Mobile navigation */}
       <div
         id="mobile-navigation"
         aria-hidden={!menuOpen}
@@ -179,7 +189,18 @@ export default function Navbar() {
             ))}
           </div>
 
-          <div className="pb-6 pt-6">
+          {/* Mobile action buttons */}
+          <div className="space-y-3 pb-6 pt-6">
+            <Link
+              href="/login"
+              tabIndex={menuOpen ? 0 : -1}
+              onClick={() => setMenuOpen(false)}
+              className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-white px-5 py-3.5 text-sm font-semibold text-emerald-800 transition hover:bg-emerald-50"
+            >
+              <LogIn size={17} />
+              Login
+            </Link>
+
             <Link
               href="#contact"
               tabIndex={menuOpen ? 0 : -1}

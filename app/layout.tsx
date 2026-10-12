@@ -1,17 +1,14 @@
+
 import type { Metadata } from "next";
 import { Roboto, Tiro_Bangla } from "next/font/google";
+import { connection } from "next/server";
+import { Suspense } from "react";
+
 import "./globals.css";
 
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
-
 import { ourFileRouter } from "./api/uploadthing/core";
-import Navbar from "./Navbar";
-// import DisableRightClick from "./DisableRightClick";
-
-/* =========================================================
-   FONTS
-========================================================= */
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -27,12 +24,8 @@ const tiroBangla = Tiro_Bangla({
   weight: ["400"],
 });
 
-/* =========================================================
-   SEO / METADATA
-========================================================= */
-
 export const metadata: Metadata = {
-  metadataBase: new URL("https://haorrokkhaandolan.org"), // ← change to your real domain
+  metadataBase: new URL("https://haorrokkhaandolan.org"),
 
   title: {
     default: "Haor Rokkha Andolan | Protecting Wetlands, Preserving Life",
@@ -79,7 +72,6 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-
     googleBot: {
       index: true,
       follow: true,
@@ -94,15 +86,13 @@ export const metadata: Metadata = {
     locale: "en_BD",
     url: "https://haorrokkhaandolan.org",
     siteName: "Haor Rokkha Andolan",
-
-    title: "Haor Rokkha Andolan | Protecting Wetlands, Preserving Life",
-
+    title:
+      "Haor Rokkha Andolan | Protecting Wetlands, Preserving Life",
     description:
       "Working to conserve Bangladesh's haors, rivers, canals, wetlands, and natural ecosystems through awareness, community action, and environmental responsibility.",
-
     images: [
       {
-        url: "https://haorrokkhaandolan.org/og-image.jpg", // ← update with your real image
+        url: "https://haorrokkhaandolan.org/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Haor Rokkha Andolan - Protecting Wetlands, Preserving Life",
@@ -112,12 +102,10 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-
-    title: "Haor Rokkha Andolan | Protecting Wetlands, Preserving Life",
-
+    title:
+      "Haor Rokkha Andolan | Protecting Wetlands, Preserving Life",
     description:
       "An environmental movement dedicated to protecting Bangladesh's haors, wetlands, rivers, and biodiversity.",
-
     images: ["https://haorrokkhaandolan.org/og-image.jpg"],
   },
 
@@ -130,9 +118,19 @@ export const metadata: Metadata = {
   referrer: "origin-when-cross-origin",
 };
 
-/* =========================================================
-   ROOT LAYOUT
-========================================================= */
+/**
+ * Render UploadThing's SSR configuration at request time.
+ * This avoids evaluating its configuration during prerendering.
+ */
+async function UploadThingSSR() {
+  await connection();
+
+  return (
+    <NextSSRPlugin
+      routerConfig={extractRouterConfig(ourFileRouter)}
+    />
+  );
+}
 
 export default function RootLayout({
   children,
@@ -142,13 +140,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${roboto.variable} ${tiroBangla.variable}`}>
-        <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+        <Suspense fallback={null}>
+          <UploadThingSSR />
+        </Suspense>
 
-        <Navbar />
-
-        {/* <DisableRightClick> */}
         {children}
-        {/* </DisableRightClick> */}
       </body>
     </html>
   );

@@ -21,6 +21,7 @@ import {
   ChevronRight,
   Globe,
 } from "lucide-react";
+import Navbar from "./Navbar";
 
 const photos = {
   hero: "/h2.jpg",
@@ -135,6 +136,8 @@ export default function Home() {
       className="min-h-screen overflow-x-hidden bg-white font-sans text-slate-800 antialiased"
     >
       {/* HERO */}
+              <Navbar />
+
       <section
         id="home"
         className="relative isolate flex min-h-[100svh] items-center overflow-hidden bg-emerald-950 pt-[72px]"
@@ -614,32 +617,7 @@ export default function Home() {
               </ul>
             </div>
           </div>
-
-          <div className="mt-12 flex flex-col gap-5 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-xs text-emerald-100/50">
-              © {new Date().getFullYear()} Haor Rokkha Andolan. All rights
-              reserved.
-            </p>
-
-            {/*      <div className="flex items-center gap-3">
-              <span className="mr-1 text-xs text-emerald-100/50">Follow us</span>
-              {[
-                { label: "Facebook", Icon: Facebook },
-                { label: "YouTube", Icon: Youtube },
-                { label: "Instagram", Icon: Instagram },
-              ].map(({ label, Icon }) => (
-                <a
-                  key={label}
-                  href="#contact"
-                  aria-label={label}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-emerald-100/80 transition hover:border-emerald-400 hover:bg-emerald-800 hover:text-white"
-                >
-                  <Icon size={16} />
-                </a>
-              ))}
-            </div> */}
-          </div>
-        </div>
+       </div>
       </footer>
     </main>
   );

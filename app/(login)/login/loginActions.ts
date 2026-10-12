@@ -1,21 +1,24 @@
+
 "use server";
 
 import "server-only";
 
 import bcrypt from "bcryptjs";
-import { createHash, randomBytes } from "node:crypto";
+import { createHash, randomInt } from "node:crypto";
 import { redirect } from "next/navigation";
+
 import { prisma } from "@/app/utils/db";
 import { createSession, destroySession } from "@/app/utils/auth";
-import { sendPasswordResetEmail } from "@/app/utils/mail";
+import { sendPasswordResetCodeEmail } from "@/app/utils/mail";
 
 export type AuthState = {
   error?: string;
   success?: string;
+  email?: string;
 };
 
-function hashToken(token: string) {
-  return createHash("sha256").update(token).digest("hex");
+function hashToken(value: string) {
+  return createHash("sha256").update(value).digest("hex");
 }
 
 function normalizeEmail(value: string) {
@@ -48,23 +51,40 @@ function isAccountActive(user: {
   );
 }
 
+function isPrismaUniqueError(error: unknown) {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    error.code === "P2002"
+  );
+}
+
+// -----------------------------------------------------------------------------
+// LOGIN
+// -----------------------------------------------------------------------------
+
 export async function loginAction(
   _previousState: AuthState,
   formData: FormData,
 ): Promise<AuthState> {
   const identifier = String(formData.get("identifier") ?? "").trim();
-
   const password = String(formData.get("password") ?? "");
 
   if (!identifier || !password) {
-    return { error: "Enter your email or phone number and password." };
+    return {
+      error: "Enter your email or phone number and password.",
+    };
   }
 
   const normalizedIdentifier = identifier.toLowerCase();
 
   const user = await prisma.user.findFirst({
     where: {
-      OR: [{ email: normalizedIdentifier }, { phone: identifier }],
+      OR: [
+        { email: normalizedIdentifier },
+        { phone: identifier },
+      ],
     },
   });
 
@@ -87,17 +107,21 @@ export async function loginAction(
   redirect("/account");
 }
 
+// -----------------------------------------------------------------------------
+// REGISTRATION
+// -----------------------------------------------------------------------------
+
 export async function registerAction(
   _previousState: AuthState,
   formData: FormData,
 ): Promise<AuthState> {
   const name = String(formData.get("name") ?? "").trim();
-  const rawEmail = String(formData.get("email") ?? "").trim();
+  const email = normalizeEmail(String(formData.get("email") ?? ""));
   const phone = String(formData.get("phone") ?? "").trim();
   const password = String(formData.get("password") ?? "");
-  const confirmPassword = String(formData.get("confirmPassword") ?? "");
-
-  const email = normalizeEmail(rawEmail);
+  const confirmPassword = String(
+    formData.get("confirmPassword") ?? "",
+  );
 
   if (name.length < 2 || name.length > 100) {
     return {
@@ -157,12 +181,7 @@ export async function registerAction(
       },
     });
   } catch (error) {
-    if (
-      typeof error === "object" &&
-      error !== null &&
-      "code" in error &&
-      error.code === "P2002"
-    ) {
+    if (isPrismaUniqueError(error)) {
       return {
         error: "That email address or phone number is already registered.",
       };
@@ -172,13 +191,22 @@ export async function registerAction(
   }
 
   await createSession(user.id);
+
   redirect("/account");
 }
+
+// -----------------------------------------------------------------------------
+// LOGOUT
+// -----------------------------------------------------------------------------
 
 export async function logoutAction() {
   await destroySession();
   redirect("/login");
 }
+
+// -----------------------------------------------------------------------------
+// REQUEST A PASSWORD RESET CODE
+// -----------------------------------------------------------------------------
 
 export async function forgotPasswordAction(
   _previousState: AuthState,
@@ -190,23 +218,31 @@ export async function forgotPasswordAction(
     return { error: "Enter a valid email address." };
   }
 
-  // Return the same message regardless of whether the email exists.
+  // Do not reveal whether an account exists.
   const genericMessage =
-    "If an account with that email exists, a password reset link will be sent.";
+    "If an active account uses this email, a verification code has been sent. Check your inbox.";
 
   const user = await prisma.user.findUnique({
     where: { email },
   });
 
   if (!user || !isAccountActive(user)) {
-    return { success: genericMessage };
+    return {
+      success: genericMessage,
+      email,
+    };
   }
 
-  const rawToken = randomBytes(32).toString("hex");
-  const tokenHash = hashToken(rawToken);
-  const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
+  // Generate a cryptographically secure six-digit code.
+  const code = randomInt(0, 1_000_000)
+    .toString()
+    .padStart(6, "0");
 
-  // Replace previous reset links for this user.
+  // Bind the code to this email and store only its hash.
+  const tokenHash = hashToken(`${email}:${code}`);
+  const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+  // Invalidate previously issued recovery codes.
   await prisma.passwordResetToken.deleteMany({
     where: { userId: user.id },
   });
@@ -219,19 +255,10 @@ export async function forgotPasswordAction(
     },
   });
 
-  const baseUrl = process.env.APP_URL;
-
-  if (!baseUrl) {
-    throw new Error("APP_URL is not configured.");
-  }
-
-  const resetUrl = new URL("/reset-password", baseUrl);
-  resetUrl.searchParams.set("token", rawToken);
-
   try {
-    await sendPasswordResetEmail(email, resetUrl.toString());
+    await sendPasswordResetCodeEmail(email, code);
   } catch {
-    // Avoid leaving a usable token behind if email delivery fails.
+    // Remove the code if email delivery fails.
     await prisma.passwordResetToken.deleteMany({
       where: { tokenHash },
     });
@@ -241,33 +268,52 @@ export async function forgotPasswordAction(
     };
   }
 
-  return { success: genericMessage };
+  return {
+    success: genericMessage,
+    email,
+  };
 }
+
+// -----------------------------------------------------------------------------
+// VERIFY CODE AND UPDATE PASSWORD
+// -----------------------------------------------------------------------------
 
 export async function resetPasswordAction(
   _previousState: AuthState,
   formData: FormData,
 ): Promise<AuthState> {
-  const token = String(formData.get("token") ?? "");
+  const email = normalizeEmail(String(formData.get("email") ?? ""));
+  const code = String(formData.get("code") ?? "").trim();
   const password = String(formData.get("password") ?? "");
-  const confirmPassword = String(formData.get("confirmPassword") ?? "");
+  const confirmPassword = String(
+    formData.get("confirmPassword") ?? "",
+  );
 
-  if (!/^[a-f0-9]{64}$/.test(token)) {
-    return { error: "This reset link is invalid or has expired." };
+  if (!validEmail(email)) {
+    return { error: "Enter a valid email address." };
+  }
+
+  if (!/^\d{6}$/.test(code)) {
+    return {
+      error: "Enter the six-digit verification code from your email.",
+    };
   }
 
   if (!passwordIsValid(password)) {
-    return { error: "Password must be between 8 and 128 characters." };
+    return {
+      error: "Password must be between 8 and 128 characters.",
+    };
   }
 
   if (password !== confirmPassword) {
     return { error: "Passwords do not match." };
   }
 
-  const tokenHash = hashToken(token);
+  const tokenHash = hashToken(`${email}:${code}`);
 
   const resetRecord = await prisma.passwordResetToken.findUnique({
     where: { tokenHash },
+    include: { user: true },
   });
 
   if (!resetRecord || resetRecord.expiresAt <= new Date()) {
@@ -277,54 +323,59 @@ export async function resetPasswordAction(
       });
     }
 
-    return { error: "This reset link is invalid or has expired." };
+    return {
+      error: "The verification code is invalid or has expired. Request a new code.",
+    };
+  }
+
+  if (
+    resetRecord.user.email.toLowerCase() !== email ||
+    !isAccountActive(resetRecord.user)
+  ) {
+    return {
+      error: "The verification code is invalid or has expired. Request a new code.",
+    };
   }
 
   const hashedPassword = await bcrypt.hash(password, 12);
 
-  await prisma
-    .$transaction(async (tx) => {
-      // Recheck the token inside the transaction before changing credentials.
-      const currentToken = await tx.passwordResetToken.findUnique({
-        where: { tokenHash },
-      });
-
-      if (!currentToken || currentToken.expiresAt <= new Date()) {
-        throw new Error("RESET_TOKEN_EXPIRED");
-      }
-
-      await tx.user.update({
-        where: { id: currentToken.userId },
-        data: { password: hashedPassword },
-      });
-
-      await tx.passwordResetToken.deleteMany({
-        where: { userId: currentToken.userId },
-      });
-
-      // Invalidate every active session after a password reset.
-      await tx.session.deleteMany({
-        where: { userId: currentToken.userId },
-      });
-    })
-    .catch((error: unknown) => {
-      if (error instanceof Error && error.message === "RESET_TOKEN_EXPIRED") {
-        return;
-      }
-
-      throw error;
+  // Atomically consume the code, change the password, and invalidate sessions.
+  const updated = await prisma.$transaction(async (tx) => {
+    const consumed = await tx.passwordResetToken.deleteMany({
+      where: {
+        id: resetRecord.id,
+        tokenHash,
+        expiresAt: { gt: new Date() },
+      },
     });
 
-  // If the token expired during the transaction, the update did not happen.
-  const stillExists = await prisma.passwordResetToken.findUnique({
-    where: { tokenHash },
+    if (consumed.count !== 1) {
+      return false;
+    }
+
+    await tx.user.update({
+      where: { id: resetRecord.userId },
+      data: { password: hashedPassword },
+    });
+
+    await tx.passwordResetToken.deleteMany({
+      where: { userId: resetRecord.userId },
+    });
+
+    await tx.session.deleteMany({
+      where: { userId: resetRecord.userId },
+    });
+
+    return true;
   });
 
-  if (stillExists) {
-    return { error: "This reset link is invalid or has expired." };
+  if (!updated) {
+    return {
+      error: "The verification code is invalid or has expired. Request a new code.",
+    };
   }
 
-  // Avoid leaving the browser logged in after a credential change.
+  // Clear the current browser session cookie too.
   await destroySession();
 
   redirect("/login?reset=success");
