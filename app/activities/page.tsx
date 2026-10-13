@@ -433,16 +433,16 @@ export default function ActivitiesPage() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="story-dialog-title"
-            className="relative my-auto flex max-h-[92dvh] w-full max-w-3xl flex-col overflow-hidden rounded-lg border border-white/20 bg-white shadow-2xl"
+            className="relative my-auto flex max-h-[80dvh] w-full max-w-xl flex-col overflow-hidden rounded-lg border border-white/20 bg-white shadow-2xl"
             onClick={(event) => event.stopPropagation()}
           >
             {/* Popup header */}
-            <div className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 bg-emerald-950 px-4 py-3 text-white sm:px-5">
+            <div className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 bg-emerald-950 px-4 py-1 text-white sm:px-5">
               <div className="flex min-w-0 items-center gap-2">
                 {selectedItem.type === "ACTIVITY" ? (
-                  <Waves size={18} className="shrink-0 text-emerald-300" />
+                  <Waves size={14} className="shrink-0 text-emerald-300" />
                 ) : (
-                  <Newspaper size={18} className="shrink-0 text-emerald-300" />
+                  <Newspaper size={14} className="shrink-0 text-emerald-300" />
                 )}
 
                 <span className="truncate text-xs font-bold uppercase tracking-[0.15em] text-emerald-100">
@@ -458,7 +458,7 @@ export default function ActivitiesPage() {
                 aria-label="Close story details"
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
               >
-                <X size={20} />
+                <X size={10} />
               </button>
             </div>
 
@@ -529,11 +529,11 @@ export default function ActivitiesPage() {
             </div>
 
             {/* Popup footer */}
-            <div className="flex shrink-0 justify-end border-t border-slate-200 bg-slate-50 px-4 py-3 sm:px-6">
+            <div className="flex shrink-0 justify-end border-t border-slate-200 bg-slate-50 px-4 py-1">
               <button
                 type="button"
                 onClick={() => setSelectedItem(null)}
-                className="rounded-md bg-emerald-900 px-5 py-2.5 text-xs font-bold text-white transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
+                className="rounded-md bg-emerald-900 px-3 py-1.25 text-xs font-bold text-white transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
               >
                 Close
               </button>
