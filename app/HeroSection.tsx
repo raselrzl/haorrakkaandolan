@@ -54,16 +54,16 @@ export default function HeroSection() {
 
       {/* Readability overlay */}
       <div
-        className="absolute inset-0 h-130 bg-linear-to-r from-black/80 via-black/50 to-black/15 "
+        className="absolute inset-0 h-130 bg-linear-to-t from-black/80 via-black/50 to-black/0 "
         aria-hidden="true"
       />
 
       <div className="relative mx-auto flex min-h-130 max-w-7xl flex-col px-5 pb-8 pt-16 sm:min-h-[560px] sm:px-8 sm:pt-20 lg:min-h-[55vh] lg:max-h-[650px] lg:justify-center lg:px-10 lg:pb-20 lg:pt-12">
         {/* Main hero content */}
         <div className="max-w-2xl text-white">
-          <span className="inline-flex items-center rounded-full border border-white/30 bg-white/10 px-4 py-1 text-xs font-semibold uppercase backdrop-blur-sm">
+          {/*         <span className="inline-flex items-center rounded-full border border-white/30 bg-white/10 px-4 py-1 text-xs font-semibold uppercase backdrop-blur-sm">
             হাওর রক্ষা আন্দোলন · মৌলভীবাজার
-          </span>
+          </span> */}
 
           <h1 className="mt-6 font-heading text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
             Protect Our Haors.
@@ -80,7 +80,7 @@ export default function HeroSection() {
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
               href="#updates"
-              className="group inline-flex items-center justify-center gap-3 rounded-full bg-green-700 px-6 py-3.5 text-sm font-semibold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:bg-green-800"
+              className="group inline-flex items-center justify-center gap-3 rounded-full bg-green-700 px-6 py-2 text-sm font-semibold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:bg-green-800"
             >
               Latest Updates
               <AnimatedChevron />
@@ -88,7 +88,7 @@ export default function HeroSection() {
 
             <Link
               href="#work"
-              className="group inline-flex items-center justify-center gap-3 rounded-full border border-white/70 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:bg-white hover:text-green-900"
+              className="group inline-flex items-center justify-center gap-3 rounded-full border border-white/70 bg-white/10 px-6 py-2 text-sm font-semibold text-white backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:bg-white hover:text-green-900"
             >
               Get Involved
               <AnimatedChevron />
@@ -97,8 +97,8 @@ export default function HeroSection() {
         </div>
 
         {/* Updates panel: shifted farther right on desktop */}
-        <div className="mt-10 w-full self-end lg:absolute lg:bottom-0 lg:right-[-48px] lg:mt-0 lg:w-[440px]">
-          <div className="rounded-xl border border-green-200/90 bg-white p-5 shadow-2xl sm:p-6">
+        <div className="mt-10 w-full self-end lg:absolute lg:-bottom-4 lg:right-[-48px] lg:mt-0 lg:w-[440px]">
+          <div className="rounded-xl border border-green-200/90 sm:border-0 shadow shadow-green-100 bg-white p-5 sm:p-6">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-1">
               {/* Latest Updates */}
               <div id="updates">

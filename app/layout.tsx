@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Tiro_Bangla, Roboto } from "next/font/google";
+import { Playfair_Display, Roboto } from "next/font/google";
 import { connection } from "next/server";
 import { Suspense } from "react";
 
@@ -9,28 +9,24 @@ import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
 
+/* English headings */
 const playfairDisplay = Playfair_Display({
   variable: "--font-playfair-display",
   subsets: ["latin"],
   display: "swap",
 });
 
-const tiroBangla = Tiro_Bangla({
-  variable: "--font-tiro-bangla",
-  subsets: ["bengali", "latin"],
-  weight: ["400"],
-  display: "swap",
-});
-
+/* English body */
 const roboto = Roboto({
   variable: "--font-roboto",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "500", "700"],
   display: "swap",
 });
 
+/* SEO / METADATA */
 export const metadata: Metadata = {
-  metadataBase: new URL("https://haorrokkhaandolan.org"),
+  metadataBase: new URL("https://haorrokkhaandolan.com"),
 
   title: {
     default: "Haor Rokkha Andolan | Protecting Wetlands, Preserving Life",
@@ -61,7 +57,7 @@ export const metadata: Metadata = {
   authors: [
     {
       name: "Haor Rokkha Andolan",
-      url: "https://haorrokkhaandolan.org",
+      url: "https://haorrokkhaandolan.com",
     },
   ],
 
@@ -71,7 +67,7 @@ export const metadata: Metadata = {
   category: "environment",
 
   alternates: {
-    canonical: "https://haorrokkhaandolan.org",
+    canonical: "https://haorrokkhaandolan.com",
   },
 
   robots: {
@@ -89,14 +85,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_BD",
-    url: "https://haorrokkhaandolan.org",
+    url: "https://haorrokkhaandolan.com",
     siteName: "Haor Rokkha Andolan",
     title: "Haor Rokkha Andolan | Protecting Wetlands, Preserving Life",
     description:
       "Working to conserve Bangladesh's haors, rivers, canals, wetlands, and natural ecosystems through awareness, community action, and environmental responsibility.",
     images: [
       {
-        url: "https://haorrokkhaandolan.org/og-image.jpg",
+        url: "https://haorrokkhaandolan.com/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Haor Rokkha Andolan - Protecting Wetlands, Preserving Life",
@@ -109,7 +105,7 @@ export const metadata: Metadata = {
     title: "Haor Rokkha Andolan | Protecting Wetlands, Preserving Life",
     description:
       "An environmental movement dedicated to protecting Bangladesh's haors, wetlands, rivers, and biodiversity.",
-    images: ["https://haorrokkhaandolan.org/og-image.jpg"],
+    images: ["https://haorrokkhaandolan.com/og-image.jpg"],
   },
 
   icons: {
@@ -121,10 +117,7 @@ export const metadata: Metadata = {
   referrer: "origin-when-cross-origin",
 };
 
-/**
- * Render UploadThing's SSR configuration at request time.
- * This avoids evaluating its configuration during prerendering.
- */
+/* UploadThing SSR */
 async function UploadThingSSR() {
   await connection();
 
@@ -135,16 +128,31 @@ async function UploadThingSSR() {
   );
 }
 
+/* ROOT LAYOUT */
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${playfairDisplay.variable} ${tiroBangla.variable} ${roboto.variable}`}
-      >
+    <html
+      lang="en"
+      className={`${playfairDisplay.variable} ${roboto.variable}`}
+    >
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+
+      <body>
         <Suspense fallback={null}>
           <UploadThingSSR />
         </Suspense>

@@ -14,6 +14,7 @@ import {
   ChevronRight,
   ExternalLink,
   PanelLeftClose,
+  FileText,
 } from "lucide-react";
 
 const navigation = [
@@ -39,6 +40,16 @@ const navigation = [
         label: "Members",
         href: "/dashboard/members",
         icon: UserRound,
+      },
+    ],
+  },
+  {
+    title: "Content management",
+    items: [
+      {
+        label: "News & Activities",
+        href: "/dashboard/newactivity",
+        icon: FileText,
       },
     ],
   },
@@ -109,7 +120,9 @@ export default function DashboardSidebar() {
                       }
                     />
 
-                    <span className="min-w-0 flex-1">{item.label}</span>
+                    <span className="min-w-0 flex-1">
+                      {item.label}
+                    </span>
 
                     {active && (
                       <ChevronRight
@@ -155,6 +168,7 @@ export default function DashboardSidebar() {
               <p className="truncate text-sm font-bold text-slate-900">
                 Admin Panel
               </p>
+
               <p className="mt-0.5 text-xs text-slate-500">
                 Navigation menu
               </p>
@@ -173,7 +187,9 @@ export default function DashboardSidebar() {
       <button
         type="button"
         onClick={() => setMobileOpen((open) => !open)}
-        aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
+        aria-label={
+          mobileOpen ? "Close navigation" : "Open navigation"
+        }
         aria-expanded={mobileOpen}
         aria-controls="mobile-dashboard-sidebar"
         className="fixed bottom-5 right-5 z-[60] flex h-12 w-12 items-center justify-center rounded-full bg-emerald-800 text-white shadow-lg transition hover:bg-emerald-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 md:hidden"
@@ -205,6 +221,7 @@ export default function DashboardSidebar() {
                   <p className="truncate text-sm font-bold text-slate-900">
                     Haor Rokkha Andolan
                   </p>
+
                   <p className="mt-0.5 text-xs text-slate-500">
                     Administration
                   </p>

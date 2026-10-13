@@ -9,11 +9,13 @@ export const ourFileRouter = {
       maxFileSize: "4MB",
       maxFileCount: 10,
     },
+    video: {
+      maxFileSize: "64MB",
+      maxFileCount: 1,
+    },
   })
     .middleware(async ({ req }) => {
-      // we will NOT use cookies here anymore
-      // auth comes from client props instead
-
+      // Authentication is handled by client props.
       return {
         ok: true,
       };

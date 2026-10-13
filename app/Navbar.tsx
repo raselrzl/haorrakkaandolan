@@ -56,8 +56,8 @@ export default function Navbar() {
           </div>
 
           <div className="min-w-0">
-            <p className="text-xs font-extrabold tracking-tight text-emerald-950 sm:text-sm">
-              HAOR ROKKHA ANDOLAN
+            <p className="text-xs  font-extrabold tracking-tight text-emerald-950 sm:text-sm">
+              হাওর রক্ষা আন্দোলন
             </p>
             <p className="mt-0.5 text-[10px] text-slate-500 sm:text-[11px]">
               Protecting Wetlands, Preserving Life.
@@ -84,7 +84,7 @@ export default function Navbar() {
           <div className="ml-2 flex shrink-0 items-center gap-2">
             <Link
               href="/login"
-              className="inline-flex items-center justify-center rounded-md bg-emerald-950 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-emerald-900 xl:text-[13px]"
+              className="inline-flex items-center justify-center rounded-md bg-green-400 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-emerald-900 xl:text-[13px]"
             >
               Login
             </Link>
