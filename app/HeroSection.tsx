@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -33,16 +32,10 @@ function formatDate(date: string) {
   });
 }
 
-function UpdateList({
-  items,
-}: {
-  items: HomepageNewsItem[];
-}) {
+function UpdateList({ items }: { items: HomepageNewsItem[] }) {
   if (items.length === 0) {
     return (
-      <p className="py-2 text-sm text-slate-500">
-        No items available yet.
-      </p>
+      <p className="py-2 text-sm text-slate-500">No items available yet.</p>
     );
   }
 
@@ -107,22 +100,22 @@ export default function HeroSection({
           </h1>
 
           <p className="mt-5 max-w-xl text-sm leading-7 text-white/90 sm:text-base sm:leading-8">
-            Standing together to protect haors, rivers, wetlands,
-            fisheries, agriculture and the natural heritage of Bangladesh.
+            Standing together to protect haors, rivers, wetlands, fisheries,
+            agriculture and the natural heritage of Bangladesh.
           </p>
 
           <div className="mt-7 flex flex-wrap gap-3">
-            <Link
+            {/*      <Link
               href="#updates"
               className="group inline-flex items-center justify-center gap-3 rounded-full bg-green-700 px-6 py-2 text-sm font-semibold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:bg-green-800"
             >
               Latest Updates
               <AnimatedChevron />
-            </Link>
+            </Link> */}
 
             <Link
               href="/contact"
-              className="group inline-flex items-center justify-center gap-3 rounded-full border border-white/70 bg-white/10 px-6 py-2 text-sm font-semibold text-white backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:bg-white hover:text-green-900"
+              className="group inline-flex items-center justify-center gap-3 rounded-full bg-green-700 px-6 py-2 text-sm font-semibold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:bg-green-800"
             >
               Get Involved
               <AnimatedChevron />
