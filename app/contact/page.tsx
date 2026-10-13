@@ -95,7 +95,7 @@ export default function ContactPage() {
           </div>
         </div>
 
-        <div className="h-1 w-full bg-gradient-to-r from-emerald-800 via-emerald-400 to-lime-300" />
+        <div className="h-1 w-full bg-linear-to-r from-emerald-800 via-emerald-400 to-lime-300" />
       </section>
 
       {/* Contact form and information */}

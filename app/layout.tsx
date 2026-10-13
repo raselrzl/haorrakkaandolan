@@ -1,5 +1,6 @@
+
 import type { Metadata } from "next";
-import { Playfair_Display, Roboto } from "next/font/google";
+import { Playfair_Display, Roboto, Tiro_Bangla } from "next/font/google";
 import { connection } from "next/server";
 import { Suspense } from "react";
 
@@ -9,14 +10,12 @@ import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
 
-/* English headings */
 const playfairDisplay = Playfair_Display({
   variable: "--font-playfair-display",
   subsets: ["latin"],
   display: "swap",
 });
 
-/* English body */
 const roboto = Roboto({
   variable: "--font-roboto",
   subsets: ["latin"],
@@ -24,7 +23,13 @@ const roboto = Roboto({
   display: "swap",
 });
 
-/* SEO / METADATA */
+const tiroBangla = Tiro_Bangla({
+  variable: "--font-tiro-bangla",
+  subsets: ["bengali", "latin"],
+  weight: "400",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://haorrokkhaandolan.com"),
 
@@ -117,7 +122,6 @@ export const metadata: Metadata = {
   referrer: "origin-when-cross-origin",
 };
 
-/* UploadThing SSR */
 async function UploadThingSSR() {
   await connection();
 
@@ -128,7 +132,6 @@ async function UploadThingSSR() {
   );
 }
 
-/* ROOT LAYOUT */
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -136,22 +139,9 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
-      className={`${playfairDisplay.variable} ${roboto.variable}`}
+      lang="bn"
+      className={`${playfairDisplay.variable} ${roboto.variable} ${tiroBangla.variable}`}
     >
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-
       <body>
         <Suspense fallback={null}>
           <UploadThingSSR />

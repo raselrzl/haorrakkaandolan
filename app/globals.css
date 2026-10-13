@@ -1,3 +1,4 @@
+
 @import "tailwindcss";
 
 :root {
@@ -22,14 +23,15 @@
 }
 
 html {
-  background: #ffffff;
+  background: var(--background);
+  color: var(--foreground);
   color-scheme: light;
 }
 
 body {
   margin: 0;
-  background: #ffffff;
-  color: #171717;
+  background: var(--background);
+  color: var(--foreground);
   font-family: var(--font-roboto), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -46,16 +48,25 @@ h6,
   font-family: var(--font-playfair-display), Georgia, serif;
 }
 
-/* Bengali content */
+/* Global Bengali font */
 :lang(bn),
-.font-bengali {
-  font-family: var(--font-tiro-bangla), serif;
+.font-bengali,
+.bengali-text {
+  font-family: var(--font-tiro-bangla), serif !important;
 }
 
-/* Consistent light form controls */
+/* Form controls */
 input,
 textarea,
 select,
 button {
   color-scheme: light;
+}
+
+/* Bengali form controls */
+input:lang(bn),
+textarea:lang(bn),
+select:lang(bn),
+button:lang(bn) {
+  font-family: var(--font-tiro-bangla), serif;
 }

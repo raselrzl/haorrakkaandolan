@@ -75,7 +75,7 @@ export default function HeroSection({
   const latestNews = news.slice(0, 2);
 
   return (
-    <section className="relative isolate mt-16 w-full overflow-hidden bg-white">
+    <section className="relative isolate mt-16 w-full overflow-hidden">
       {/* Background image */}
       <div
         className="absolute inset-0 h-130 w-full bg-cover bg-center sm:h-140 lg:h-[55vh] lg:min-h-120 lg:max-h-162.5"
@@ -85,7 +85,7 @@ export default function HeroSection({
 
       {/* Readability overlay */}
       <div
-        className="absolute inset-0 h-full bg-linear-to-t from-black/80 via-black/50 to-black/0"
+        className="absolute inset-0 h-full bg-linear-to-b from-black/80 via-black/50 to-black/0"
         aria-hidden="true"
       />
 
