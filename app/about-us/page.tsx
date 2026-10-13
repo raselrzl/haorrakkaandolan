@@ -245,7 +245,7 @@ export default function AboutPage() {
                     {leadershipPerson.designation?.trim() || leadershipTitle}
                   </span>
 
-                  <h3 className="mt-3 break-words text-xl font-bold text-slate-950 sm:text-2xl md:text-3xl">
+                  <h3 className="mt-3 wrap-break-words text-xl font-bold text-slate-950 sm:text-2xl md:text-3xl">
                     {leadershipPerson.name}
                   </h3>
 
@@ -410,12 +410,12 @@ export default function AboutPage() {
                       view === "grid" ? "mt-3 w-full" : "flex-1"
                     }`}
                   >
-                    <h3 className="break-words text-sm font-bold text-slate-900 sm:text-base">
+                    <h3 className="wrap-break-words text-sm font-bold text-slate-900 sm:text-base">
                       {member.name}
                     </h3>
 
                     {member.designation?.trim() && (
-                      <p className="mt-1 break-words text-[10px] font-semibold leading-4 text-emerald-800 sm:text-xs">
+                      <p className="mt-1 wrap-break-words text-[10px] font-semibold leading-4 text-emerald-800 sm:text-xs">
                         {member.designation}
                       </p>
                     )}
