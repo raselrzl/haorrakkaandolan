@@ -9,6 +9,7 @@ import "./globals.css";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
+import FloatingContact from "./FloatingContact";
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-playfair-display",
@@ -148,6 +149,7 @@ export default function RootLayout({
         </Suspense>
 
         {children}
+        <FloatingContact />
       </body>
     </html>
   );

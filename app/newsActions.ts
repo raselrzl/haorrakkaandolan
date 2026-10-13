@@ -1,4 +1,5 @@
 "use server";
+import { ContactFormState } from "./contactTypes";
 import { prisma } from "./utils/db";
 
 
@@ -216,4 +217,108 @@ export async function getNewsById(
     updatedAt: item.updatedAt.toISOString(),
     author: item.user.name,
   };
+}
+
+
+/* export type ContactFormState = {
+  success: boolean;
+  message: string;
+};
+
+export const initialContactFormState: ContactFormState = {
+  success: false,
+  message: "",
+}; */
+
+
+export async function contactMessageAction(
+  _previousState: ContactFormState,
+  formData: FormData,
+): Promise<ContactFormState> {
+  const reason = String(formData.get("reason") ?? "").trim();
+  const name = String(formData.get("name") ?? "").trim();
+  const phone = String(formData.get("phone") ?? "").trim();
+  const email = String(formData.get("email") ?? "")
+    .trim()
+    .toLowerCase();
+  const message = String(formData.get("message") ?? "").trim();
+  const website = String(formData.get("website") ?? "").trim();
+
+  if (website) {
+    return {
+      success: true,
+      message: "Thank you! Your message has been received.",
+    };
+  }
+
+  if (!reason || !name || !phone || !email || !message) {
+    return {
+      success: false,
+      message: "Please complete all required fields.",
+    };
+  }
+
+  if (reason.length > 100) {
+    return {
+      success: false,
+      message: "Please keep the reason under 100 characters.",
+    };
+  }
+
+  if (name.length > 100) {
+    return {
+      success: false,
+      message: "Your name must be 100 characters or fewer.",
+    };
+  }
+
+  if (phone.length > 30) {
+    return {
+      success: false,
+      message: "Your phone number must be 30 characters or fewer.",
+    };
+  }
+
+  if (
+    email.length > 254 ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  ) {
+    return {
+      success: false,
+      message: "Please enter a valid email address.",
+    };
+  }
+
+  if (message.length < 5 || message.length > 10000) {
+    return {
+      success: false,
+      message: "Your message must be between 5 and 10,000 characters.",
+    };
+  }
+
+  try {
+    await prisma.contactMessage.create({
+      data: {
+        reason,
+        name,
+        phone,
+        email,
+        message,
+      },
+    });
+
+    return {
+      success: true,
+      message:
+        "Your message has been sent successfully. Thank you for contacting Haor Rokkha Andolan!",
+    };
+  } catch (error) {
+    console.error("Unable to save contact message:", error);
+
+    return {
+      success: false,
+      message:
+        "We couldn't send your message right now. Please try again later.",
+    };
+  }
 }
