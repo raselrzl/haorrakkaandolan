@@ -43,7 +43,7 @@ export default function Navbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-[9999] w-full border-b border-slate-200 bg-white text-slate-800">
       {/* Main navigation */}
-      <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:h-[76px] lg:px-8">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:h-16">
         {/* Logo and identity */}
         <Link
           href="/"
@@ -104,26 +104,25 @@ export default function Navbar() {
 
         {/* Desktop actions */}
         <div className="hidden shrink-0 items-center gap-3 lg:flex">
-          <Link
-            href="/login"
-            aria-current={isActive("/login") ? "page" : undefined}
-            className={`inline-flex h-10 items-center justify-center gap-1.5 px-2 text-[12px] font-semibold transition-colors xl:px-3 xl:text-[13px] ${
-              isActive("/login")
-                ? "text-[#176b45]"
-                : "text-slate-600 hover:text-[#176b45]"
-            }`}
-          >
-            <LogIn size={15} />
-            Login
-          </Link>
+      
+<Link
+  href="/login"
+  aria-current={isActive("/login") ? "page" : undefined}
+  className={`inline-flex h-10 items-center justify-center rounded-md bg-green-400 px-5 text-[12px] font-semibold text-white transition-colors hover:bg-green-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2 xl:px-6 xl:text-[13px] ${
+    isActive("/login") ? "bg-green-800" : ""
+  }`}
+>
+  Login
+</Link>
+
 
           <Link
             href="/contact"
             aria-current={isActive("/contact") ? "page" : undefined}
-            className={`group inline-flex h-10 items-center justify-center gap-2 px-4 text-[12px] font-semibold transition-colors xl:text-[13px] rounded-full ${
+            className={`group inline-flex h-10 items-center border justify-center gap-2 px-4 text-[12px] font-semibold transition-colors xl:text-[13px] rounded-full ${
               isActive("/contact")
                 ? "bg-[#123b2b] text-white"
-                : "bg-[#176b45] text-white hover:bg-[#123b2b]"
+                : "text-[#123b2b]"
             }`}
           >
             Get Involved
