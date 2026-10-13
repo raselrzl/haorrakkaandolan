@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, ChevronRight } from "lucide-react";
+import { Menu, X, ArrowUpRight, LogIn } from "lucide-react";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -41,30 +41,31 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-9999 w-full border-b border-slate-200 bg-white text-slate-900 shadow-sm">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
-        {/* Logo */}
+    <header className="fixed inset-x-0 top-0 z-[9999] w-full border-b border-slate-200 bg-white text-slate-800">
+      {/* Main navigation */}
+      <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:h-[76px] lg:px-8">
+        {/* Logo and identity */}
         <Link
           href="/"
           onClick={() => setMenuOpen(false)}
-          className="group flex min-w-0 items-center gap-2.5"
+          className="group flex min-w-0 shrink items-center gap-2.5 sm:gap-3"
         >
-          <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border border-slate-200 bg-white sm:h-10 sm:w-10">
+          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-slate-200 bg-white sm:h-11 sm:w-11">
             <Image
               src="/ha2.png"
               alt="Haor Rokkha Andolan"
               fill
-              className="object-cover"
-              sizes="40px"
+              sizes="44px"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
               priority
             />
           </div>
 
           <div className="min-w-0">
-            <p className="text-xs font-extrabold tracking-tight text-emerald-950 sm:text-sm">
+            <p className="truncate text-[12px] font-bold tracking-tight text-[#123b2b] sm:text-sm">
               হাওর রক্ষা আন্দোলন
             </p>
-            <p className="mt-0.5 text-[10px] text-slate-500 sm:text-[11px]">
+            <p className="mt-0.5 hidden text-[10px] tracking-wide text-slate-500 sm:block sm:text-[11px]">
               Protecting Wetlands, Preserving Life.
             </p>
           </div>
@@ -83,47 +84,55 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 aria-current={active ? "page" : undefined}
-                className={`relative whitespace-nowrap rounded-md px-2.5 py-2 text-xs font-semibold transition-colors xl:px-3 xl:text-[13px] ${
+                className={`relative whitespace-nowrap px-2.5 py-3 text-[12px] font-medium transition-colors xl:px-3 xl:text-[13px] ${
                   active
-                    ? "bg-emerald-950 text-white shadow-sm"
-                    : "text-slate-600 hover:bg-emerald-50 hover:text-emerald-950"
+                    ? "text-[#176b45]"
+                    : "text-slate-600 hover:text-[#176b45]"
                 }`}
               >
                 {link.label}
-                {active && (
-                  <span className="absolute inset-x-3 -bottom-1 h-0.5 rounded-full bg-emerald-500" />
-                )}
+
+                <span
+                  className={`absolute inset-x-2 bottom-1 h-[2px] rounded-full bg-[#176b45] transition-transform duration-200 xl:inset-x-3 ${
+                    active ? "scale-x-100" : "scale-x-0"
+                  }`}
+                />
               </Link>
             );
           })}
-
-          {/* Action buttons */}
-          <div className="ml-2 flex shrink-0 items-center gap-2">
-            <Link
-              href="/login"
-              className={`inline-flex items-center justify-center rounded-md px-4 py-2 text-xs font-semibold text-white transition-colors xl:text-[13px] ${
-                isActive("/login")
-                  ? "bg-emerald-800 ring-2 ring-emerald-200"
-                  : "bg-green-500 hover:bg-emerald-900"
-              }`}
-              aria-current={isActive("/login") ? "page" : undefined}
-            >
-              Login
-            </Link>
-
-            <Link
-              href="/contact"
-              className={`inline-flex items-center justify-center whitespace-nowrap rounded-md px-4 py-2 text-xs font-semibold text-white transition-colors xl:text-[13px] ${
-                isActive("/contact")
-                  ? "bg-emerald-800 ring-2 ring-emerald-200"
-                  : "bg-green-950 hover:bg-emerald-900"
-              }`}
-              aria-current={isActive("/contact") ? "page" : undefined}
-            >
-              Get Involved
-            </Link>
-          </div>
         </nav>
+
+        {/* Desktop actions */}
+        <div className="hidden shrink-0 items-center gap-3 lg:flex">
+          <Link
+            href="/login"
+            aria-current={isActive("/login") ? "page" : undefined}
+            className={`inline-flex h-10 items-center justify-center gap-1.5 px-2 text-[12px] font-semibold transition-colors xl:px-3 xl:text-[13px] ${
+              isActive("/login")
+                ? "text-[#176b45]"
+                : "text-slate-600 hover:text-[#176b45]"
+            }`}
+          >
+            <LogIn size={15} />
+            Login
+          </Link>
+
+          <Link
+            href="/contact"
+            aria-current={isActive("/contact") ? "page" : undefined}
+            className={`group inline-flex h-10 items-center justify-center gap-2 px-4 text-[12px] font-semibold transition-colors xl:text-[13px] rounded-full ${
+              isActive("/contact")
+                ? "bg-[#123b2b] text-white"
+                : "bg-[#176b45] text-white hover:bg-[#123b2b]"
+            }`}
+          >
+            Get Involved
+            <ArrowUpRight
+              size={15}
+              className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            />
+          </Link>
+        </div>
 
         {/* Mobile menu toggle */}
         <button
@@ -132,26 +141,45 @@ export default function Navbar() {
           aria-expanded={menuOpen}
           aria-controls="mobile-navigation"
           onClick={() => setMenuOpen((open) => !open)}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-emerald-950 text-white transition-colors hover:bg-emerald-900 lg:hidden"
+          className="flex h-10 w-10 shrink-0 items-center justify-center border border-slate-200 text-[#123b2b] transition-colors hover:bg-slate-50 lg:hidden"
         >
-          {menuOpen ? <X size={19} /> : <Menu size={19} />}
+          {menuOpen ? <X size={21} /> : <Menu size={21} />}
         </button>
       </div>
+
+      {/* Mobile backdrop */}
+      {menuOpen && (
+        <button
+          type="button"
+          aria-label="Close navigation"
+          onClick={() => setMenuOpen(false)}
+          className="fixed inset-x-0 bottom-0 top-[68px] z-[-1] bg-slate-900/30 lg:hidden"
+        />
+      )}
 
       {/* Mobile navigation */}
       <div
         id="mobile-navigation"
         aria-hidden={!menuOpen}
-        className={`fixed inset-x-0 bottom-0 top-16 z-10000 overflow-y-auto overscroll-contain bg-white transition-[opacity,visibility] duration-200 lg:hidden ${
+        className={`fixed inset-x-0 bottom-0 top-[68px] z-[10000] overflow-y-auto border-t border-slate-200 bg-white transition-[opacity,visibility,transform] duration-200 lg:hidden ${
           menuOpen
-            ? "visible pointer-events-auto opacity-100"
-            : "invisible pointer-events-none opacity-0"
+            ? "visible translate-y-0 opacity-100"
+            : "invisible -translate-y-2 opacity-0"
         }`}
       >
         <nav
           aria-label="Mobile navigation"
-          className="mx-auto flex min-h-full max-w-xl flex-col px-4 py-3 sm:px-6"
+          className="mx-auto flex min-h-full max-w-xl flex-col px-4 pb-6 pt-3 sm:px-6"
         >
+          <div className="mb-2 border-b border-slate-100 pb-3">
+            <p className="text-xs font-semibold text-[#176b45]">
+              Haor Rokkha Andolan
+            </p>
+            <p className="mt-1 text-[11px] text-slate-500">
+              Protecting Wetlands, Preserving Life.
+            </p>
+          </div>
+
           <div className="flex-1">
             {navLinks.map((link) => {
               const active = isActive(link.href);
@@ -163,39 +191,36 @@ export default function Navbar() {
                   tabIndex={menuOpen ? 0 : -1}
                   aria-current={active ? "page" : undefined}
                   onClick={() => setMenuOpen(false)}
-                  className={`group flex items-center justify-between border-b px-3 py-3.5 text-sm font-semibold transition-colors ${
+                  className={`flex min-h-[49px] items-center justify-between border-b border-slate-100 px-2 text-sm transition-colors ${
                     active
-                      ? "border-emerald-100 border-l-4 border-l-emerald-800 bg-emerald-50 text-emerald-950"
-                      : "border-slate-100 text-slate-700 hover:bg-emerald-50 hover:text-emerald-950"
+                      ? "font-semibold text-[#176b45]"
+                      : "font-medium text-slate-600 hover:text-[#176b45]"
                   }`}
                 >
-                  <span>{link.label}</span>
-                  <ChevronRight
-                    size={17}
-                    className={`transition-transform ${
-                      active
-                        ? "translate-x-0.5 text-emerald-800"
-                        : "text-slate-400 group-hover:translate-x-0.5 group-hover:text-emerald-950"
-                    }`}
-                  />
+                  {link.label}
+
+                  {active && (
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#176b45]" />
+                  )}
                 </Link>
               );
             })}
           </div>
 
-          {/* Mobile action buttons */}
-          <div className="flex flex-col items-center gap-2.5 py-5">
+          {/* Mobile actions */}
+          <div className="mt-5 grid grid-cols-2 gap-3">
             <Link
               href="/login"
               tabIndex={menuOpen ? 0 : -1}
               aria-current={isActive("/login") ? "page" : undefined}
               onClick={() => setMenuOpen(false)}
-              className={`flex min-h-11 w-full max-w-xs items-center justify-center rounded-md px-4 py-3 text-sm font-semibold text-white transition-colors ${
+              className={`flex min-h-11 items-center justify-center rounded-full gap-2 border border-slate-200 px-3 py-3 text-sm font-semibold transition-colors ${
                 isActive("/login")
-                  ? "bg-emerald-700 ring-2 ring-emerald-200"
-                  : "bg-emerald-950 hover:bg-emerald-900"
+                  ? "bg-slate-100 text-[#176b45]"
+                  : "text-slate-700 hover:bg-slate-50"
               }`}
             >
+              <LogIn size={16} />
               Login
             </Link>
 
@@ -204,18 +229,11 @@ export default function Navbar() {
               tabIndex={menuOpen ? 0 : -1}
               aria-current={isActive("/contact") ? "page" : undefined}
               onClick={() => setMenuOpen(false)}
-              className={`flex min-h-11 w-full max-w-xs items-center justify-center rounded-md px-4 py-3 text-sm font-semibold text-white transition-colors ${
-                isActive("/contact")
-                  ? "bg-emerald-700 ring-2 ring-emerald-200"
-                  : "bg-green-950 hover:bg-emerald-900"
-              }`}
+              className="flex min-h-11 items-center justify-center rounded-full gap-1.5 bg-[#176b45] px-3 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#123b2b]"
             >
               Get Involved
+              <ArrowUpRight size={15} />
             </Link>
-
-            <p className="pt-1 text-center text-[11px] text-slate-500">
-              Protecting Wetlands, Preserving Life.
-            </p>
           </div>
         </nav>
       </div>
