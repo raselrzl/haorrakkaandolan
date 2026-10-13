@@ -87,7 +87,7 @@ export default function HeroSection() {
             </Link>
 
             <Link
-              href="#work"
+              href="/contact"
               className="group inline-flex items-center justify-center gap-3 rounded-full border border-white/70 bg-white/10 px-6 py-2 text-sm font-semibold text-white backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:bg-white hover:text-green-900"
             >
               Get Involved

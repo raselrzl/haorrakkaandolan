@@ -111,3 +111,16 @@ enum MediaType {
   IMAGE
   VIDEO
 }
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  reason    String
+  name      String
+  phone     String
+  email     String
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([reason, createdAt])
+}

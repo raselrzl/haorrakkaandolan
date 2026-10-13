@@ -479,7 +479,7 @@ export default function RiverContent() {
           </ul>
 
           <Link
-            href="/#contact"
+            href="/contact"
             className="mt-7 inline-flex items-center justify-center gap-2 rounded-md bg-emerald-800 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-900"
           >
             {t.join}

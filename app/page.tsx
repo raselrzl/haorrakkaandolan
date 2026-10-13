@@ -47,11 +47,10 @@ const photos = {
 
 const navLinks = [
   { label: "Home", href: "#home" },
-  { label: "About Us", href: "#about" },
+  { label: "About Us", href: "/about" },
   { label: "Our Work", href: "#work" },
-  { label: "News & Updates", href: "#news" },
-  { label: "Gallery", href: "#gallery" },
-  { label: "Contact", href: "#contact" },
+  { label: "News & Updates", href: "/activities" },
+  { label: "Contact", href: "contact" },
 ];
 
 const priorities = [
