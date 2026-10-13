@@ -22,6 +22,7 @@ import {
   Globe,
 } from "lucide-react";
 import Navbar from "./Navbar";
+import HeroSection from "./HeroSection";
 
 const photos = {
   hero: "/h2.jpg",
@@ -138,70 +139,7 @@ export default function Home() {
       {/* HERO */}
               <Navbar />
 
-      <section
-        id="home"
-        className="relative isolate flex min-h-[100svh] items-center overflow-hidden bg-emerald-950 pt-[72px]"
-      >
-        {/* Hero photograph */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 -z-20 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url("${photos.hero}")` }}
-        />
-
-        {/* One continuous linear overlay */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-gradient-to-r from-emerald-950/95 via-emerald-950/75 to-emerald-950/35"
-        />
-
-        <div className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-6 sm:py-24 lg:px-8 lg:py-32">
-          <div className="max-w-3xl">
-            <div className="mb-6 inline-flex items-center gap-2 border border-white/20 bg-emerald-950/30 px-4 py-2 text-xs font-semibold tracking-wider text-emerald-50">
-              <span className="h-2 w-2 rounded-full bg-emerald-400" />
-              ENVIRONMENTAL CONSERVATION IN BANGLADESH
-            </div>
-
-            <h1 className="text-4xl leading-[1.1] font-bold tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-7xl">
-              Protect Our Haors,
-              <span className="mt-2 block bg-gradient-to-r from-emerald-200 via-lime-200 to-emerald-300 bg-clip-text text-transparent">
-                Protect Our Future.
-              </span>
-            </h1>
-
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-white/90 sm:text-lg sm:leading-8">
-              Working to conserve Bangladesh&apos;s haors, rivers, canals,
-              wetlands, and natural ecosystems for future generations.
-            </p>
-
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Link
-                href="#about"
-                className="group inline-flex min-h-[52px] items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 px-7 py-3.5 text-sm font-semibold text-white shadow-lg transition hover:from-emerald-500 hover:via-emerald-400 hover:to-teal-400"
-              >
-                Discover Our Mission
-                <ArrowRight
-                  size={17}
-                  className="transition-transform group-hover:translate-x-1"
-                />
-              </Link>
-
-              <Link
-                href="#work"
-                className="inline-flex min-h-[52px] items-center justify-center gap-2 border border-white/40 bg-emerald-950/30 px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-emerald-900/70"
-              >
-                Explore Our Work
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Subtle bottom gradient, not a separate image */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-emerald-700 via-lime-400 to-teal-500"
-        />
-      </section>
+<HeroSection />
 
       {/* ───────────────────────────────────────── About ───────────────────────────────────────── */}
       <section id="about" className="scroll-mt-24 py-16 sm:py-24">

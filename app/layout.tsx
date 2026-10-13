@@ -1,6 +1,5 @@
-
 import type { Metadata } from "next";
-import { Roboto, Tiro_Bangla } from "next/font/google";
+import { Playfair_Display, Tiro_Bangla, Roboto } from "next/font/google";
 import { connection } from "next/server";
 import { Suspense } from "react";
 
@@ -10,18 +9,24 @@ import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
 
-const roboto = Roboto({
-  variable: "--font-roboto",
+const playfairDisplay = Playfair_Display({
+  variable: "--font-playfair-display",
   subsets: ["latin"],
   display: "swap",
-  weight: ["300", "400", "500", "600", "700"],
 });
 
 const tiroBangla = Tiro_Bangla({
   variable: "--font-tiro-bangla",
-  subsets: ["bengali"],
-  display: "swap",
+  subsets: ["bengali", "latin"],
   weight: ["400"],
+  display: "swap",
+});
+
+const roboto = Roboto({
+  variable: "--font-roboto",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -86,8 +91,7 @@ export const metadata: Metadata = {
     locale: "en_BD",
     url: "https://haorrokkhaandolan.org",
     siteName: "Haor Rokkha Andolan",
-    title:
-      "Haor Rokkha Andolan | Protecting Wetlands, Preserving Life",
+    title: "Haor Rokkha Andolan | Protecting Wetlands, Preserving Life",
     description:
       "Working to conserve Bangladesh's haors, rivers, canals, wetlands, and natural ecosystems through awareness, community action, and environmental responsibility.",
     images: [
@@ -102,8 +106,7 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title:
-      "Haor Rokkha Andolan | Protecting Wetlands, Preserving Life",
+    title: "Haor Rokkha Andolan | Protecting Wetlands, Preserving Life",
     description:
       "An environmental movement dedicated to protecting Bangladesh's haors, wetlands, rivers, and biodiversity.",
     images: ["https://haorrokkhaandolan.org/og-image.jpg"],
@@ -139,7 +142,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${roboto.variable} ${tiroBangla.variable}`}>
+      <body
+        className={`${playfairDisplay.variable} ${tiroBangla.variable} ${roboto.variable}`}
+      >
         <Suspense fallback={null}>
           <UploadThingSSR />
         </Suspense>
