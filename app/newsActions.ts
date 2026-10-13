@@ -1,7 +1,20 @@
 "use server";
-
 import { prisma } from "./utils/db";
 
+
+export type PublicNewsFilter =
+  | "ALL"
+  | "NEWS"
+  | "ACTIVITY"
+  | "RIVER"
+  | "HAOR";
+
+const PAGE_SIZE = 20;
+
+/**
+ * Existing action.
+ * Kept for compatibility with other pages that use it.
+ */
 export async function getPublicNewsAction() {
   return prisma.news.findMany({
     select: {
@@ -14,11 +27,85 @@ export async function getPublicNewsAction() {
       type: true,
       createdAt: true,
     },
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy: [{ createdAt: "desc" }, { id: "desc" }],
   });
 }
+
+/**
+ * Paginated public news and activities.
+ * Fetches at most 21 rows to determine whether another page exists.
+ * Returns only 20 rows to the client.
+ */
+export async function getPublicNewsPageAction({
+  page = 1,
+  filter = "ALL",
+  search = "",
+}: {
+  page?: number;
+  filter?: PublicNewsFilter;
+  search?: string;
+}) {
+  const currentPage = Math.max(
+    1,
+    Math.floor(Number.isFinite(page) ? page : 1),
+  );
+
+  const query = search.trim().slice(0, 150);
+
+  const where = {
+    ...(filter === "NEWS" || filter === "ACTIVITY"
+      ? { type: filter }
+      : {}),
+
+    ...(filter === "RIVER" || filter === "HAOR"
+      ? { riverOrHaor: filter }
+      : {}),
+
+    ...(query
+      ? {
+          OR: [
+            {
+              heading: {
+                contains: query,
+                mode: "insensitive" as const,
+              },
+            },
+            {
+              details: {
+                contains: query,
+                mode: "insensitive" as const,
+              },
+            },
+          ],
+        }
+      : {}),
+  };
+
+  const results = await prisma.news.findMany({
+    where,
+    select: {
+      id: true,
+      heading: true,
+      details: true,
+      mediaUrl: true,
+      mediaType: true,
+      riverOrHaor: true,
+      type: true,
+      createdAt: true,
+    },
+    orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+    skip: (currentPage - 1) * PAGE_SIZE,
+    take: PAGE_SIZE + 1,
+  });
+
+  return {
+    items: results.slice(0, PAGE_SIZE),
+    hasMore: results.length > PAGE_SIZE,
+    page: currentPage,
+    pageSize: PAGE_SIZE,
+  };
+}
+
 
 
 export type HomepageNewsItem = {

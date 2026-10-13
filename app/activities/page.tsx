@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Navbar from "../Navbar";
 import {
@@ -11,11 +11,18 @@ import {
   Waves,
   X,
   MapPin,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
-import { getPublicNewsAction } from "../newsActions";
+import { getPublicNewsPageAction, type PublicNewsFilter } from "../newsActions";
 
-type NewsItem = Awaited<ReturnType<typeof getPublicNewsAction>>[number];
-type FilterType = "ALL" | "NEWS" | "ACTIVITY" | "RIVER" | "HAOR";
+type NewsItem = Awaited<
+  ReturnType<typeof getPublicNewsPageAction>
+>["items"][number];
+
+type FilterType = PublicNewsFilter;
+
+const PAGE_SIZE = 20;
 
 function formatDate(date: Date | string) {
   return new Date(date).toLocaleDateString("en-GB", {
@@ -126,23 +133,42 @@ export default function ActivitiesPage() {
   const [items, setItems] = useState<NewsItem[]>([]);
   const [filter, setFilter] = useState<FilterType>("ALL");
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedItem, setSelectedItem] = useState<NewsItem | null>(null);
 
+  // Debounce search to avoid database requests on every keystroke.
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setDebouncedSearch(search.trim());
+      setPage(1);
+    }, 350);
+
+    return () => window.clearTimeout(timer);
+  }, [search]);
+
+  // Load only the requested page from the database.
   useEffect(() => {
     let active = true;
 
     async function loadNews() {
+      setLoading(true);
+      setError("");
+
       try {
-        setLoading(true);
-        setError("");
+        const result = await getPublicNewsPageAction({
+          page,
+          filter,
+          search: debouncedSearch,
+        });
 
-        const result = await getPublicNewsAction();
+        if (!active) return;
 
-        if (active) {
-          setItems(result);
-        }
+        setItems(result.items);
+        setHasMore(result.hasMore);
       } catch (err) {
         console.error("Failed to load news and activities:", err);
 
@@ -161,9 +187,9 @@ export default function ActivitiesPage() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [page, filter, debouncedSearch]);
 
-  // Close the details popup with Escape and prevent background scrolling.
+  // Close the popup with Escape and prevent background scrolling.
   useEffect(() => {
     if (!selectedItem) return;
 
@@ -184,26 +210,6 @@ export default function ActivitiesPage() {
     };
   }, [selectedItem]);
 
-  const filteredItems = useMemo(() => {
-    const query = search.trim().toLowerCase();
-
-    return items.filter((item) => {
-      const matchesSearch =
-        !query ||
-        item.heading.toLowerCase().includes(query) ||
-        item.details.toLowerCase().includes(query);
-
-      const matchesFilter =
-        filter === "ALL" ||
-        (filter === "NEWS" && item.type === "NEWS") ||
-        (filter === "ACTIVITY" && item.type === "ACTIVITY") ||
-        (filter === "RIVER" && item.riverOrHaor === "RIVER") ||
-        (filter === "HAOR" && item.riverOrHaor === "HAOR");
-
-      return matchesSearch && matchesFilter;
-    });
-  }, [items, filter, search]);
-
   const filters: { label: string; value: FilterType }[] = [
     { label: "All", value: "ALL" },
     { label: "News", value: "NEWS" },
@@ -212,14 +218,32 @@ export default function ActivitiesPage() {
     { label: "Haors", value: "HAOR" },
   ];
 
+  function changeFilter(value: FilterType) {
+    setFilter(value);
+    setPage(1);
+  }
+
+  function resetFilters() {
+    setFilter("ALL");
+    setSearch("");
+    setDebouncedSearch("");
+    setPage(1);
+  }
+
+  function goToPage(nextPage: number) {
+    setPage(Math.max(1, nextPage));
+    setSelectedItem(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   return (
     <main className="min-h-screen bg-[#f7f9f6]">
       <Navbar />
 
       {/* Hero */}
-      <section className="relative isolate flex min-h-57.5 items-center justify-center overflow-hidden bg-emerald-950 sm:min-h-70">
+      <section className="relative isolate flex min-h-57.5 items-center mt-16 justify-center overflow-hidden bg-emerald-950 sm:min-h-70">
         <Image
-          src="/img/monu1.jpg"
+          src="/monu1.jpg"
           alt="Haor landscape"
           fill
           priority
@@ -237,71 +261,55 @@ export default function ActivitiesPage() {
           <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
             News &amp; Activities
           </h1>
-
-          <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-emerald-50/85 sm:text-base">
-            News, campaigns, and activities to protect our rivers, haors, and
-            natural environment.
-          </p>
-
           <div className="mx-auto mt-5 h-1 w-14 rounded-full bg-emerald-400" />
         </div>
       </section>
 
       {/* News and activities */}
       <section className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-        <div className="mb-5 flex flex-col gap-3 border-b border-emerald-900/10 pb-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-700">
-              Updates &amp; Stories
-            </p>
+        {/* News Header, Search & Filters */}
+        <div className="mb-5 border-b border-emerald-900/10 pb-4">
+          {/* Search + Filters */}
+          <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
+            {/* Search */}
+            <div className="w-full shrink-0 sm:w-52 lg:w-64">
+              <input
+                type="search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search news and activities..."
+                aria-label="Search news and activities"
+                className="h-9 w-full rounded-md border border-slate-200 bg-white px-3 text-xs text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/10 sm:h-10 sm:text-sm"
+              />
+            </div>
 
-            <h2 className="text-xl font-bold tracking-tight text-emerald-950 sm:text-2xl">
-              Latest News &amp; Activities
-            </h2>
-
-            <p className="mt-1 text-xs text-slate-500">
-              Reports and media published by Haor Rokkha Andolan.
-            </p>
+            {/* Horizontally Scrollable Filters */}
+            <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto pb-1 [scrollbar-width:thin] sm:flex-1">
+              {filters.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => changeFilter(option.value)}
+                  aria-pressed={filter === option.value}
+                  className={`h-8 shrink-0 whitespace-nowrap rounded-md px-3 text-[10px] font-semibold transition sm:h-10 sm:px-3 sm:text-xs ${
+                    filter === option.value
+                      ? "bg-emerald-900 text-white"
+                      : "border border-slate-200 bg-white text-slate-600 hover:border-emerald-700 hover:text-emerald-800"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
           </div>
-
-          <span className="text-xs font-semibold text-slate-500">
-            {loading ? "Loading..." : `${filteredItems.length} stories`}
-          </span>
-        </div>
-
-        {/* Search */}
-        <div className="mb-4">
-          <input
-            type="search"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search news and activities..."
-            aria-label="Search news and activities"
-            className="w-full rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/10 sm:max-w-sm"
-          />
-        </div>
-
-        {/* Filters */}
-        <div className="mb-6 flex gap-2 overflow-x-auto pb-1">
-          {filters.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => setFilter(option.value)}
-              className={`shrink-0 rounded-md px-4 py-2 text-xs font-semibold transition ${
-                filter === option.value
-                  ? "bg-emerald-900 text-white"
-                  : "border border-slate-200 bg-white text-slate-600 hover:border-emerald-700 hover:text-emerald-800"
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
         </div>
 
         {/* Loading */}
         {loading && (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
+          <div
+            aria-label="Loading news and activities"
+            className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4"
+          >
             {Array.from({ length: 8 }).map((_, index) => (
               <div
                 key={index}
@@ -320,15 +328,26 @@ export default function ActivitiesPage() {
 
         {/* Error */}
         {!loading && error && (
-          <div className="rounded-md border border-red-200 bg-red-50 p-5 text-sm text-red-700">
-            {error}
+          <div
+            role="alert"
+            className="rounded-md border border-red-200 bg-red-50 p-5 text-sm text-red-700"
+          >
+            <p>{error}</p>
+
+            <button
+              type="button"
+              onClick={() => goToPage(page)}
+              className="mt-3 rounded-md bg-emerald-900 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-800"
+            >
+              Try again
+            </button>
           </div>
         )}
 
         {/* Cards */}
-        {!loading && !error && filteredItems.length > 0 && (
+        {!loading && !error && items.length > 0 && (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
-            {filteredItems.map((item) => {
+            {items.map((item) => {
               const video = isVideo(item);
 
               return (
@@ -393,7 +412,7 @@ export default function ActivitiesPage() {
         )}
 
         {/* Empty state */}
-        {!loading && !error && filteredItems.length === 0 && (
+        {!loading && !error && items.length === 0 && (
           <div className="rounded-lg border border-dashed border-slate-300 bg-white px-5 py-14 text-center">
             <Newspaper
               size={32}
@@ -411,15 +430,59 @@ export default function ActivitiesPage() {
 
             <button
               type="button"
-              onClick={() => {
-                setFilter("ALL");
-                setSearch("");
-              }}
+              onClick={resetFilters}
               className="mt-4 rounded-md bg-emerald-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-emerald-800"
             >
               Show all stories
             </button>
           </div>
+        )}
+
+        {/* Pagination */}
+        {!loading && !error && (items.length > 0 || page > 1) && (
+          <nav
+            aria-label="News pagination"
+            className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-emerald-900/10 pt-5 sm:flex-row"
+          >
+            <p className="text-xs text-slate-500">
+              Showing{" "}
+              <span className="font-semibold text-emerald-950">
+                {items.length}
+              </span>{" "}
+              {items.length === 1 ? "story" : "stories"} on this page
+              <span className="mx-1.5 text-slate-300">·</span>
+              Page <span className="font-bold text-emerald-950">{page}</span>
+            </p>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                disabled={page === 1 || loading}
+                onClick={() => goToPage(page - 1)}
+                className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-emerald-700 hover:text-emerald-800 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <ChevronLeft size={14} />
+                Previous
+              </button>
+
+              <span
+                aria-current="page"
+                className="flex h-9 min-w-9 items-center justify-center rounded-md bg-emerald-900 px-3 text-xs font-bold text-white"
+              >
+                {page}
+              </span>
+
+              <button
+                type="button"
+                disabled={!hasMore || loading}
+                onClick={() => goToPage(page + 1)}
+                className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-emerald-700 hover:text-emerald-800 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Next
+                <ChevronRight size={14} />
+              </button>
+            </div>
+          </nav>
         )}
       </section>
 
@@ -436,7 +499,6 @@ export default function ActivitiesPage() {
             className="relative my-auto flex max-h-[80dvh] w-full max-w-xl flex-col overflow-hidden rounded-lg border border-white/20 bg-white shadow-2xl"
             onClick={(event) => event.stopPropagation()}
           >
-            {/* Popup header */}
             <div className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 bg-emerald-950 px-4 py-1 text-white sm:px-5">
               <div className="flex min-w-0 items-center gap-2">
                 {selectedItem.type === "ACTIVITY" ? (
@@ -458,13 +520,11 @@ export default function ActivitiesPage() {
                 aria-label="Close story details"
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
               >
-                <X size={10} />
+                <X size={16} />
               </button>
             </div>
 
-            {/* Scrollable popup content */}
             <div className="min-h-0 overflow-y-auto">
-              {/* Full-size media */}
               <div className="relative aspect-video w-full overflow-hidden bg-black">
                 <MediaPreview item={selectedItem} />
 
@@ -476,7 +536,6 @@ export default function ActivitiesPage() {
               </div>
 
               <div className="p-4 sm:p-6">
-                {/* Category and date */}
                 <div className="mb-3 flex flex-wrap items-center gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-sm bg-emerald-900 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white">
                     {selectedItem.type === "ACTIVITY" ? (
@@ -505,7 +564,6 @@ export default function ActivitiesPage() {
                   </span>
                 </div>
 
-                {/* Full heading */}
                 <h2
                   id="story-dialog-title"
                   className="text-xl font-bold leading-snug tracking-tight text-emerald-950 sm:text-2xl md:text-3xl"
@@ -515,7 +573,6 @@ export default function ActivitiesPage() {
 
                 <div className="my-4 h-1 w-12 rounded-full bg-emerald-600" />
 
-                {/* Full details */}
                 <div className="whitespace-pre-wrap wrap-break-words text-sm leading-7 text-slate-700 sm:text-base sm:leading-8">
                   {selectedItem.details}
                 </div>
@@ -528,12 +585,11 @@ export default function ActivitiesPage() {
               </div>
             </div>
 
-            {/* Popup footer */}
-            <div className="flex shrink-0 justify-end border-t border-slate-200 bg-slate-50 px-4 py-1">
+            <div className="flex shrink-0 justify-end border-t border-slate-200 bg-slate-50 px-4 py-2">
               <button
                 type="button"
                 onClick={() => setSelectedItem(null)}
-                className="rounded-md bg-emerald-900 px-3 py-1.25 text-xs font-bold text-white transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
+                className="rounded-md bg-emerald-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
               >
                 Close
               </button>
