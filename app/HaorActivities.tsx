@@ -144,7 +144,7 @@ export default function HaorActivities({
                   </p>
 
                   <Link
-                    href={item.href || "/news"}
+                    href="/activities"
                     aria-label={`Read more about ${item.title}`}
                     className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-700 transition hover:text-emerald-950"
                   >

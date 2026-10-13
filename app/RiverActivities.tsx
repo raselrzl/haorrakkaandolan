@@ -277,7 +277,7 @@ export default function RiverSection({
                           </p>
 
                           <Link
-                            href={href}
+                            href="/activities"
                             className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-emerald-800 transition hover:text-emerald-950"
                           >
                             Read more
@@ -290,7 +290,7 @@ export default function RiverSection({
                 </div>
 
                 <Link
-                  href="/news?type=ACTIVITY"
+                  href="/activities"
                   className="mt-auto flex items-center justify-between border-t border-slate-200 pt-3 text-xs font-bold text-emerald-800 transition hover:text-emerald-950"
                 >
                   All River Activities
