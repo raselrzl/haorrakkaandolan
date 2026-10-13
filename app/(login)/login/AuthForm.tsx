@@ -378,17 +378,18 @@ export default function AuthForm({ initialMode, actions }: AuthFormProps) {
               {mode === "forgot" && <Mail className="h-5 w-5" />}
               {mode === "reset" && <ShieldCheck className="h-5 w-5" />}
             </div> */}
-
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center overflow-hidden">
-              <Image
-                src="/ha2.png"
-                alt="Haor Rokkha Andolan logo"
-                width={48}
-                height={48}
-                className="h-full w-full object-contain"
-                priority
-              />
-            </div>
+            <Link href="/">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center overflow-hidden">
+                <Image
+                  src="/ha2.png"
+                  alt="Haor Rokkha Andolan logo"
+                  width={48}
+                  height={48}
+                  className="h-full w-full object-contain"
+                  priority
+                />
+              </div>
+            </Link>
 
             <h1 className="text-[25px] font-bold tracking-tight text-slate-950 sm:text-2xl">
               {modeTitles[mode]}
