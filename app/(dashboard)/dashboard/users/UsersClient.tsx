@@ -196,7 +196,7 @@ export default function UsersClient({ initialUsers }: Props) {
 
   return (
     <main className="min-h-screen bg-slate-50 p-3 text-slate-800 sm:p-5">
-      <div className="mx-auto max-w-[1500px] space-y-5">
+      <div className="mx-auto max-w-375 space-y-5">
         <header className="flex flex-col justify-between gap-3 border-b border-slate-200 pb-4 sm:flex-row sm:items-center">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
@@ -319,7 +319,7 @@ export default function UsersClient({ initialUsers }: Props) {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[850px] text-left text-sm">
+            <table className="w-full min-w-212.5 text-left text-sm">
               <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                 <tr>
                   <th className="px-4 py-3 font-semibold">User</th>

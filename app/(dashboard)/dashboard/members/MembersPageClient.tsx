@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMemo, useState, type FormEvent, type ReactNode } from "react";
@@ -122,7 +121,7 @@ function getErrorMessage(error: unknown): string {
 
 export default function MembersPageClient({ initialMembers }: Props) {
   const [members, setMembers] = useState<Member[]>(
-    Array.isArray(initialMembers) ? initialMembers : []
+    Array.isArray(initialMembers) ? initialMembers : [],
   );
 
   const [search, setSearch] = useState("");
@@ -140,15 +139,15 @@ export default function MembersPageClient({ initialMembers }: Props) {
   const [notice, setNotice] = useState("");
 
   const activeCount = members.filter(
-    (member) => member.status === "ACTIVE"
+    (member) => member.status === "ACTIVE",
   ).length;
 
   const inactiveCount = members.filter(
-    (member) => member.status === "INACTIVE"
+    (member) => member.status === "INACTIVE",
   ).length;
 
   const designationCount = new Set(
-    members.map((member) => member.designation || "General Member")
+    members.map((member) => member.designation || "General Member"),
   ).size;
 
   const filteredMembers = useMemo(() => {
@@ -175,7 +174,7 @@ export default function MembersPageClient({ initialMembers }: Props) {
 
   function updateField<K extends keyof MemberForm>(
     key: K,
-    value: MemberForm[K]
+    value: MemberForm[K],
   ) {
     setForm((current) => ({ ...current, [key]: value }));
   }
@@ -264,8 +263,8 @@ export default function MembersPageClient({ initialMembers }: Props) {
           current.map((member) =>
             member.id === selectedMember.id
               ? (result.member as Member)
-              : member
-          )
+              : member,
+          ),
         );
 
         setNotice("Member updated successfully.");
@@ -300,7 +299,7 @@ export default function MembersPageClient({ initialMembers }: Props) {
       member.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
 
     const confirmed = window.confirm(
-      `${nextStatus === "ACTIVE" ? "Activate" : "Deactivate"} ${member.name}?`
+      `${nextStatus === "ACTIVE" ? "Activate" : "Deactivate"} ${member.name}?`,
     );
 
     if (!confirmed) return;
@@ -322,20 +321,20 @@ export default function MembersPageClient({ initialMembers }: Props) {
 
       setMembers((current) =>
         current.map((item) =>
-          item.id === member.id ? { ...item, status: nextStatus } : item
-        )
+          item.id === member.id ? { ...item, status: nextStatus } : item,
+        ),
       );
 
       setViewMember((current) =>
         current?.id === member.id
           ? { ...current, status: nextStatus }
-          : current
+          : current,
       );
 
       setNotice(
         nextStatus === "ACTIVE"
           ? `${member.name} has been activated.`
-          : `${member.name} has been deactivated.`
+          : `${member.name} has been deactivated.`,
       );
     } catch (err) {
       setError(getErrorMessage(err));
@@ -346,7 +345,7 @@ export default function MembersPageClient({ initialMembers }: Props) {
 
   async function removeMember(member: Member) {
     const confirmed = window.confirm(
-      `Permanently delete ${member.name}?\n\nMembers who have authored news or activities may not be deletable. Deactivate them instead to preserve their records.`
+      `Permanently delete ${member.name}?\n\nMembers who have authored news or activities may not be deletable. Deactivate them instead to preserve their records.`,
     );
 
     if (!confirmed) return;
@@ -363,13 +362,9 @@ export default function MembersPageClient({ initialMembers }: Props) {
         return;
       }
 
-      setMembers((current) =>
-        current.filter((item) => item.id !== member.id)
-      );
+      setMembers((current) => current.filter((item) => item.id !== member.id));
 
-      setViewMember((current) =>
-        current?.id === member.id ? null : current
-      );
+      setViewMember((current) => (current?.id === member.id ? null : current));
 
       setNotice("Member deleted successfully.");
     } catch (err) {
@@ -388,7 +383,7 @@ export default function MembersPageClient({ initialMembers }: Props) {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-800">
       <div className="mx-auto max-w-[1600px] space-y-5 p-4 sm:p-6">
-        <header className="overflow-hidden rounded-xl bg-gradient-to-r from-emerald-950 via-emerald-900 to-green-950 text-white shadow-sm">
+        <header className="overflow-hidden rounded-xl bg-linear-to-r from-emerald-950 via-emerald-900 to-green-950 text-white shadow-sm">
           <div className="flex flex-col justify-between gap-4 px-5 py-5 sm:flex-row sm:items-center sm:px-6">
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-white/15 bg-white/10">
@@ -515,9 +510,7 @@ export default function MembersPageClient({ initialMembers }: Props) {
 
                 <select
                   value={designationFilter}
-                  onChange={(event) =>
-                    setDesignationFilter(event.target.value)
-                  }
+                  onChange={(event) => setDesignationFilter(event.target.value)}
                   className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-emerald-600 sm:w-52"
                 >
                   <option value="ALL">All designations</option>
@@ -558,15 +551,13 @@ export default function MembersPageClient({ initialMembers }: Props) {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[1050px] text-left text-sm">
+            <table className="w-full min-w-262.5 text-left text-sm">
               <thead className="bg-slate-50 text-[11px] uppercase tracking-wide text-slate-500">
                 <tr>
                   <th className="px-4 py-3 font-semibold">Member</th>
                   <th className="px-4 py-3 font-semibold">Contact</th>
                   <th className="px-4 py-3 font-semibold">Designation</th>
-                  <th className="px-4 py-3 font-semibold">
-                    Membership period
-                  </th>
+                  <th className="px-4 py-3 font-semibold">Membership period</th>
                   <th className="px-4 py-3 font-semibold">Status</th>
                   <th className="px-4 py-3 text-right font-semibold">
                     Actions
@@ -584,7 +575,7 @@ export default function MembersPageClient({ initialMembers }: Props) {
                       <div className="flex items-center gap-3">
                         <MemberAvatar member={member} />
                         <div className="min-w-0">
-                          <p className="max-w-[220px] truncate font-semibold text-slate-900">
+                          <p className="max-w-55 truncate font-semibold text-slate-900">
                             {member.name}
                           </p>
                           <p className="mt-1 text-xs text-slate-500">
@@ -599,7 +590,7 @@ export default function MembersPageClient({ initialMembers }: Props) {
                         <Phone size={13} className="shrink-0 text-slate-400" />
                         {member.phone}
                       </div>
-                      <div className="mt-1 flex max-w-[230px] items-center gap-2">
+                      <div className="mt-1 flex max-w-57.5 items-center gap-2">
                         <Mail size={13} className="shrink-0 text-slate-400" />
                         <span className="truncate text-xs text-slate-500">
                           {member.email}
@@ -608,7 +599,7 @@ export default function MembersPageClient({ initialMembers }: Props) {
                     </td>
 
                     <td className="px-4 py-3">
-                      <span className="inline-flex max-w-[180px] rounded-md bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800">
+                      <span className="inline-flex max-w-45 rounded-md bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800">
                         {member.designation || "General Member"}
                       </span>
                     </td>
@@ -761,25 +752,24 @@ export default function MembersPageClient({ initialMembers }: Props) {
                               updateField("imageUrl", uploadedUrl);
                               setError("");
                               setNotice(
-                                "Image uploaded. Save the member form to keep the photo."
+                                "Image uploaded. Save the member form to keep the photo.",
                               );
                             } else {
                               setError(
-                                "The uploaded image URL was not returned."
+                                "The uploaded image URL was not returned.",
                               );
                             }
                           }}
                           onUploadError={(uploadError) => {
                             setUploadingImage(false);
                             setError(
-                              uploadError.message || "Image upload failed."
+                              uploadError.message || "Image upload failed.",
                             );
                           }}
                           appearance={{
                             button:
                               "h-10 rounded-lg bg-emerald-800 px-4 text-xs font-semibold text-white transition hover:bg-emerald-900 ut-uploading:cursor-not-allowed ut-uploading:opacity-60",
-                            allowedContent:
-                              "mt-1 text-[11px] text-slate-500",
+                            allowedContent: "mt-1 text-[11px] text-slate-500",
                             container: "items-start gap-1",
                           }}
                           content={{
@@ -1248,13 +1238,7 @@ function FormField({
   );
 }
 
-function DetailRow({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
+function DetailRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-start justify-between gap-4 text-sm">
       <dt className="shrink-0 text-slate-500">{label}</dt>

@@ -67,7 +67,7 @@ export default function AboutPage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative isolate flex min-h-[230px] items-center justify-center overflow-hidden bg-emerald-950 sm:min-h-[280px]">
+      <section className="relative isolate flex min-h-57.5 items-center justify-center overflow-hidden bg-emerald-950 sm:min-h-70">
         <Image
           src="/img/monu1.jpg"
           alt="Haor Rokkha Andolan"
@@ -77,7 +77,7 @@ export default function AboutPage() {
           className="object-cover"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/90 via-emerald-950/75 to-emerald-950/60" />
+        <div className="absolute inset-0 bg-linear-to-r from-emerald-950/90 via-emerald-950/75 to-emerald-950/60" />
 
         <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-12 text-center sm:px-6 lg:px-8">
           <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.28em] text-emerald-300 sm:text-xs">

@@ -41,7 +41,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-[9999] w-full border-b border-slate-200 bg-white text-slate-900 shadow-sm">
+    <header className="fixed inset-x-0 top-0 z-9999 w-full border-b border-slate-200 bg-white text-slate-900 shadow-sm">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link
@@ -142,7 +142,7 @@ export default function Navbar() {
       <div
         id="mobile-navigation"
         aria-hidden={!menuOpen}
-        className={`fixed inset-x-0 bottom-0 top-16 z-[10000] overflow-y-auto overscroll-contain bg-white transition-[opacity,visibility] duration-200 lg:hidden ${
+        className={`fixed inset-x-0 bottom-0 top-16 z-10000 overflow-y-auto overscroll-contain bg-white transition-[opacity,visibility] duration-200 lg:hidden ${
           menuOpen
             ? "visible pointer-events-auto opacity-100"
             : "invisible pointer-events-none opacity-0"

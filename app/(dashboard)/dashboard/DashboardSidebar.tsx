@@ -192,7 +192,7 @@ export default function DashboardSidebar() {
         }
         aria-expanded={mobileOpen}
         aria-controls="mobile-dashboard-sidebar"
-        className="fixed bottom-5 right-5 z-[60] flex h-12 w-12 items-center justify-center rounded-full bg-emerald-800 text-white shadow-lg transition hover:bg-emerald-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 md:hidden"
+        className="fixed bottom-5 right-5 z-60 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-800 text-white shadow-lg transition hover:bg-emerald-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 md:hidden"
       >
         {mobileOpen ? <X size={21} /> : <Menu size={21} />}
       </button>

@@ -158,7 +158,7 @@ function MediaPreview({
           playsInline
           preload="metadata"
           className={`w-full rounded-lg bg-black ${
-            compact ? "h-36 object-contain" : "max-h-[480px]"
+            compact ? "h-36 object-contain" : "max-h-120"
           }`}
         >
           Your browser does not support video playback.
@@ -601,7 +601,7 @@ export default function NewsActivitiesPage() {
                         {item.heading}
                       </h2>
 
-                      <p className="mt-1 whitespace-pre-wrap break-words text-sm text-slate-600">
+                      <p className="mt-1 whitespace-pre-wrap wrap-break-words text-sm text-slate-600">
                         {item.details}
                       </p>
 

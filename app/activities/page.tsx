@@ -217,7 +217,7 @@ export default function ActivitiesPage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative isolate flex min-h-[230px] items-center justify-center overflow-hidden bg-emerald-950 sm:min-h-[280px]">
+      <section className="relative isolate flex min-h-57.5 items-center justify-center overflow-hidden bg-emerald-950 sm:min-h-70">
         <Image
           src="/img/monu1.jpg"
           alt="Haor landscape"
@@ -227,7 +227,7 @@ export default function ActivitiesPage() {
           className="object-cover"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/95 via-emerald-950/80 to-emerald-950/60" />
+        <div className="absolute inset-0 bg-linear-to-r from-emerald-950/95 via-emerald-950/80 to-emerald-950/60" />
 
         <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-12 text-center sm:px-6 lg:px-8">
           <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.24em] text-emerald-300 sm:text-xs">
@@ -307,7 +307,7 @@ export default function ActivitiesPage() {
                 key={index}
                 className="animate-pulse overflow-hidden rounded-lg border border-slate-200 bg-white"
               >
-                <div className="aspect-[4/3] bg-slate-200" />
+                <div className="aspect-4/3 bg-slate-200" />
                 <div className="space-y-3 p-3 sm:p-4">
                   <div className="h-3 w-20 rounded bg-slate-200" />
                   <div className="h-4 w-full rounded bg-slate-200" />
@@ -336,7 +336,7 @@ export default function ActivitiesPage() {
                   key={item.id}
                   className="group overflow-hidden rounded-lg border border-slate-200/80 bg-white transition duration-300 hover:-translate-y-1 hover:border-emerald-700/30 hover:shadow-lg hover:shadow-emerald-950/5"
                 >
-                  <div className="relative aspect-[4/3] overflow-hidden bg-slate-950">
+                  <div className="relative aspect-4/3 overflow-hidden bg-slate-950">
                     <MediaPreview item={item} />
 
                     <div className="pointer-events-none absolute left-2 top-2 z-10 flex items-center gap-1.5 rounded-sm bg-emerald-950/90 px-2 py-1 text-[9px] font-bold uppercase tracking-wide text-white sm:text-[10px]">
@@ -426,7 +426,7 @@ export default function ActivitiesPage() {
       {/* Full story popup */}
       {selectedItem && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-emerald-950/80 p-3 backdrop-blur-sm sm:p-6"
+          className="fixed inset-0 z-100 flex items-center justify-center overflow-y-auto bg-emerald-950/80 p-3 backdrop-blur-sm sm:p-6"
           onClick={() => setSelectedItem(null)}
         >
           <section
@@ -516,7 +516,7 @@ export default function ActivitiesPage() {
                 <div className="my-4 h-1 w-12 rounded-full bg-emerald-600" />
 
                 {/* Full details */}
-                <div className="whitespace-pre-wrap break-words text-sm leading-7 text-slate-700 sm:text-base sm:leading-8">
+                <div className="whitespace-pre-wrap wrap-break-words text-sm leading-7 text-slate-700 sm:text-base sm:leading-8">
                   {selectedItem.details}
                 </div>
 

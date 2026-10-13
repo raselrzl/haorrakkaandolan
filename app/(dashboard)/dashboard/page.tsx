@@ -264,7 +264,7 @@ async function DashboardContent() {
   return (
     <main className="min-h-screen space-y-5 bg-slate-50/70 p-3 sm:p-5 lg:p-6">
       {/* Header */}
-      <header className="overflow-hidden rounded-lg bg-gradient-to-r from-emerald-950 via-emerald-900 to-green-900 text-white shadow-sm">
+      <header className="overflow-hidden rounded-lg bg-linear-to-r from-emerald-950 via-emerald-900 to-green-900 text-white shadow-sm">
         <div className="flex flex-col gap-4 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div>
             <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-300">

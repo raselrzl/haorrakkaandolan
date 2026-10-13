@@ -47,7 +47,7 @@ export default function HeroSection() {
     <section className="relative isolate mt-16 w-full overflow-hidden bg-white">
       {/* Full-width background image */}
       <div
-        className="absolute inset-0 h-[520px] w-full bg-cover bg-center sm:h-[560px] lg:h-[55vh] lg:min-h-[480px] lg:max-h-[650px]"
+        className="absolute inset-0 h-130 w-full bg-cover bg-center sm:h-140 lg:h-[55vh] lg:min-h-120 lg:max-h-162.5"
         style={{ backgroundImage: "url('/hm1.jpg')" }}
         aria-hidden="true"
       />
@@ -58,7 +58,7 @@ export default function HeroSection() {
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto flex min-h-130 max-w-7xl flex-col px-5 pb-8 pt-16 sm:min-h-[560px] sm:px-8 sm:pt-20 lg:min-h-[55vh] lg:max-h-[650px] lg:justify-center lg:px-10 lg:pb-20 lg:pt-12">
+      <div className="relative mx-auto flex min-h-130 max-w-7xl flex-col px-5 pb-8 pt-16 sm:min-h-140 sm:px-8 sm:pt-20 lg:min-h-[55vh] lg:max-h-162.5 lg:justify-center lg:px-10 lg:pb-20 lg:pt-12">
         {/* Main hero content */}
         <div className="max-w-2xl text-white">
           {/*         <span className="inline-flex items-center rounded-full border border-white/30 bg-white/10 px-4 py-1 text-xs font-semibold uppercase backdrop-blur-sm">
@@ -97,7 +97,7 @@ export default function HeroSection() {
         </div>
 
         {/* Updates panel: shifted farther right on desktop */}
-        <div className="mt-10 w-full self-end lg:absolute lg:-bottom-4 lg:right-[-48px] lg:mt-0 lg:w-[440px]">
+        <div className="mt-10 w-full self-end lg:absolute lg:-bottom-4 lg:-right-12 lg:mt-0 lg:w-110">
           <div className="rounded-xl border border-green-200/90 sm:border-0 shadow shadow-green-100 bg-white p-5 sm:p-6">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-1">
               {/* Latest Updates */}
