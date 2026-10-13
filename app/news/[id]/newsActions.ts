@@ -15,7 +15,6 @@ export async function getPublicNewsById(id: string) {
         heading: true,
         details: true,
         mediaUrl: true,
-        category: true,
         riverOrHaor: true,
         type: true,
         createdAt: true,

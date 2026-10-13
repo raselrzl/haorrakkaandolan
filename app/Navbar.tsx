@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -41,9 +42,9 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-9999 w-full shadow border-slate-200 bg-white text-slate-800">
+    <header className="fixed inset-x-0 top-0 z-[9999] w-full border-b border-slate-200 bg-white text-slate-800 shadow-sm">
       {/* Main navigation */}
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:h-16">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
         {/* Logo and identity */}
         <Link
           href="/"
@@ -91,7 +92,6 @@ export default function Navbar() {
                 }`}
               >
                 {link.label}
-
                 <span
                   className={`absolute inset-x-2 bottom-1 h-0.5 rounded-full bg-[#176b45] transition-transform duration-200 xl:inset-x-3 ${
                     active ? "scale-x-100" : "scale-x-0"
@@ -117,10 +117,10 @@ export default function Navbar() {
           <Link
             href="/contact"
             aria-current={isActive("/contact") ? "page" : undefined}
-            className={`group inline-flex h-10 items-center border justify-center gap-2 px-4 text-[12px] font-semibold transition-colors xl:text-[13px] rounded-full ${
+            className={`group inline-flex h-10 items-center justify-center gap-2 rounded-full border px-4 text-[12px] font-semibold transition-colors xl:text-[13px] ${
               isActive("/contact")
                 ? "bg-[#123b2b] text-white"
-                : "text-[#123b2b]"
+                : "text-[#123b2b] hover:bg-emerald-50"
             }`}
           >
             Get Involved
@@ -144,21 +144,21 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile backdrop */}
+      {/* Mobile backdrop: begins exactly below the 64px header */}
       {menuOpen && (
         <button
           type="button"
           aria-label="Close navigation"
           onClick={() => setMenuOpen(false)}
-          className="fixed inset-x-0 bottom-0 top-[68px] z-[-1] bg-slate-900/30 lg:hidden"
+          className="fixed inset-x-0 bottom-0 top-16 z-[-1] bg-slate-900/30 lg:hidden"
         />
       )}
 
-      {/* Mobile navigation */}
+      {/* Mobile navigation: attached directly to the header */}
       <div
         id="mobile-navigation"
         aria-hidden={!menuOpen}
-        className={`fixed inset-x-0 bottom-0 top-[68px] z-[10000] overflow-y-auto border-t border-slate-200 bg-white transition-[opacity,visibility,transform] duration-200 lg:hidden ${
+        className={`fixed inset-x-0 bottom-0 top-16 z-[10000] overflow-y-auto border-t border-slate-100 bg-white transition-[opacity,visibility,transform] duration-200 lg:hidden ${
           menuOpen
             ? "visible translate-y-0 opacity-100"
             : "invisible -translate-y-2 opacity-0"
@@ -195,7 +195,6 @@ export default function Navbar() {
                   }`}
                 >
                   {link.label}
-
                   {active && (
                     <span className="h-1.5 w-1.5 rounded-full bg-[#176b45]" />
                   )}
@@ -211,7 +210,7 @@ export default function Navbar() {
               tabIndex={menuOpen ? 0 : -1}
               aria-current={isActive("/login") ? "page" : undefined}
               onClick={() => setMenuOpen(false)}
-              className={`flex min-h-11 items-center justify-center rounded-full gap-2 border border-slate-200 px-3 py-3 text-sm font-semibold transition-colors ${
+              className={`flex min-h-11 items-center justify-center gap-2 rounded-full border border-slate-200 px-3 py-3 text-sm font-semibold transition-colors ${
                 isActive("/login")
                   ? "bg-slate-100 text-[#176b45]"
                   : "text-slate-700 hover:bg-slate-50"
@@ -226,7 +225,7 @@ export default function Navbar() {
               tabIndex={menuOpen ? 0 : -1}
               aria-current={isActive("/contact") ? "page" : undefined}
               onClick={() => setMenuOpen(false)}
-              className="flex min-h-11 items-center justify-center rounded-full gap-1.5 bg-[#176b45] px-3 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#123b2b]"
+              className="flex min-h-11 items-center justify-center gap-1.5 rounded-full bg-[#176b45] px-3 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#123b2b]"
             >
               Get Involved
               <ArrowUpRight size={15} />
