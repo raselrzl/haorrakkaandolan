@@ -64,7 +64,7 @@ export default function HaorActivities({
           </div>
 
           <Link
-            href="/news?type=ACTIVITY"
+            href="/activities"
             className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 transition hover:text-emerald-950"
           >
             All Activities

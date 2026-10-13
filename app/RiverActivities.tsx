@@ -140,8 +140,8 @@ export default function RiverSection({
               </h2>
 
               <p className="mt-2 max-w-md text-sm leading-5 text-white/80">
-                Protecting rivers, biodiversity, and the communities that
-                depend on them.
+                Protecting rivers, biodiversity, and the communities that depend
+                on them.
               </p>
 
               <Link
@@ -181,10 +181,7 @@ export default function RiverSection({
                 </h2>
               </div>
 
-              <Waves
-                size={22}
-                className="shrink-0 text-emerald-800"
-              />
+              <Waves size={22} className="shrink-0 text-emerald-800" />
             </div>
 
             {activities.length > 0 ? (
@@ -194,10 +191,7 @@ export default function RiverSection({
                     const href = item.href || "/activities";
 
                     return (
-                      <article
-                        key={item.id}
-                        className="group flex gap-3 py-3"
-                      >
+                      <article key={item.id} className="group flex gap-3 py-3">
                         {/* Image or video thumbnail */}
                         <Link
                           href={href}
@@ -216,10 +210,7 @@ export default function RiverSection({
 
                               <span className="absolute inset-0 flex items-center justify-center bg-black/25">
                                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-emerald-900">
-                                  <Play
-                                    size={14}
-                                    fill="currentColor"
-                                  />
+                                  <Play size={14} fill="currentColor" />
                                 </span>
                               </span>
                             </span>
@@ -239,10 +230,7 @@ export default function RiverSection({
                             />
                           ) : (
                             <span className="flex h-full w-full items-center justify-center bg-emerald-50">
-                              <Waves
-                                size={26}
-                                className="text-emerald-800"
-                              />
+                              <Waves size={26} className="text-emerald-800" />
                             </span>
                           )}
                         </Link>
@@ -254,13 +242,12 @@ export default function RiverSection({
                               {item.category}
                             </span>
 
-                            {item.mediaType === "VIDEO" &&
-                              item.image && (
-                                <span className="inline-flex items-center gap-1 text-emerald-700">
-                                  <Play size={10} />
-                                  Video
-                                </span>
-                              )}
+                            {item.mediaType === "VIDEO" && item.image && (
+                              <span className="inline-flex items-center gap-1 text-emerald-700">
+                                <Play size={10} />
+                                Video
+                              </span>
+                            )}
 
                             <span className="flex items-center gap-1">
                               <CalendarDays size={11} />
@@ -299,10 +286,7 @@ export default function RiverSection({
               </>
             ) : (
               <div className="flex flex-1 flex-col items-center justify-center py-8 text-center">
-                <Waves
-                  size={28}
-                  className="text-emerald-800"
-                />
+                <Waves size={28} className="text-emerald-800" />
 
                 <h3 className="mt-3 text-sm font-bold text-slate-900">
                   River Activities Coming Soon
@@ -313,7 +297,7 @@ export default function RiverSection({
                 </p>
 
                 <Link
-                  href="/news?type=ACTIVITY"
+                  href="/activities"
                   className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-emerald-800 transition hover:text-emerald-950"
                 >
                   View All Activities
