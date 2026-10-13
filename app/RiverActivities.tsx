@@ -93,7 +93,7 @@ export default function RiverSection({
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-stretch gap-6 lg:grid-cols-2 lg:gap-8">
           {/* River image carousel */}
-          <div className="relative min-h-[350px] overflow-hidden rounded-xl bg-emerald-950 sm:min-h-[390px] lg:min-h-[430px]">
+          <div className="relative min-h-87.5 overflow-hidden rounded-xl bg-emerald-950 sm:min-h-97.5 lg:min-h-107.5">
             {riverSlides.map((item, index) => (
               <div
                 key={item.image}
@@ -109,7 +109,7 @@ export default function RiverSection({
               />
             ))}
 
-            <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/95 via-emerald-950/25 to-black/10" />
+            <div className="absolute inset-0 bg-linear-to-t from-emerald-950/95 via-emerald-950/25 to-black/10" />
 
             {/* Carousel indicators */}
             <div className="absolute left-4 top-4 z-10 flex gap-1.5">
@@ -196,7 +196,7 @@ export default function RiverSection({
                         <Link
                           href={href}
                           aria-label={`Read ${item.title}`}
-                          className="relative h-[86px] w-[100px] shrink-0 overflow-hidden rounded-lg bg-slate-100 sm:h-[94px] sm:w-[116px]"
+                          className="relative h-21.5 w-25 shrink-0 overflow-hidden rounded-lg bg-slate-100 sm:h-23.5 sm:w-29"
                         >
                           {item.image && item.mediaType === "VIDEO" ? (
                             <span className="relative block h-full w-full">
