@@ -49,14 +49,14 @@ export default function ConstitutionPublicView({ documents }: Props) {
       <main className="min-h-screen bg-slate-50 text-slate-900 mt-16">
         {/* Hero */}
         <section
-          className="relative overflow-hidden border-b border-emerald-950 bg-emerald-950 bg-cover bg-center"
-          style={{ backgroundImage: "url('/img/haor-bg.jpg')" }}
+          className="relative isolate mt-16 overflow-hidden border-b border-emerald-950 bg-emerald-950 bg-cover bg-center"
+          style={{ backgroundImage: "url('/h11.jpg')" }}
         >
           {/* Dark overlay for readable text */}
           <div className="absolute inset-0 bg-emerald-950/75" />
 
-          <div className="relative mx-auto max-w-6xl px-5 py-8 sm:px-8 sm:py-11">
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative mx-auto flex min-h-72.5 max-w-6xl items-center px-5 py-10 sm:min-h-82.5 sm:px-8">
+            <div className="flex w-full flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0">
                 <Link
                   href="/"
@@ -72,7 +72,7 @@ export default function ConstitutionPublicView({ documents }: Props) {
                   </div>
 
                   <div className="min-w-0">
-                    <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-200">
+                    <p className="mb-1 text-[10px] font-semibold tracking-[0.14em] text-emerald-200 uppercase">
                       Haor Rokkha Andolan / হাওর রক্ষা আন্দোলন
                     </p>
 

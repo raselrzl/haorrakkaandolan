@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -77,7 +76,7 @@ export default function MissionVisionPage() {
       <Navbar />
 
       {/* HERO */}
-      <section className="relative isolate flex min-h-110 items-center justify-center overflow-hidden bg-emerald-950 sm:min-h-125">
+      <section className="relative isolate mt-16 overflow-hidden bg-emerald-950">
         <Image
           src="/monu5.jpg"
           alt={
@@ -91,58 +90,58 @@ export default function MissionVisionPage() {
           className="object-cover object-center"
         />
 
-        <div className="absolute inset-0 bg-black/55" />
+        <div className="absolute inset-0 bg-linear-to-r from-emerald-950/95 via-emerald-950/80 to-emerald-950/50" />
 
-        <div className="relative z-10 mx-auto w-full max-w-4xl px-5 py-14 text-center sm:px-8">
-          <p className="text-xs font-semibold tracking-[0.15em] text-white/90 sm:text-sm">
-            {t.eyebrow}
-          </p>
+        <div className="relative mx-auto flex min-h-72.5 max-w-7xl items-center justify-center px-5 py-10 sm:min-h-82.5 sm:px-8">
+          <div className="w-full max-w-4xl text-center">
+            <p className="text-xs font-semibold tracking-[0.15em] text-white/90 sm:text-sm">
+              {t.eyebrow}
+            </p>
 
-          <h1 className="mt-4 text-3xl leading-tight font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
-            {t.title}
-          </h1>
+            <h1 className="mt-4 text-3xl leading-tight font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
+              {t.title}
+            </h1>
 
-          <p className="mt-3 text-xl font-semibold text-white sm:text-2xl">
-            {t.banglaTitle}
-          </p>
+            <p className="mt-3 text-xl font-semibold text-white sm:text-2xl">
+              {t.banglaTitle}
+            </p>
 
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/90 sm:text-base sm:leading-8">
-            {t.description}
-          </p>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/90 sm:text-base sm:leading-8">
+              {t.description}
+            </p>
 
-          {/* LANGUAGE SWITCH */}
-          <div
-            className="mx-auto mt-6 inline-flex items-center rounded-md border border-white/40 bg-black/25 p-1"
-            aria-label="Choose language"
-          >
-            <button
-              type="button"
-              onClick={() => setLanguage("bn")}
-              aria-pressed={language === "bn"}
-              className={`min-w-20 rounded px-4 py-2 text-sm font-semibold transition ${
-                language === "bn"
-                  ? "bg-white text-emerald-900"
-                  : "text-white hover:bg-white/15"
-              }`}
+            {/* LANGUAGE SWITCH */}
+            <div
+              className="mx-auto mt-6 inline-flex items-center rounded-md border border-white/40 bg-black/25 p-1"
+              aria-label="Choose language"
             >
-              বাংলা
-            </button>
+              <button
+                type="button"
+                onClick={() => setLanguage("bn")}
+                aria-pressed={language === "bn"}
+                className={`min-w-20 rounded px-4 py-2 text-sm font-semibold transition ${
+                  language === "bn"
+                    ? "bg-white text-emerald-900"
+                    : "text-white hover:bg-white/15"
+                }`}
+              >
+                বাংলা
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setLanguage("en")}
-              aria-pressed={language === "en"}
-              className={`min-w-20 rounded px-4 py-2 text-sm font-semibold transition ${
-                language === "en"
-                  ? "bg-white text-emerald-900"
-                  : "text-white hover:bg-white/15"
-              }`}
-            >
-              English
-            </button>
+              <button
+                type="button"
+                onClick={() => setLanguage("en")}
+                aria-pressed={language === "en"}
+                className={`min-w-20 rounded px-4 py-2 text-sm font-semibold transition ${
+                  language === "en"
+                    ? "bg-white text-emerald-900"
+                    : "text-white hover:bg-white/15"
+                }`}
+              >
+                English
+              </button>
+            </div>
           </div>
-
-
         </div>
       </section>
 

@@ -84,31 +84,33 @@ export default function AboutPage() {
     <main className="min-h-screen bg-[#f7f9f6]">
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative isolate flex h-130 items-center justify-center overflow-hidden bg-emerald-950 sm:min-h-64 md:min-h-72 mt-16">
-        <Image
-          src="/monu1.jpg"
-          alt="Haor Rokkha Andolan"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
+   {/* Hero */}
+<section className="relative isolate mt-16 overflow-hidden bg-emerald-950">
+  <Image
+    src="/monu1.jpg"
+    alt="Haor Rokkha Andolan"
+    fill
+    priority
+    sizes="100vw"
+    className="object-cover object-center"
+  />
 
-        <div className="absolute inset-0 bg-linear-to-r from-emerald-950/95 via-emerald-950/80 to-emerald-950/65" />
+  <div className="absolute inset-0 bg-linear-to-r from-emerald-950/95 via-emerald-950/80 to-emerald-950/65" />
 
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-10 text-center sm:px-6 sm:py-14 lg:px-8">
-          <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.2em] text-emerald-300 sm:text-xs sm:tracking-[0.28em]">
-            Haor Rokkha Andolan · Moulvibazar
-          </p>
+  <div className="relative mx-auto flex min-h-72.5 max-w-7xl items-center justify-center px-4 py-10 text-center sm:min-h-82.5 sm:px-6 lg:px-8">
+    <div>
+      <p className="mb-2 text-[9px] font-bold tracking-[0.2em] text-emerald-300 uppercase sm:text-xs sm:tracking-[0.28em]">
+        Haor Rokkha Andolan · Moulvibazar
+      </p>
 
-          <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
-            About Us
-          </h1>
+      <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
+        About Us
+      </h1>
 
-          <div className="mx-auto mt-4 h-1 w-12 rounded-full bg-emerald-400" />
-        </div>
-      </section>
+      <div className="mx-auto mt-4 h-1 w-12 rounded-full bg-emerald-400" />
+    </div>
+  </div>
+</section>
 
       <div className="mx-auto w-full max-w-7xl space-y-8 px-4 py-7 sm:space-y-10 sm:px-6 sm:py-10 lg:px-8">
         {/* About the Organization */}
