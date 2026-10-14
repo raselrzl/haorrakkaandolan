@@ -1,20 +1,21 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
+import type { ReactNode } from "react";
+import Image from "next/image";
 import {
   Search,
   Users,
-  UserRound,
   ShieldCheck,
-  UserCog,
+  UserRound,
+  Crown,
   Pencil,
   X,
+  Check,
   LoaderCircle,
-  CheckCircle2,
-  AlertCircle,
   ImagePlus,
+  RefreshCw,
 } from "lucide-react";
-
 import {
   updateUserImageAction,
   updateUserRoleAction,
@@ -22,295 +23,304 @@ import {
 } from "./usersActions";
 import { UploadButton } from "@/app/utils/uploadthing";
 
+type UserRole = "ADMIN" | "USER" | "MEMBER" | "CHAIRMAN";
+type UserStatus = "ACTIVE" | "INACTIVE";
+
 type UserItem = {
   id: string;
   name: string;
   email: string;
   phone: string;
-  role: "ADMIN" | "USER" | "MEMBER" | "CHAIRMAN";
-  status: "ACTIVE" | "INACTIVE";
+  role: UserRole;
+  status: UserStatus;
   designation: string | null;
   imageUrl: string | null;
   createdAt: Date | string;
 };
 
-type Props = {
+type UsersClientProps = {
   initialUsers: UserItem[];
 };
 
-type UploadedImageFile = {
-  url: string;
-  name: string;
+const roleOptions: { value: UserRole; label: string }[] = [
+  { value: "ADMIN", label: "Admin" },
+  { value: "CHAIRMAN", label: "Chairman" },
+  { value: "MEMBER", label: "Member" },
+  { value: "USER", label: "User" },
+];
+
+const roleStyles: Record<UserRole, string> = {
+  ADMIN: "bg-indigo-50 text-indigo-700 ring-indigo-200",
+  CHAIRMAN: "bg-amber-50 text-amber-700 ring-amber-200",
+  MEMBER: "bg-sky-50 text-sky-700 ring-sky-200",
+  USER: "bg-slate-100 text-slate-600 ring-slate-200",
 };
 
-type UploadErrorInfo = {
-  message: string;
-};
+function formatDate(date: Date | string) {
+  const parsedDate = new Date(date);
 
-export default function UsersClient({ initialUsers }: Props) {
+  if (Number.isNaN(parsedDate.getTime())) {
+    return "—";
+  }
+
+  return parsedDate.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function getInitials(name: string) {
+  return (
+    name
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part.charAt(0))
+      .join("")
+      .toUpperCase() || "U"
+  );
+}
+
+export default function UsersClient({ initialUsers }: UsersClientProps) {
   const [users, setUsers] = useState<UserItem[]>(initialUsers);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("ALL");
   const [statusFilter, setStatusFilter] = useState("ALL");
+
   const [selected, setSelected] = useState<UserItem | null>(null);
-  const [role, setRole] = useState<"USER" | "MEMBER">("USER");
-  const [status, setStatus] = useState<"ACTIVE" | "INACTIVE">("ACTIVE");
+  const [role, setRole] = useState<UserRole>("USER");
+  const [status, setStatus] = useState<UserStatus>("ACTIVE");
+  const [imageUrl, setImageUrl] = useState("");
+  const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [uploadingImage, setUploadingImage] = useState(false);
-  const [isPending, startTransition] = useTransition();
 
-  const busy = isPending || uploadingImage;
+  const filteredUsers = useMemo(() => {
+    const term = search.trim().toLowerCase();
+
+    return users.filter((user) => {
+      const matchesSearch =
+        !term ||
+        user.name.toLowerCase().includes(term) ||
+        user.email.toLowerCase().includes(term) ||
+        user.phone.toLowerCase().includes(term) ||
+        (user.designation ?? "").toLowerCase().includes(term);
+
+      const matchesRole = roleFilter === "ALL" || user.role === roleFilter;
+
+      const matchesStatus =
+        statusFilter === "ALL" || user.status === statusFilter;
+
+      return matchesSearch && matchesRole && matchesStatus;
+    });
+  }, [users, search, roleFilter, statusFilter]);
 
   const stats = useMemo(
     () => ({
       total: users.length,
-      members: users.filter((user) => user.role === "MEMBER").length,
-      regular: users.filter((user) => user.role === "USER").length,
+      admins: users.filter((user) => user.role === "ADMIN").length,
+      chairmen: users.filter((user) => user.role === "CHAIRMAN").length,
       active: users.filter((user) => user.status === "ACTIVE").length,
     }),
     [users],
   );
 
-  const filteredUsers = useMemo(() => {
-    const query = search.trim().toLowerCase();
-
-    return users.filter((user) => {
-      const matchesSearch =
-        !query ||
-        [user.name, user.email, user.phone, user.designation ?? ""].some(
-          (value) => value.toLowerCase().includes(query),
-        );
-
-      return (
-        matchesSearch &&
-        (roleFilter === "ALL" || user.role === roleFilter) &&
-        (statusFilter === "ALL" || user.status === statusFilter)
-      );
-    });
-  }, [users, search, roleFilter, statusFilter]);
-
   function openEditor(user: UserItem) {
     setSelected(user);
-    setRole(user.role === "MEMBER" ? "MEMBER" : "USER");
+    setRole(user.role);
     setStatus(user.status);
+    setImageUrl(user.imageUrl ?? "");
     setMessage("");
     setError("");
   }
 
-  function saveChanges() {
-    if (!selected || busy) return;
+  function closeEditor() {
+    if (isPending) return;
 
-    const editingUser = selected;
-
-    setError("");
+    setSelected(null);
     setMessage("");
+    setError("");
+  }
+
+  function updateLocalUser(userId: string, updates: Partial<UserItem>) {
+    setUsers((current) =>
+      current.map((user) =>
+        user.id === userId ? { ...user, ...updates } : user,
+      ),
+    );
+
+    setSelected((current) =>
+      current?.id === userId ? { ...current, ...updates } : current,
+    );
+  }
+
+  function saveChanges() {
+    if (!selected || isPending) return;
+
+    const selectedUser = selected;
+    const nextRole = role;
+    const nextStatus = status;
+    const nextImageUrl = imageUrl.trim() || null;
+
+    setMessage("");
+    setError("");
 
     startTransition(async () => {
       try {
-        if (editingUser.role === "USER" || editingUser.role === "MEMBER") {
-          if (editingUser.role !== role) {
-            const result = await updateUserRoleAction(editingUser.id, role);
+        if (nextRole !== selectedUser.role) {
+          const result = await updateUserRoleAction(selectedUser.id, nextRole);
 
-            if (!result.success) {
-              setError(result.message ?? "Unable to update role.");
-              return;
-            }
-          }
-        }
-
-        if (editingUser.status !== status) {
-          const result = await updateUserStatusAction(editingUser.id, status);
-
-          if (!result.success) {
-            setError(result.message ?? "Unable to update status.");
+          if (!result?.success) {
+            setError(result?.message || "Failed to update user role.");
             return;
           }
+
+          updateLocalUser(selectedUser.id, {
+            role: nextRole,
+          });
         }
 
-        setUsers((current) =>
-          current.map((user) =>
-            user.id === editingUser.id
-              ? {
-                  ...user,
-                  role:
-                    user.role === "USER" || user.role === "MEMBER"
-                      ? role
-                      : user.role,
-                  status,
-                }
-              : user,
-          ),
-        );
+        if (nextStatus !== selectedUser.status) {
+          const result = await updateUserStatusAction(
+            selectedUser.id,
+            nextStatus,
+          );
 
-        setSelected((current) =>
-          current?.id === editingUser.id
-            ? {
-                ...current,
-                role:
-                  current.role === "USER" || current.role === "MEMBER"
-                    ? role
-                    : current.role,
-                status,
-              }
-            : current,
-        );
+          if (!result?.success) {
+            setError(result?.message || "Failed to update user status.");
+            return;
+          }
 
-        setMessage("Changes saved successfully.");
-        setSelected(null);
-      } catch {
+          updateLocalUser(selectedUser.id, {
+            status: nextStatus,
+          });
+        }
+
+        if (nextImageUrl !== (selectedUser.imageUrl || null)) {
+          const result = await updateUserImageAction(
+            selectedUser.id,
+            nextImageUrl,
+          );
+
+          if (!result?.success) {
+            setError(result?.message || "Failed to update profile image.");
+            return;
+          }
+
+          updateLocalUser(selectedUser.id, {
+            imageUrl: nextImageUrl,
+          });
+        }
+
+        setMessage("User updated successfully.");
+      } catch (saveError) {
+        console.error("saveChanges error:", saveError);
         setError("Something went wrong. Please try again.");
       }
     });
   }
 
-  function handleImageUpload(imageUrl: string, userId: string) {
-    setError("");
-    setMessage("");
-
-    startTransition(async () => {
-      try {
-        const result = await updateUserImageAction(userId, imageUrl);
-
-        if (!result.success) {
-          setError(result.message ?? "Unable to save profile image.");
-          return;
-        }
-
-        setUsers((current) =>
-          current.map((user) =>
-            user.id === userId ? { ...user, imageUrl } : user,
-          ),
-        );
-
-        setSelected((current) =>
-          current?.id === userId ? { ...current, imageUrl } : current,
-        );
-
-        setMessage("Profile image updated successfully.");
-      } catch {
-        setError("Unable to save the profile image. Please try again.");
-      }
-    });
+  function refreshUsers() {
+    window.location.reload();
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 p-3 text-slate-800 sm:p-5">
-      <div className="mx-auto max-w-375 space-y-5">
-        <header className="flex flex-col justify-between gap-3 border-b border-slate-200 pb-4 sm:flex-row sm:items-center">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
-              Administration
-            </p>
-            <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900">
-              User Management
-            </h1>
-            <p className="mt-1 text-sm text-slate-500">
-              Manage user profiles, roles and account status.
-            </p>
-          </div>
+    <div className="min-h-screen bg-slate-50/70 text-slate-800">
+      <div className="mx-auto w-full max-w-7xl space-y-5 px-4 py-5 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-100 text-sky-700">
+              <Users size={21} />
+            </div>
 
-          <div className="flex items-center gap-2 rounded-xl border border-emerald-100 bg-white px-4 py-3">
-            <Users className="size-5 text-emerald-700" />
             <div>
-              <p className="text-xs text-slate-500">Total users</p>
-              <p className="text-xl font-bold">{stats.total}</p>
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+                User Management
+              </h1>
+              <p className="mt-0.5 text-sm text-slate-500">
+                Manage accounts, roles, and access status.
+              </p>
             </div>
           </div>
-        </header>
 
-        <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          {[
-            {
-              label: "All Users",
-              value: stats.total,
-              icon: Users,
-              color: "bg-slate-100 text-slate-700",
-            },
-            {
-              label: "Members",
-              value: stats.members,
-              icon: ShieldCheck,
-              color: "bg-emerald-50 text-emerald-700",
-            },
-            {
-              label: "Regular Users",
-              value: stats.regular,
-              icon: UserRound,
-              color: "bg-sky-50 text-sky-700",
-            },
-            {
-              label: "Active Accounts",
-              value: stats.active,
-              icon: CheckCircle2,
-              color: "bg-green-50 text-green-700",
-            },
-          ].map((item) => {
-            const Icon = item.icon;
+          <button
+            type="button"
+            onClick={refreshUsers}
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-600 shadow-sm transition hover:border-sky-300 hover:text-sky-700"
+          >
+            <RefreshCw size={15} />
+            Refresh
+          </button>
+        </div>
 
-            return (
-              <div
-                key={item.label}
-                className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-sm text-slate-500">{item.label}</span>
-                  <span className={`rounded-lg p-2 ${item.color}`}>
-                    <Icon className="size-4" />
-                  </span>
-                </div>
-                <p className="mt-2 text-2xl font-bold tabular-nums text-slate-900">
-                  {item.value}
-                </p>
-              </div>
-            );
-          })}
-        </section>
+        {/* Statistics */}
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <StatCard
+            label="Total Users"
+            value={stats.total}
+            icon={<Users size={19} />}
+            color="sky"
+          />
+          <StatCard
+            label="Administrators"
+            value={stats.admins}
+            icon={<ShieldCheck size={19} />}
+            color="indigo"
+          />
+          <StatCard
+            label="Chairmen"
+            value={stats.chairmen}
+            icon={<Crown size={19} />}
+            color="amber"
+          />
+          <StatCard
+            label="Active Accounts"
+            value={stats.active}
+            icon={<UserRound size={19} />}
+            color="emerald"
+          />
+        </div>
 
-        {message && (
-          <p className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
-            <CheckCircle2 className="size-4 shrink-0" />
-            {message}
-          </p>
-        )}
+        {/* Search and filters */}
+        <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_180px_160px]">
+            <div className="relative">
+              <Search
+                size={17}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              />
 
-        {error && !selected && (
-          <p className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-            <AlertCircle className="size-4 shrink-0" />
-            {error}
-          </p>
-        )}
-
-        <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div className="flex flex-col gap-3 border-b border-slate-200 p-3 sm:flex-row sm:items-center">
-            <div className="relative min-w-0 flex-1">
-              <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search name, email or phone..."
-                className="h-10 w-full rounded-lg border border-slate-200 pl-9 pr-3 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+                placeholder="Search name, email, phone..."
+                aria-label="Search users"
+                className="h-10 w-full rounded-lg border border-slate-200 bg-white pl-9 pr-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
               />
             </div>
 
             <select
               value={roleFilter}
               onChange={(event) => setRoleFilter(event.target.value)}
-              className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none focus:border-emerald-600"
               aria-label="Filter by role"
+              className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
             >
               <option value="ALL">All roles</option>
-              <option value="ADMIN">Admin</option>
-              <option value="CHAIRMAN">Chairman</option>
-              <option value="USER">User</option>
-              <option value="MEMBER">Member</option>
+              {roleOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
             </select>
 
             <select
               value={statusFilter}
               onChange={(event) => setStatusFilter(event.target.value)}
-              className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none focus:border-emerald-600"
               aria-label="Filter by status"
+              className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
             >
               <option value="ALL">All statuses</option>
               <option value="ACTIVE">Active</option>
@@ -318,181 +328,203 @@ export default function UsersClient({ initialUsers }: Props) {
             </select>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-212.5 text-left text-sm">
-              <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
-                <tr>
-                  <th className="px-4 py-3 font-semibold">User</th>
-                  <th className="px-4 py-3 font-semibold">Contact</th>
-                  <th className="px-4 py-3 font-semibold">Role</th>
-                  <th className="px-4 py-3 font-semibold">Status</th>
-                  <th className="px-4 py-3 font-semibold">Joined</th>
-                  <th className="px-4 py-3 text-right font-semibold">Action</th>
-                </tr>
-              </thead>
+          <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500">
+            <span>
+              Showing{" "}
+              <strong className="font-semibold text-slate-700">
+                {filteredUsers.length}
+              </strong>{" "}
+              of {users.length} users
+            </span>
 
-              <tbody className="divide-y divide-slate-100">
-                {filteredUsers.map((user) => (
-                  <tr key={user.id} className="hover:bg-emerald-50/30">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        {user.imageUrl ? (
-                          <img
-                            src={user.imageUrl}
-                            alt={`${user.name}'s profile`}
-                            className="size-10 rounded-full border border-slate-200 object-cover"
-                          />
-                        ) : (
-                          <div className="flex size-10 items-center justify-center rounded-full bg-emerald-50 font-bold text-emerald-800">
-                            {user.name.charAt(0).toUpperCase()}
-                          </div>
-                        )}
+            {(search || roleFilter !== "ALL" || statusFilter !== "ALL") && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearch("");
+                  setRoleFilter("ALL");
+                  setStatusFilter("ALL");
+                }}
+                className="font-medium text-sky-700 hover:text-sky-900"
+              >
+                Clear filters
+              </button>
+            )}
+          </div>
+        </div>
 
-                        <div>
-                          <p className="font-semibold text-slate-900">
-                            {user.name}
-                          </p>
-                          <p className="text-xs text-slate-500">
-                            {user.designation || "No designation"}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
+        {/* User table */}
+        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+          <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+            <h2 className="text-sm font-semibold text-slate-800">
+              Registered Users
+            </h2>
+            <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600">
+              {filteredUsers.length} records
+            </span>
+          </div>
 
-                    <td className="px-4 py-3">
-                      <p>{user.email}</p>
-                      <p className="mt-1 text-xs text-slate-500">
-                        {user.phone}
-                      </p>
-                    </td>
-
-                    <td className="px-4 py-3">
-                      <span
-                        className={`inline-flex rounded-md px-2.5 py-1 text-xs font-semibold ${
-                          user.role === "MEMBER"
-                            ? "bg-emerald-100 text-emerald-800"
-                            : user.role === "ADMIN"
-                              ? "bg-violet-100 text-violet-800"
-                              : user.role === "CHAIRMAN"
-                                ? "bg-amber-100 text-amber-800"
-                                : "bg-slate-100 text-slate-700"
-                        }`}
-                      >
-                        {user.role}
-                      </span>
-                    </td>
-
-                    <td className="px-4 py-3">
-                      <span
-                        className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-semibold ${
-                          user.status === "ACTIVE"
-                            ? "bg-green-50 text-green-700"
-                            : "bg-red-50 text-red-700"
-                        }`}
-                      >
-                        <span
-                          className={`size-1.5 rounded-full ${
-                            user.status === "ACTIVE"
-                              ? "bg-green-600"
-                              : "bg-red-600"
-                          }`}
-                        />
-                        {user.status}
-                      </span>
-                    </td>
-
-                    <td className="whitespace-nowrap px-4 py-3 text-slate-500">
-                      {new Date(user.createdAt).toLocaleDateString("en-GB")}
-                    </td>
-
-                    <td className="px-4 py-3 text-right">
-                      <button
-                        type="button"
-                        onClick={() => openEditor(user)}
-                        className="inline-flex items-center gap-2 rounded-lg border border-emerald-200 bg-white px-3 py-2 text-xs font-semibold text-emerald-800 hover:bg-emerald-50"
-                      >
-                        <Pencil className="size-3.5" />
-                        Edit
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-
-                {filteredUsers.length === 0 && (
+          {filteredUsers.length === 0 ? (
+            <div className="flex flex-col items-center justify-center px-4 py-14 text-center">
+              <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+                <Search size={21} />
+              </div>
+              <p className="text-sm font-semibold text-slate-700">
+                No users found
+              </p>
+              <p className="mt-1 text-xs text-slate-500">
+                Try changing your search or filters.
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[850px] text-left text-sm">
+                <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                   <tr>
-                    <td
-                      colSpan={6}
-                      className="px-4 py-16 text-center text-slate-500"
-                    >
-                      <Users className="mx-auto mb-3 size-8 text-slate-300" />
-                      No users found.
-                    </td>
+                    <th className="px-4 py-3 font-semibold">User</th>
+                    <th className="px-4 py-3 font-semibold">Contact</th>
+                    <th className="px-4 py-3 font-semibold">Role</th>
+                    <th className="px-4 py-3 font-semibold">Status</th>
+                    <th className="px-4 py-3 font-semibold">Joined</th>
+                    <th className="px-4 py-3 text-right font-semibold">
+                      Action
+                    </th>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                </thead>
 
-          <div className="border-t border-slate-200 px-4 py-3 text-xs text-slate-500">
-            Showing {filteredUsers.length} of {users.length} users
-          </div>
-        </section>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredUsers.map((user) => (
+                    <tr key={user.id} className="transition hover:bg-sky-50/40">
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <UserAvatar
+                            name={user.name}
+                            imageUrl={user.imageUrl}
+                          />
+
+                          <div className="min-w-0">
+                            <p className="max-w-[220px] truncate font-semibold text-slate-800">
+                              {user.name}
+                            </p>
+                            {user.designation && (
+                              <p className="mt-0.5 max-w-[220px] truncate text-xs text-slate-500">
+                                {user.designation}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className="px-4 py-3">
+                        <p className="text-slate-700">{user.email}</p>
+                        <p className="mt-0.5 text-xs text-slate-500">
+                          {user.phone}
+                        </p>
+                      </td>
+
+                      <td className="px-4 py-3">
+                        <span
+                          className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${roleStyles[user.role]}`}
+                        >
+                          {user.role === "CHAIRMAN" && (
+                            <Crown size={12} className="mr-1" />
+                          )}
+                          {roleOptions.find(
+                            (option) => option.value === user.role,
+                          )?.label ?? user.role}
+                        </span>
+                      </td>
+
+                      <td className="px-4 py-3">
+                        <span
+                          className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-semibold ${
+                            user.status === "ACTIVE"
+                              ? "bg-emerald-50 text-emerald-700"
+                              : "bg-rose-50 text-rose-700"
+                          }`}
+                        >
+                          <span
+                            className={`h-1.5 w-1.5 rounded-full ${
+                              user.status === "ACTIVE"
+                                ? "bg-emerald-500"
+                                : "bg-rose-500"
+                            }`}
+                          />
+                          {user.status === "ACTIVE" ? "Active" : "Inactive"}
+                        </span>
+                      </td>
+
+                      <td className="whitespace-nowrap px-4 py-3 text-xs text-slate-500">
+                        {formatDate(user.createdAt)}
+                      </td>
+
+                      <td className="px-4 py-3 text-right">
+                        <button
+                          type="button"
+                          onClick={() => openEditor(user)}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 transition hover:border-sky-300 hover:bg-sky-50 hover:text-sky-700"
+                        >
+                          <Pencil size={13} />
+                          Edit
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
 
+      {/* Edit user modal */}
       {selected && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/60 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/40 p-4 backdrop-blur-[2px]"
           onMouseDown={(event) => {
-            if (event.target === event.currentTarget && !busy) {
-              setSelected(null);
+            if (event.target === event.currentTarget) {
+              closeEditor();
             }
           }}
         >
-          <section
+          <div
             role="dialog"
             aria-modal="true"
             aria-labelledby="edit-user-title"
-            className="my-auto w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl"
+            className="my-auto w-full max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
           >
-            <header className="flex items-center justify-between bg-emerald-950 px-5 py-4 text-white">
-              <div className="flex items-center gap-3">
-                <span className="rounded-lg bg-white/10 p-2">
-                  <UserCog className="size-5" />
-                </span>
-                <div>
-                  <h2 id="edit-user-title" className="font-semibold">
-                    Update User
-                  </h2>
-                  <p className="text-xs text-emerald-100">
-                    Profile, role and account status
-                  </p>
-                </div>
+            <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+              <div>
+                <h2
+                  id="edit-user-title"
+                  className="text-base font-bold text-slate-900"
+                >
+                  Edit User
+                </h2>
+                <p className="mt-0.5 text-xs text-slate-500">
+                  Update role, status, or profile image.
+                </p>
               </div>
 
               <button
                 type="button"
-                onClick={() => setSelected(null)}
-                disabled={busy}
-                aria-label="Close popup"
-                className="rounded-lg p-2 hover:bg-white/10 disabled:opacity-50"
+                onClick={closeEditor}
+                disabled={isPending}
+                aria-label="Close"
+                className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 disabled:opacity-50"
               >
-                <X className="size-5" />
+                <X size={18} />
               </button>
-            </header>
+            </div>
 
             <div className="space-y-5 p-5">
-              <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
-                {selected.imageUrl ? (
-                  <img
-                    src={selected.imageUrl}
-                    alt={`${selected.name}'s profile`}
-                    className="size-12 rounded-full border border-slate-200 object-cover"
-                  />
-                ) : (
-                  <div className="flex size-12 items-center justify-center rounded-full bg-emerald-100 text-lg font-bold text-emerald-800">
-                    {selected.name.charAt(0).toUpperCase()}
-                  </div>
-                )}
+              {/* Profile */}
+              <div className="flex items-center gap-3">
+                <UserAvatar
+                  name={selected.name}
+                  imageUrl={imageUrl.trim() || null}
+                  size="large"
+                />
 
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-semibold text-slate-900">
@@ -502,67 +534,65 @@ export default function UsersClient({ initialUsers }: Props) {
                     {selected.email}
                   </p>
                   <p className="mt-1 text-xs text-slate-400">
-                    Current role: {selected.role}
+                    {selected.phone}
                   </p>
                 </div>
               </div>
 
-              <div className="space-y-3 rounded-xl border border-emerald-100 bg-emerald-50/50 p-4">
-                <div className="flex items-center gap-2">
-                  <ImagePlus className="size-4 text-emerald-700" />
-                  <div>
-                    <p className="text-sm font-semibold text-slate-800">
-                      Profile Image
-                    </p>
-                    <p className="mt-0.5 text-xs text-slate-500">
-                      Image only · Maximum 4 MB
-                    </p>
+              {/* Profile image upload */}
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-slate-700">
+                  Profile Image
+                </label>
+
+                <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-3">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                      <ImagePlus size={16} />
+                      Upload a new profile image
+                    </div>
+
+                    <UploadButton
+                      endpoint="imageUploader"
+                      onClientUploadComplete={(res) => {
+                        const uploadedUrl = res?.[0]?.ufsUrl;
+
+                        if (uploadedUrl) {
+                          setImageUrl(uploadedUrl);
+                          setMessage("");
+                          setError("");
+                        } else {
+                          setError("Could not get the uploaded image URL.");
+                        }
+                      }}
+                      onUploadError={(uploadError) => {
+                        setError(uploadError.message);
+                      }}
+                      appearance={{
+                        button:
+                          "h-9 rounded-lg bg-sky-600 px-3 text-xs font-semibold text-white after:bg-sky-700",
+                        allowedContent: "text-[10px] text-slate-500",
+                      }}
+                    />
                   </div>
+
+                  {imageUrl && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setImageUrl("");
+                        setMessage("");
+                        setError("");
+                      }}
+                      className="mt-2 text-xs font-medium text-rose-600 hover:text-rose-700"
+                    >
+                      Remove profile image
+                    </button>
+                  )}
                 </div>
-
-                <UploadButton
-                  endpoint="imageUploader"
-                  appearance={{
-                    button:
-                      "h-10 rounded-lg border-0 bg-green-400 px-4 text-sm font-semibold text-emerald-950 shadow-sm transition hover:bg-green-500 ut-ready:bg-green-400 ut-uploading:cursor-not-allowed ut-uploading:bg-green-300",
-                    allowedContent: "text-xs text-slate-500",
-                  }}
-                  onUploadBegin={() => {
-                    setUploadingImage(true);
-                    setError("");
-                    setMessage("");
-                  }}
-                  onClientUploadComplete={(files: UploadedImageFile[]) => {
-                    setUploadingImage(false);
-
-                    const imageUrl = files[0]?.url;
-
-                    if (!imageUrl || !selected) {
-                      setError("The uploaded image URL was not returned.");
-                      return;
-                    }
-
-                    handleImageUpload(imageUrl, selected.id);
-                  }}
-                  onUploadError={(uploadError: UploadErrorInfo) => {
-                    setUploadingImage(false);
-                    setError(uploadError.message || "Image upload failed.");
-                  }}
-                />
-
-                {uploadingImage && (
-                  <p className="flex items-center gap-2 text-xs font-medium text-emerald-800">
-                    <LoaderCircle className="size-3.5 animate-spin" />
-                    Uploading image...
-                  </p>
-                )}
-
-                <p className="text-xs leading-5 text-slate-500">
-                  Your profile photo will be saved automatically after the
-                  upload completes.
-                </p>
               </div>
 
+              {/* Role */}
               <div>
                 <label
                   htmlFor="user-role"
@@ -571,25 +601,26 @@ export default function UsersClient({ initialUsers }: Props) {
                   User Role
                 </label>
 
-                {selected.role === "USER" || selected.role === "MEMBER" ? (
-                  <select
-                    id="user-role"
-                    value={role}
-                    onChange={(event) =>
-                      setRole(event.target.value as "USER" | "MEMBER")
-                    }
-                    className="h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                  >
-                    <option value="USER">USER — Regular user</option>
-                    <option value="MEMBER">MEMBER — Organization member</option>
-                  </select>
-                ) : (
-                  <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
-                    {selected.role} role is protected on this page.
-                  </div>
-                )}
+                <select
+                  id="user-role"
+                  value={role}
+                  onChange={(event) => setRole(event.target.value as UserRole)}
+                  disabled={isPending}
+                  className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100 disabled:bg-slate-50"
+                >
+                  {roleOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+
+                <p className="mt-1.5 text-xs text-slate-500">
+                  Admins can promote existing users to Admin or Chairman.
+                </p>
               </div>
 
+              {/* Status */}
               <div>
                 <label
                   htmlFor="user-status"
@@ -597,59 +628,142 @@ export default function UsersClient({ initialUsers }: Props) {
                 >
                   Account Status
                 </label>
+
                 <select
                   id="user-status"
                   value={status}
                   onChange={(event) =>
-                    setStatus(event.target.value as "ACTIVE" | "INACTIVE")
+                    setStatus(event.target.value as UserStatus)
                   }
-                  className="h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+                  disabled={isPending}
+                  className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100 disabled:bg-slate-50"
                 >
-                  <option value="ACTIVE">ACTIVE — Account enabled</option>
-                  <option value="INACTIVE">INACTIVE — Account disabled</option>
+                  <option value="ACTIVE">Active</option>
+                  <option value="INACTIVE">Inactive</option>
                 </select>
               </div>
 
-              <div className="flex items-start gap-2 rounded-lg bg-slate-50 p-3 text-xs leading-5 text-slate-600">
-                <AlertCircle className="mt-0.5 size-4 shrink-0 text-slate-500" />
-                Changing a user's status may prevent them from signing in.
-              </div>
-
               {error && (
-                <p className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-                  <AlertCircle className="mt-0.5 size-4 shrink-0" />
+                <div
+                  role="alert"
+                  className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm text-rose-700"
+                >
                   {error}
-                </p>
+                </div>
               )}
 
-              <div className="flex gap-3 border-t border-slate-100 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setSelected(null)}
-                  disabled={busy}
-                  className="h-11 flex-1 rounded-lg border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+              {message && (
+                <div
+                  role="status"
+                  className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-sm text-emerald-700"
                 >
-                  Cancel
-                </button>
-
-                <button
-                  type="button"
-                  onClick={saveChanges}
-                  disabled={busy}
-                  className="flex h-11 flex-1 items-center justify-center gap-2 rounded-lg bg-emerald-800 px-4 text-sm font-semibold text-white hover:bg-emerald-900 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {isPending ? (
-                    <LoaderCircle className="size-4 animate-spin" />
-                  ) : (
-                    <CheckCircle2 className="size-4" />
-                  )}
-                  {isPending ? "Saving..." : "Save Changes"}
-                </button>
-              </div>
+                  <Check size={16} />
+                  {message}
+                </div>
+              )}
             </div>
-          </section>
+
+            <div className="flex flex-col-reverse gap-2 border-t border-slate-100 bg-slate-50/70 px-5 py-4 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={closeEditor}
+                disabled={isPending}
+                className="inline-flex h-10 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 disabled:opacity-50"
+              >
+                Close
+              </button>
+
+              <button
+                type="button"
+                onClick={saveChanges}
+                disabled={isPending}
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-sky-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isPending ? (
+                  <>
+                    <LoaderCircle size={16} className="animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Check size={16} />
+                    Save Changes
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       )}
-    </main>
+    </div>
+  );
+}
+
+function UserAvatar({
+  name,
+  imageUrl,
+  size = "normal",
+}: {
+  name: string;
+  imageUrl: string | null;
+  size?: "normal" | "large";
+}) {
+  const dimensions =
+    size === "large" ? "h-14 w-14 text-base" : "h-10 w-10 text-xs";
+
+  return (
+    <div
+      className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-sky-100 font-bold text-sky-700 ${dimensions}`}
+    >
+      {imageUrl ? (
+        <Image
+          src={imageUrl}
+          alt={name}
+          fill
+          sizes={size === "large" ? "56px" : "40px"}
+          className="object-cover"
+        />
+      ) : (
+        getInitials(name)
+      )}
+    </div>
+  );
+}
+
+function StatCard({
+  label,
+  value,
+  icon,
+  color,
+}: {
+  label: string;
+  value: number;
+  icon: ReactNode;
+  color: "sky" | "indigo" | "amber" | "emerald";
+}) {
+  const colors = {
+    sky: "bg-sky-50 text-sky-700",
+    indigo: "bg-indigo-50 text-indigo-700",
+    amber: "bg-amber-50 text-amber-700",
+    emerald: "bg-emerald-50 text-emerald-700",
+  };
+
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <p className="text-xs font-medium text-slate-500">{label}</p>
+          <p className="mt-2 text-2xl font-bold tracking-tight text-slate-900">
+            {value.toLocaleString()}
+          </p>
+        </div>
+
+        <div
+          className={`flex h-9 w-9 items-center justify-center rounded-lg ${colors[color]}`}
+        >
+          {icon}
+        </div>
+      </div>
+    </div>
   );
 }

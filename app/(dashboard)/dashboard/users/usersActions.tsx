@@ -1,11 +1,10 @@
-
 "use server";
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/app/utils/db";
-import { getCurrentUser, requireAdmin } from "@/app/utils/auth";
+import { requireAdmin } from "@/app/utils/auth";
 
-type EditableRole = "USER" | "MEMBER";
+type EditableRole = "ADMIN" | "USER" | "MEMBER" | "CHAIRMAN";
 type EditableStatus = "ACTIVE" | "INACTIVE";
 
 type UserActionResult = {
@@ -20,8 +19,8 @@ type GetUsersResult = {
     name: string;
     email: string;
     phone: string;
-    role: "ADMIN" | "USER" | "MEMBER" | "CHAIRMAN";
-    status: "ACTIVE" | "INACTIVE";
+    role: EditableRole;
+    status: EditableStatus;
     designation: string | null;
     imageUrl: string | null;
     startDate: Date | null;
@@ -34,7 +33,6 @@ type GetUsersResult = {
 
 /**
  * Verify that the current user is an active administrator.
- * Uses the existing authentication and hra_session cookie.
  */
 async function authorizeAdmin() {
   const admin = await requireAdmin();
@@ -48,7 +46,7 @@ async function authorizeAdmin() {
 
 /**
  * Get all users.
- * Only administrators can access the complete user list.
+ * Only active administrators can access the complete user list.
  */
 export async function getAllUsersAction(): Promise<GetUsersResult> {
   try {
@@ -92,15 +90,15 @@ export async function getAllUsersAction(): Promise<GetUsersResult> {
 
 /**
  * Update a user's role.
- * Only USER and MEMBER roles can be changed through this action.
- * ADMIN and CHAIRMAN roles are protected.
+ * Active administrators can assign any supported role to another account.
+ * Administrators cannot change their own role.
  */
 export async function updateUserRoleAction(
   userId: string,
   role: EditableRole,
 ): Promise<UserActionResult> {
   try {
-    await authorizeAdmin();
+    const admin = await authorizeAdmin();
 
     if (!userId || typeof userId !== "string") {
       return {
@@ -109,17 +107,29 @@ export async function updateUserRoleAction(
       };
     }
 
-    if (role !== "USER" && role !== "MEMBER") {
+    const allowedRoles: EditableRole[] = [
+      "ADMIN",
+      "USER",
+      "MEMBER",
+      "CHAIRMAN",
+    ];
+
+    if (!allowedRoles.includes(role)) {
       return {
         success: false,
-        message: "Invalid role. Select USER or MEMBER.",
+        message: "Invalid role. Select a valid user role.",
+      };
+    }
+
+    if (admin.id === userId) {
+      return {
+        success: false,
+        message: "You cannot change your own role.",
       };
     }
 
     const targetUser = await prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
+      where: { id: userId },
       select: {
         id: true,
         name: true,
@@ -134,13 +144,6 @@ export async function updateUserRoleAction(
       };
     }
 
-    if (targetUser.role !== "USER" && targetUser.role !== "MEMBER") {
-      return {
-        success: false,
-        message: "ADMIN and CHAIRMAN roles cannot be changed here.",
-      };
-    }
-
     if (targetUser.role === role) {
       return {
         success: true,
@@ -149,12 +152,8 @@ export async function updateUserRoleAction(
     }
 
     await prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        role,
-      },
+      where: { id: userId },
+      data: { role },
     });
 
     revalidatePath("/dashboard/users");
@@ -168,7 +167,8 @@ export async function updateUserRoleAction(
 
     return {
       success: false,
-      message: "Unable to update the user role. Please verify administrator access.",
+      message:
+        "Unable to update the user role. Please verify administrator access.",
     };
   }
 }
@@ -206,9 +206,7 @@ export async function updateUserStatusAction(
     }
 
     const targetUser = await prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
+      where: { id: userId },
       select: {
         id: true,
         name: true,
@@ -231,12 +229,8 @@ export async function updateUserStatusAction(
     }
 
     await prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        status,
-      },
+      where: { id: userId },
+      data: { status },
     });
 
     revalidatePath("/dashboard/users");
@@ -253,26 +247,21 @@ export async function updateUserStatusAction(
 
     return {
       success: false,
-      message: "Unable to update account status. Please verify administrator access.",
+      message:
+        "Unable to update account status. Please verify administrator access.",
     };
   }
 }
 
-
-
+/**
+ * Update a user's profile image.
+ */
 export async function updateUserImageAction(
   userId: string,
-  imageUrl: string,
-) {
+  imageUrl: string | null,
+): Promise<UserActionResult> {
   try {
-    const currentUser = await getCurrentUser();
-
-    if (!currentUser || currentUser.role !== "ADMIN") {
-      return {
-        success: false,
-        message: "Unauthorized. Admin access is required.",
-      };
-    }
+    await authorizeAdmin();
 
     if (!userId || !imageUrl) {
       return {
@@ -281,10 +270,18 @@ export async function updateUserImageAction(
       };
     }
 
-    if (
-      !imageUrl.startsWith("https://") ||
-      !URL.canParse(imageUrl)
-    ) {
+    let parsedUrl: URL;
+
+    try {
+      parsedUrl = new URL(imageUrl);
+    } catch {
+      return {
+        success: false,
+        message: "Please provide a valid HTTPS image URL.",
+      };
+    }
+
+    if (parsedUrl.protocol !== "https:") {
       return {
         success: false,
         message: "Please provide a valid HTTPS image URL.",
