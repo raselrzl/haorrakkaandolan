@@ -124,3 +124,32 @@ model ContactMessage {
   @@index([createdAt])
   @@index([reason, createdAt])
 }
+
+
+model Constitution {
+  id                  String   @id @default(cuid())
+
+  // Bilingual document information
+  titleBn             String   @default("গঠনতন্ত্র")
+  titleEn             String   @default("Constitution")
+  descriptionBn       String?  @db.Text
+  descriptionEn       String?  @db.Text
+
+  // Bilingual PDF documents
+  pdfUrlBn            String?
+  pdfUrlEn            String?
+
+  // Publication and update dates
+  publishedAt         DateTime @default(now())
+  lastUpdatedAt       DateTime @updatedAt
+
+  // Admin and publication status
+  uploadedById        String?
+  status              Status   @default(ACTIVE)
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([status, publishedAt])
+  @@index([updatedAt])
+}

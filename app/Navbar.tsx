@@ -13,6 +13,7 @@ const navLinks = [
   { label: "Mission & Vision", href: "/mission-and-vision" },
   { label: "Activities", href: "/activities" },
   { label: "Law & Enforcement", href: "/law" },
+  { label: "Constitution", href: "/constitution" },
 ];
 
 export default function Navbar() {

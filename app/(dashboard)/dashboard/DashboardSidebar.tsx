@@ -16,6 +16,7 @@ import {
   PanelLeftClose,
   FileText,
   Inbox,
+  BookOpen,
 } from "lucide-react";
 
 type NavigationItem = {
@@ -62,6 +63,11 @@ const navigation: NavigationGroup[] = [
         label: "News & Activities",
         href: "/dashboard/newactivity",
         icon: FileText,
+      },
+      {
+        label: "Constitution / গঠনতন্ত্র",
+        href: "/dashboard/constitution",
+        icon: BookOpen,
       },
       {
         label: "Inbox",
@@ -144,7 +150,6 @@ export default function DashboardSidebar() {
             <div className="space-y-1">
               {group.items.map((item) => {
                 const active = isPathActive(activePathname, item.href);
-
                 const Icon = item.icon;
 
                 return (
