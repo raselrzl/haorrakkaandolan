@@ -201,11 +201,30 @@ export default function DashboardSidebar({
       {/* Mobile menu button */}
       <button
         type="button"
-        onClick={() => setMobileOpen(true)}
-        aria-label="Open navigation menu"
-        className="fixed left-4 top-4 z-40 inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50 lg:hidden"
+        onClick={() => setMobileOpen((open) => !open)}
+        aria-label={
+          mobileOpen ? "Close navigation menu" : "Open navigation menu"
+        }
+        className="group fixed bottom-4 right-4 z-[60] inline-flex h-12 w-12 items-center justify-center rounded-full border border-green-700 bg-green-800 text-white shadow-lg shadow-green-950/30 transition-all duration-300 hover:scale-110 hover:bg-green-900 active:scale-95 lg:hidden"
       >
-        <Menu size={20} />
+        <span
+          className={`absolute inset-0 rounded-full border-2 border-green-500 ${
+            mobileOpen ? "animate-pulse opacity-40" : "animate-ping opacity-30"
+          }`}
+        />
+        <span className="absolute inset-[-5px] rounded-full border border-green-500/50 animate-pulse" />
+
+        {mobileOpen ? (
+          <X
+            size={22}
+            className="relative z-10 rotate-90 transition-transform duration-300"
+          />
+        ) : (
+          <Menu
+            size={22}
+            className="relative z-10 transition-transform duration-300 group-hover:rotate-12"
+          />
+        )}
       </button>
 
       {/* Desktop sidebar */}
