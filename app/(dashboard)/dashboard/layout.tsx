@@ -1,4 +1,3 @@
-
 import { Suspense, type ReactNode } from "react";
 import Link from "next/link";
 import { requireAdmin } from "@/app/utils/auth";
@@ -24,11 +23,7 @@ function DashboardLoading() {
   );
 }
 
-async function DashboardContent({
-  children,
-}: {
-  children: ReactNode;
-}) {
+async function DashboardContent({ children }: { children: ReactNode }) {
   const user = await requireAdmin();
 
   return (
@@ -52,17 +47,17 @@ async function DashboardContent({
               <p className="max-w-48 truncate text-sm font-semibold">
                 {user.name}
               </p>
-              <p className="text-xs text-emerald-200">
+              {/*        <p className="text-xs text-emerald-200">
                 Administrator
-              </p>
+              </p> */}
             </div>
 
-            <Link
+            {/*      <Link
               href="/account"
               className="rounded-lg border border-white/15 px-3 py-2 text-sm font-medium text-emerald-50 transition hover:bg-white/10"
             >
               My account
-            </Link>
+            </Link> */}
 
             <form action={logoutAction}>
               <button
@@ -79,19 +74,13 @@ async function DashboardContent({
       <div className="mx-auto flex max-w-[1600px] items-start">
         <DashboardSidebar />
 
-        <main className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
-          {children}
-        </main>
+        <main className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>
   );
 }
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <Suspense fallback={<DashboardLoading />}>
       <DashboardContent>{children}</DashboardContent>
