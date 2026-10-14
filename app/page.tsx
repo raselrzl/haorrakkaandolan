@@ -7,6 +7,7 @@ import HaorActivities from "./HaorActivities";
 import RiverActivities from "./RiverActivities";
 import { prisma } from "./utils/db";
 import FloatingContact from "./FloatingContact";
+import Footer from "./Footer";
 
 const photos = {
   wetland:
@@ -165,6 +166,7 @@ export default function Home() {
         <HomepageSections />
       </Suspense>
        <FloatingContact />
+       <Footer />
     </main>
   );
 }

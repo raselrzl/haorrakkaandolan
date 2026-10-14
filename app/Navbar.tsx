@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -11,6 +10,7 @@ import {
   ArrowUpRight,
   LogIn,
   ClipboardList,
+  Heart,
 } from "lucide-react";
 
 const navLinks = [
@@ -52,7 +52,7 @@ export default function Navbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-9999 w-full border-b border-slate-200 bg-white text-slate-800 shadow-sm">
       {/* Main navigation */}
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
+      <div className="mx-auto flex h-16 max-w-full items-center justify-between gap-3 px-4 sm:px-6">
         {/* Logo and identity */}
         <Link
           href="/"
@@ -112,24 +112,42 @@ export default function Navbar() {
         </nav>
 
         {/* Desktop actions */}
-        <div className="hidden shrink-0 items-center gap-3 lg:flex">
+        <div className="hidden shrink-0 items-center gap-2 xl:gap-3 lg:flex">
+          {/* Donations */}
+          <Link
+            href="/donations"
+            aria-current={isActive("/donations") ? "page" : undefined}
+            className={`inline-flex h-10 items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-3 text-[12px] font-semibold text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 xl:px-4 xl:text-[13px] ${
+              isActive("/donations")
+                ? "bg-red-800"
+                : "bg-red-600 hover:bg-red-700"
+            }`}
+          >
+            <Heart size={15} />
+            Donations
+          </Link>
+
+          {/* Login */}
           <Link
             href="/login"
             aria-current={isActive("/login") ? "page" : undefined}
-            className={`inline-flex h-10 items-center justify-center rounded-md bg-green-400 px-5 text-[12px] font-semibold text-white transition-colors hover:bg-green-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2 xl:px-6 xl:text-[13px] ${
-              isActive("/login") ? "bg-green-800" : ""
+            className={`inline-flex h-10 items-center justify-center rounded-md px-4 text-[12px] font-semibold text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2 xl:px-5 xl:text-[13px] ${
+              isActive("/login")
+                ? "bg-green-800"
+                : "bg-green-600 hover:bg-green-800"
             }`}
           >
             Login
           </Link>
 
+          {/* Get involved */}
           <Link
             href="/contact"
             aria-current={isActive("/contact") ? "page" : undefined}
-            className={`group inline-flex h-10 items-center justify-center gap-2 rounded-full border px-4 text-[12px] font-semibold transition-colors xl:text-[13px] ${
+            className={`group inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-full border px-3 text-[12px] font-semibold transition-colors xl:px-4 xl:text-[13px] ${
               isActive("/contact")
-                ? "bg-[#123b2b] text-white"
-                : "text-[#123b2b] hover:bg-emerald-50"
+                ? "border-[#123b2b] bg-[#123b2b] text-white"
+                : "border-slate-200 text-[#123b2b] hover:border-emerald-200 hover:bg-emerald-50"
             }`}
           >
             Get Involved
@@ -167,6 +185,7 @@ export default function Navbar() {
       <div
         id="mobile-navigation"
         aria-hidden={!menuOpen}
+        inert={!menuOpen}
         className={`fixed inset-x-0 bottom-0 top-16 z-10000 overflow-y-auto border-t border-slate-100 bg-white transition-[opacity,visibility,transform] duration-200 lg:hidden ${
           menuOpen
             ? "visible translate-y-0 opacity-100"
@@ -194,10 +213,9 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  tabIndex={menuOpen ? 0 : -1}
                   aria-current={active ? "page" : undefined}
                   onClick={() => setMenuOpen(false)}
-                  className={`flex min-h-12.25 items-center justify-between border-b border-slate-100 px-2 text-sm transition-colors ${
+                  className={`flex min-h-12 items-center justify-between border-b border-slate-100 px-2 text-sm transition-colors ${
                     active
                       ? "font-semibold text-[#176b45]"
                       : "font-medium text-slate-600 hover:text-[#176b45]"
@@ -221,8 +239,21 @@ export default function Navbar() {
           {/* Mobile actions */}
           <div className="mt-5 grid grid-cols-2 gap-3">
             <Link
+              href="/donations"
+              aria-current={isActive("/donations") ? "page" : undefined}
+              onClick={() => setMenuOpen(false)}
+              className={`col-span-2 flex min-h-11 items-center justify-center gap-2 rounded-full px-3 py-3 text-sm font-semibold text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 ${
+                isActive("/donations")
+                  ? "bg-red-800"
+                  : "bg-red-600 hover:bg-red-700"
+              }`}
+            >
+              <Heart size={17} />
+              Donations
+            </Link>
+
+            <Link
               href="/login"
-              tabIndex={menuOpen ? 0 : -1}
               aria-current={isActive("/login") ? "page" : undefined}
               onClick={() => setMenuOpen(false)}
               className={`flex min-h-11 items-center justify-center gap-2 rounded-full border border-slate-200 px-3 py-3 text-sm font-semibold transition-colors ${
@@ -237,13 +268,30 @@ export default function Navbar() {
 
             <Link
               href="/contact"
-              tabIndex={menuOpen ? 0 : -1}
               aria-current={isActive("/contact") ? "page" : undefined}
               onClick={() => setMenuOpen(false)}
               className="flex min-h-11 items-center justify-center gap-1.5 rounded-full bg-[#176b45] px-3 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#123b2b]"
             >
               Get Involved
               <ArrowUpRight size={15} />
+            </Link>
+          </div>
+
+          {/* Legal links */}
+          <div className="mt-5 flex flex-wrap justify-center gap-x-4 gap-y-2 border-t border-slate-100 pt-4 text-xs text-slate-500">
+            <Link
+              href="/privacy-policy"
+              onClick={() => setMenuOpen(false)}
+              className="transition-colors hover:text-[#176b45]"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href="/cookie-policy"
+              onClick={() => setMenuOpen(false)}
+              className="transition-colors hover:text-[#176b45]"
+            >
+              Cookie Policy
             </Link>
           </div>
         </nav>
