@@ -237,7 +237,7 @@ export default function DonationAccountsClient({ accounts }: Props) {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-2012.5 border-collapse text-left">
+            <table className="w-full min-w-212.5 border-collapse text-left">
               <thead>
                 <tr className="bg-slate-50 text-xs text-slate-600">
                   <th className="w-14 px-4 py-3 text-center font-semibold">#</th>
