@@ -153,3 +153,45 @@ model Constitution {
   @@index([status, publishedAt])
   @@index([updatedAt])
 }
+
+
+model Demand {
+  id            String        @id @default(cuid())
+  titleBn       String        @default("দাবিসমূহ")
+  titleEn       String        @default("Our Demands")
+  descriptionBn String?       @db.Text
+  descriptionEn String?       @db.Text
+
+  // Publication date and automatic update timestamp
+  publishedAt   DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  status        Status        @default(ACTIVE)
+  createdById   String?
+  points        DemandPoint[]
+
+  createdAt     DateTime      @default(now())
+
+  @@index([status, publishedAt])
+  @@index([updatedAt])
+}
+
+model DemandPoint {
+  id            String   @id @default(cuid())
+  demandId      String
+
+  pointNumber   Int
+
+  headingBn     String
+  headingEn     String
+  descriptionBn String   @db.Text
+  descriptionEn String   @db.Text
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  demand Demand @relation(fields: [demandId],references: [id], onDelete: Cascade)
+
+  @@unique([demandId, pointNumber])
+  @@index([demandId, pointNumber])
+}

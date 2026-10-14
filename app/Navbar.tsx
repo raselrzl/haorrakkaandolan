@@ -5,13 +5,20 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, ArrowUpRight, LogIn } from "lucide-react";
+import {
+  Menu,
+  X,
+  ArrowUpRight,
+  LogIn,
+  ClipboardList,
+} from "lucide-react";
 
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about-us" },
   { label: "Mission & Vision", href: "/mission-and-vision" },
   { label: "Activities", href: "/activities" },
+  { label: "Demands", href: "/demands" },
   { label: "Law & Enforcement", href: "/law" },
   { label: "Constitution", href: "/constitution" },
 ];
@@ -93,6 +100,7 @@ export default function Navbar() {
                 }`}
               >
                 {link.label}
+
                 <span
                   className={`absolute inset-x-2 bottom-1 h-0.5 rounded-full bg-[#176b45] transition-transform duration-200 xl:inset-x-3 ${
                     active ? "scale-x-100" : "scale-x-0"
@@ -145,7 +153,7 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile backdrop: begins exactly below the 64px header */}
+      {/* Mobile backdrop */}
       {menuOpen && (
         <button
           type="button"
@@ -155,7 +163,7 @@ export default function Navbar() {
         />
       )}
 
-      {/* Mobile navigation: attached directly to the header */}
+      {/* Mobile navigation */}
       <div
         id="mobile-navigation"
         aria-hidden={!menuOpen}
@@ -195,7 +203,13 @@ export default function Navbar() {
                       : "font-medium text-slate-600 hover:text-[#176b45]"
                   }`}
                 >
-                  {link.label}
+                  <span className="flex items-center gap-2.5">
+                    {link.href === "/demands" && (
+                      <ClipboardList size={17} />
+                    )}
+                    {link.label}
+                  </span>
+
                   {active && (
                     <span className="h-1.5 w-1.5 rounded-full bg-[#176b45]" />
                   )}
