@@ -171,7 +171,7 @@ async function AccountContent() {
                     FULL NAME
                   </p>
 
-                  <h3 className="mt-1 break-words text-lg font-bold leading-snug text-slate-900 sm:text-xl">
+                  <h3 className="mt-1 wrap-break-words text-lg font-bold leading-snug text-slate-900 sm:text-xl">
                     {user.name}
                   </h3>
 
@@ -252,7 +252,7 @@ async function AccountContent() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs text-slate-500">Full name</p>
-                  <p className="mt-1 break-words text-sm font-semibold text-slate-900">
+                  <p className="mt-1 wrap-break-words text-sm font-semibold text-slate-900">
                     {user.name}
                   </p>
                 </div>
@@ -264,7 +264,7 @@ async function AccountContent() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs text-slate-500">Email address</p>
-                  <p className="mt-1 break-words text-sm font-medium text-slate-800">
+                  <p className="mt-1 wrap-break-words text-sm font-medium text-slate-800">
                     {user.email || "Not provided"}
                   </p>
                 </div>
@@ -276,7 +276,7 @@ async function AccountContent() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs text-slate-500">Phone number</p>
-                  <p className="mt-1 break-words text-sm font-medium text-slate-800">
+                  <p className="mt-1 wrap-break-words text-sm font-medium text-slate-800">
                     {user.phone || "Not provided"}
                   </p>
                 </div>

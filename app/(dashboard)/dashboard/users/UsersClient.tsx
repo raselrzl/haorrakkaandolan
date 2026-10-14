@@ -378,7 +378,7 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[850px] text-left text-sm">
+              <table className="w-full min-w-2012.5 text-left text-sm">
                 <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                   <tr>
                     <th className="px-4 py-3 font-semibold">User</th>
@@ -403,11 +403,11 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
                           />
 
                           <div className="min-w-0">
-                            <p className="max-w-[220px] truncate font-semibold text-slate-800">
+                            <p className="max-w-55 truncate font-semibold text-slate-800">
                               {user.name}
                             </p>
                             {user.designation && (
-                              <p className="mt-0.5 max-w-[220px] truncate text-xs text-slate-500">
+                              <p className="mt-0.5 max-w-55 truncate text-xs text-slate-500">
                                 {user.designation}
                               </p>
                             )}

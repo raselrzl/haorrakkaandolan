@@ -77,7 +77,7 @@ export default function MissionVisionPage() {
       <Navbar />
 
       {/* HERO */}
-      <section className="relative isolate flex min-h-[440px] items-center justify-center overflow-hidden bg-emerald-950 sm:min-h-[500px]">
+      <section className="relative isolate flex min-h-110 items-center justify-center overflow-hidden bg-emerald-950 sm:min-h-125">
         <Image
           src="/monu5.jpg"
           alt={

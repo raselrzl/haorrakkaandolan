@@ -284,7 +284,7 @@ export default function ActivitiesPage() {
             </div>
 
             {/* Horizontally Scrollable Filters */}
-            <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto pb-1 [scrollbar-width:thin] sm:flex-1">
+            <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin sm:flex-1">
               {filters.map((option) => (
                 <button
                   key={option.value}

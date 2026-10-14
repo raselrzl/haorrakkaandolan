@@ -42,7 +42,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-[9999] w-full border-b border-slate-200 bg-white text-slate-800 shadow-sm">
+    <header className="fixed inset-x-0 top-0 z-9999 w-full border-b border-slate-200 bg-white text-slate-800 shadow-sm">
       {/* Main navigation */}
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
         {/* Logo and identity */}
@@ -158,7 +158,7 @@ export default function Navbar() {
       <div
         id="mobile-navigation"
         aria-hidden={!menuOpen}
-        className={`fixed inset-x-0 bottom-0 top-16 z-[10000] overflow-y-auto border-t border-slate-100 bg-white transition-[opacity,visibility,transform] duration-200 lg:hidden ${
+        className={`fixed inset-x-0 bottom-0 top-16 z-10000 overflow-y-auto border-t border-slate-100 bg-white transition-[opacity,visibility,transform] duration-200 lg:hidden ${
           menuOpen
             ? "visible translate-y-0 opacity-100"
             : "invisible -translate-y-2 opacity-0"
@@ -188,7 +188,7 @@ export default function Navbar() {
                   tabIndex={menuOpen ? 0 : -1}
                   aria-current={active ? "page" : undefined}
                   onClick={() => setMenuOpen(false)}
-                  className={`flex min-h-[49px] items-center justify-between border-b border-slate-100 px-2 text-sm transition-colors ${
+                  className={`flex min-h-12.25 items-center justify-between border-b border-slate-100 px-2 text-sm transition-colors ${
                     active
                       ? "font-semibold text-[#176b45]"
                       : "font-medium text-slate-600 hover:text-[#176b45]"
