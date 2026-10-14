@@ -80,10 +80,7 @@ export default function ConstitutionPublicView({ documents }: Props) {
               role="group"
               aria-label="Select language"
             >
-              <Languages
-                size={14}
-                className="ml-1.5 mr-1 text-slate-400"
-              />
+              <Languages size={14} className="ml-1.5 mr-1 text-slate-400" />
 
               <button
                 type="button"
@@ -137,9 +134,7 @@ export default function ConstitutionPublicView({ documents }: Props) {
             <FileText className="mx-auto text-slate-300" size={32} />
 
             <h3 className="mt-3 text-sm font-semibold text-slate-800">
-              {isBangla
-                ? "কোনো নথি প্রকাশিত হয়নি"
-                : "No documents published"}
+              {isBangla ? "কোনো নথি প্রকাশিত হয়নি" : "No documents published"}
             </h3>
           </div>
         ) : (
@@ -149,9 +144,7 @@ export default function ConstitutionPublicView({ documents }: Props) {
               const description = isBangla
                 ? document.descriptionBn
                 : document.descriptionEn;
-              const pdfUrl = isBangla
-                ? document.pdfUrlBn
-                : document.pdfUrlEn;
+              const pdfUrl = isBangla ? document.pdfUrlBn : document.pdfUrlEn;
 
               return (
                 <article
@@ -164,7 +157,7 @@ export default function ConstitutionPublicView({ documents }: Props) {
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <h3 className="whitespace-pre-wrap break-words text-base font-bold leading-6 text-slate-900">
+                      <h3 className="whitespace-pre-wrap wrap-break-words text-base font-bold leading-6 text-slate-900">
                         {title || (isBangla ? "গঠনতন্ত্র" : "Constitution")}
                       </h3>
 
@@ -182,7 +175,7 @@ export default function ConstitutionPublicView({ documents }: Props) {
                   </div>
 
                   {description && (
-                    <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-7 text-slate-600">
+                    <p className="mt-3 whitespace-pre-wrap wrap-break-words text-sm leading-7 text-slate-600">
                       {description}
                     </p>
                   )}
