@@ -233,7 +233,7 @@ export default function RiverContent() {
       <Navbar />
 
       {/* HERO */}
-      <section className="relative isolate flex min-h-[390px] items-center justify-center overflow-hidden bg-white">
+      <section className="relative isolate flex h-130 items-center justify-center overflow-hidden bg-white">
         <Image
           src="/monu1.jpg"
           alt={

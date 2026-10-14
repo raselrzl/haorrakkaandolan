@@ -1,122 +1,223 @@
+
+"use client";
+
+import { useState } from "react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { Target, Eye, ArrowDown } from "lucide-react";
 import Navbar from "../Navbar";
 
-export const metadata: Metadata = {
-  title: "Mission & Vision | Haor Rokkha Andolan",
-  description:
-    "The mission and vision of Haor Rokkha Andolan for protecting Bangladesh's haors, rivers, wetlands, and biodiversity.",
-};
+const content = {
+  en: {
+    eyebrow: "HAOR ROKKHA ANDOLAN · MOULVIBAZAR",
+    title: "Mission & Vision",
+    banglaTitle: "লক্ষ্য ও ভবিষ্যৎ পরিকল্পনা",
+    description:
+      "Our commitment to protecting Bangladesh's haors, rivers, wetlands and biodiversity for generations to come.",
+    explore: "Explore Our Mission",
+
+    missionLabel: "OUR MISSION",
+    missionTitle: "Our Mission",
+    missionParagraphs: [
+      "To protect and conserve Bangladesh's haors, rivers, wetlands and natural ecosystems through environmental awareness, community participation, advocacy and responsible action.",
+      "We strive to preserve biodiversity, address environmental degradation and encourage collective responsibility for our natural resources.",
+    ],
+
+    visionLabel: "OUR VISION",
+    visionTitle: "Our Vision",
+    visionParagraphs: [
+      "A Bangladesh where rivers flow freely, haors and wetlands thrive, biodiversity is protected, and natural resources are valued and managed sustainably.",
+      "We envision environmentally conscious communities working together to preserve our natural heritage for future generations.",
+    ],
+
+    footerTitle: "Protect Our Natural Heritage",
+    footerDescription:
+      "Working together for healthier rivers, thriving wetlands and a greener future.",
+  },
+
+  bn: {
+    eyebrow: "হাওর রক্ষা আন্দোলন · মৌলভীবাজার",
+    title: "লক্ষ্য ও ভবিষ্যৎ পরিকল্পনা",
+    banglaTitle: "প্রকৃতি রক্ষায় আমাদের অঙ্গীকার",
+    description:
+      "আগামী প্রজন্মের জন্য বাংলাদেশের হাওর, নদ-নদী, জলাভূমি ও জীববৈচিত্র্য সংরক্ষণে আমাদের অঙ্গীকার।",
+    explore: "আমাদের লক্ষ্য জানুন",
+
+    missionLabel: "আমাদের লক্ষ্য",
+    missionTitle: "আমাদের কর্মলক্ষ্য",
+    missionParagraphs: [
+      "পরিবেশবিষয়ক সচেতনতা বৃদ্ধি, জনসম্পৃক্ততা, জনস্বার্থে দাবি উত্থাপন এবং দায়িত্বশীল উদ্যোগের মাধ্যমে বাংলাদেশের হাওর, নদ-নদী, জলাভূমি ও প্রাকৃতিক প্রতিবেশ সংরক্ষণ করা।",
+      "আমরা জীববৈচিত্র্য রক্ষা, পরিবেশের অবক্ষয় মোকাবিলা এবং প্রাকৃতিক সম্পদ সংরক্ষণে সবার সম্মিলিত দায়িত্ববোধ গড়ে তুলতে কাজ করি।",
+    ],
+
+    visionLabel: "আমাদের স্বপ্ন",
+    visionTitle: "আমাদের ভবিষ্যৎ ভাবনা",
+    visionParagraphs: [
+      "আমরা এমন একটি বাংলাদেশ দেখতে চাই, যেখানে নদী তার স্বাভাবিক গতিতে প্রবাহিত হবে, হাওর ও জলাভূমি সমৃদ্ধ থাকবে, জীববৈচিত্র্য সুরক্ষিত হবে এবং প্রাকৃতিক সম্পদের টেকসই ব্যবহার নিশ্চিত হবে।",
+      "আমাদের স্বপ্ন পরিবেশসচেতন জনগোষ্ঠী গড়ে তোলা, যারা ভবিষ্যৎ প্রজন্মের জন্য একসঙ্গে কাজ করে দেশের প্রাকৃতিক ঐতিহ্য সংরক্ষণ করবে।",
+    ],
+
+    footerTitle: "প্রাকৃতিক ঐতিহ্য রক্ষা করি",
+    footerDescription:
+      "সুস্থ নদ-নদী, সমৃদ্ধ জলাভূমি ও সবুজ ভবিষ্যতের জন্য একসঙ্গে কাজ করি।",
+  },
+} as const;
+
+type Language = "en" | "bn";
 
 export default function MissionVisionPage() {
+  const [language, setLanguage] = useState<Language>("en");
+  const t = content[language];
+
   return (
-    <main className="min-h-screen bg-white font-sans text-slate-800 antialiased">
+    <main
+      lang={language}
+      className="mt-16 min-h-screen bg-white font-sans text-slate-800 antialiased"
+    >
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative flex min-h-[360px] items-center justify-center overflow-hidden bg-emerald-950 sm:min-h-[420px] lg:min-h-[460px] mt-16">
+      {/* HERO */}
+      <section className="relative isolate flex min-h-[440px] items-center justify-center overflow-hidden bg-emerald-950 sm:min-h-[500px]">
         <Image
           src="/monu5.jpg"
-          alt="The haor wetlands of Bangladesh"
+          alt={
+            language === "bn"
+              ? "বাংলাদেশের হাওর ও জলাভূমির প্রাকৃতিক দৃশ্য"
+              : "The haor wetlands of Bangladesh"
+          }
           fill
           priority
           sizes="100vw"
           className="object-cover object-center"
         />
 
-        {/* Image overlay */}
-        <div className="absolute inset-0 bg-emerald-950/65" />
-        <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/35 via-emerald-950/40 to-emerald-950/75" />
+        <div className="absolute inset-0 bg-black/55" />
 
-        {/* Centered heading */}
-        <div className="relative z-10 mx-auto max-w-4xl px-5 py-24 text-center sm:px-8">
-          <p className="mb-4 text-xs font-bold uppercase tracking-[0.25em] text-emerald-300 sm:text-sm">
-            Haor Rokkha Andolan
+        <div className="relative z-10 mx-auto w-full max-w-4xl px-5 py-14 text-center sm:px-8">
+          <p className="text-xs font-semibold tracking-[0.15em] text-white/90 sm:text-sm">
+            {t.eyebrow}
           </p>
 
-          <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
-            Mission <span className="text-emerald-300">&amp;</span> Vision
+          <h1 className="mt-4 text-3xl leading-tight font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
+            {t.title}
           </h1>
 
-          <div className="mx-auto mt-6 h-1 w-16 bg-emerald-400" />
-
-          <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-white/90 sm:text-base sm:leading-8">
-            Our commitment to protecting Bangladesh&apos;s haors, rivers,
-            wetlands, and biodiversity for generations to come.
+          <p className="mt-3 text-xl font-semibold text-white sm:text-2xl">
+            {t.banglaTitle}
           </p>
 
-          <a
-            href="#mission-vision"
-            aria-label="Explore our mission and vision"
-            className="mx-auto mt-7 inline-flex h-10 w-10 items-center justify-center border border-white/50 text-white transition hover:border-emerald-400 hover:bg-emerald-400 hover:text-emerald-950"
-          >
-            <ArrowDown size={18} />
-          </a>
-        </div>
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/90 sm:text-base sm:leading-8">
+            {t.description}
+          </p>
 
-        {/* Bottom accent */}
-        <div className="absolute bottom-0 left-0 h-1 w-full bg-emerald-400" />
+          {/* LANGUAGE SWITCH */}
+          <div
+            className="mx-auto mt-6 inline-flex items-center rounded-md border border-white/40 bg-black/25 p-1"
+            aria-label="Choose language"
+          >
+            <button
+              type="button"
+              onClick={() => setLanguage("bn")}
+              aria-pressed={language === "bn"}
+              className={`min-w-20 rounded px-4 py-2 text-sm font-semibold transition ${
+                language === "bn"
+                  ? "bg-white text-emerald-900"
+                  : "text-white hover:bg-white/15"
+              }`}
+            >
+              বাংলা
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setLanguage("en")}
+              aria-pressed={language === "en"}
+              className={`min-w-20 rounded px-4 py-2 text-sm font-semibold transition ${
+                language === "en"
+                  ? "bg-white text-emerald-900"
+                  : "text-white hover:bg-white/15"
+              }`}
+            >
+              English
+            </button>
+          </div>
+
+
+        </div>
       </section>
 
-      {/* Mission and Vision */}
+      {/* MISSION & VISION */}
       <section
         id="mission-vision"
-        className="scroll-mt-20 bg-slate-50 py-12 sm:py-16 lg:py-20"
+        className="scroll-mt-24 px-4 py-10 sm:px-6 sm:py-14 lg:px-8"
       >
-        <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-          <div className="grid items-stretch gap-5 md:grid-cols-2 md:gap-7">
-            {/* Mission */}
-            <article className="border border-slate-200 bg-white p-6 shadow-sm transition duration-300 hover:border-emerald-700/50 hover:shadow-md sm:p-8 lg:p-9">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-50 text-emerald-800">
-                <Target size={25} strokeWidth={1.8} />
+        <div className="mx-auto max-w-4xl">
+          <div className="grid items-stretch gap-0 md:grid-cols-2">
+            {/* MISSION */}
+            <article className="border-y border-slate-200 py-7 md:border-r md:border-b-0 md:pr-7 lg:py-9 lg:pr-9">
+              <div className="flex h-11 w-11 items-center justify-center rounded-md bg-emerald-50 text-emerald-800">
+                <Target size={23} strokeWidth={1.8} />
               </div>
 
-              <h2 className="mt-5 text-2xl font-bold tracking-tight text-emerald-950 sm:text-3xl">
-                Our Mission
+              <p className="mt-5 text-xs font-bold tracking-[0.15em] text-emerald-800">
+                {t.missionLabel}
+              </p>
+
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-emerald-950 sm:text-3xl">
+                {t.missionTitle}
               </h2>
 
               <div className="mt-3 h-1 w-12 bg-emerald-700" />
 
-              <p className="mt-5 text-sm leading-7 text-slate-600 sm:text-base">
-                To protect and conserve Bangladesh&apos;s haors, rivers,
-                wetlands, and natural ecosystems through environmental
-                awareness, community participation, advocacy, and responsible
-                action.
-              </p>
-
-              <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">
-                We strive to preserve biodiversity, address environmental
-                degradation, and encourage collective responsibility for our
-                natural resources.
-              </p>
+              {t.missionParagraphs.map((paragraph, index) => (
+                <p
+                  key={index}
+                  className="mt-4 text-sm leading-7 text-slate-600 sm:text-base sm:leading-8"
+                >
+                  {paragraph}
+                </p>
+              ))}
             </article>
 
-            {/* Vision */}
-            <article className="border border-emerald-950 bg-emerald-950 p-6 text-white shadow-sm transition duration-300 hover:shadow-md sm:p-8 lg:p-9">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/10 text-emerald-300">
-                <Eye size={25} strokeWidth={1.8} />
+            {/* VISION */}
+            <article className="border-b border-slate-200 py-7 md:pl-7 lg:py-9 lg:pl-9">
+              <div className="flex h-11 w-11 items-center justify-center rounded-md bg-emerald-50 text-emerald-800">
+                <Eye size={23} strokeWidth={1.8} />
               </div>
 
-              <h2 className="mt-5 text-2xl font-bold tracking-tight sm:text-3xl">
-                Our Vision
+              <p className="mt-5 text-xs font-bold tracking-[0.15em] text-emerald-800">
+                {t.visionLabel}
+              </p>
+
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-emerald-950 sm:text-3xl">
+                {t.visionTitle}
               </h2>
 
-              <div className="mt-3 h-1 w-12 bg-emerald-400" />
+              <div className="mt-3 h-1 w-12 bg-emerald-700" />
 
-              <p className="mt-5 text-sm leading-7 text-emerald-50/90 sm:text-base">
-                A Bangladesh where rivers flow freely, haors and wetlands
-                thrive, biodiversity is protected, and natural resources are
-                valued and managed sustainably.
-              </p>
-
-              <p className="mt-4 text-sm leading-7 text-emerald-50/90 sm:text-base">
-                We envision environmentally conscious communities working
-                together to preserve our natural heritage for future
-                generations.
-              </p>
+              {t.visionParagraphs.map((paragraph, index) => (
+                <p
+                  key={index}
+                  className="mt-4 text-sm leading-7 text-slate-600 sm:text-base sm:leading-8"
+                >
+                  {paragraph}
+                </p>
+              ))}
             </article>
           </div>
+        </div>
+      </section>
+
+      {/* CLOSING */}
+      <section className="border-t border-slate-200 bg-slate-50 px-4 py-9 sm:px-6 sm:py-11 lg:px-8">
+        <div className="mx-auto max-w-4xl">
+          <h2 className="text-xl font-bold text-emerald-950 sm:text-2xl">
+            {t.footerTitle}
+          </h2>
+
+          <p className="mt-2 text-sm leading-7 text-slate-600 sm:text-base">
+            {t.footerDescription}
+          </p>
         </div>
       </section>
     </main>

@@ -63,7 +63,7 @@ export default function Navbar() {
           </div>
 
           <div className="min-w-0">
-            <p className="truncate text-[12px] font-bold tracking-tight text-[#123b2b] sm:text-sm">
+            <p className="truncate text-[18px] font-extrabold tracking-tight text-[#123b2b] sm:text-sm">
               হাওর রক্ষা আন্দোলন
             </p>
             <p className="mt-0.5 hidden text-[10px] tracking-wide text-slate-500 sm:block sm:text-[11px]">

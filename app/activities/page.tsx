@@ -241,7 +241,7 @@ export default function ActivitiesPage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative isolate flex min-h-57.5 items-center mt-16 justify-center overflow-hidden bg-emerald-950 sm:min-h-70">
+      <section className="relative isolate flex h-130 items-center mt-16 justify-center overflow-hidden bg-emerald-950 sm:min-h-70">
         <Image
           src="/monu1.jpg"
           alt="Haor landscape"

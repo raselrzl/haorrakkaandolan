@@ -84,7 +84,7 @@ export default function AboutPage() {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative isolate flex min-h-52 items-center justify-center overflow-hidden bg-emerald-950 sm:min-h-64 md:min-h-72 mt-16">
+      <section className="relative isolate flex h-130 items-center justify-center overflow-hidden bg-emerald-950 sm:min-h-64 md:min-h-72 mt-16">
         <Image
           src="/monu1.jpg"
           alt="Haor Rokkha Andolan"
