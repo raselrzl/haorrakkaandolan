@@ -149,7 +149,7 @@ export default function RootLayout({
         </Suspense>
 
         {children}
-        <FloatingContact />
+       
       </body>
     </html>
   );
