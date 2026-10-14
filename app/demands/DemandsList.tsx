@@ -230,7 +230,7 @@ export default function DemandsPublicView({ demands }: Props) {
 
                     {demand.points.length > 0 ? (
                       <div className="overflow-x-auto">
-                        <table className="w-full min-w-[540px] border-collapse text-left text-sm">
+                        <table className="w-full min-w-135 border-collapse text-left text-sm">
                           <thead>
                             <tr className="bg-emerald-900 text-white">
                               <th className="w-16 border-r border-white/10 px-3 py-2.5 text-center text-[11px] font-semibold">
