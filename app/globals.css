@@ -70,3 +70,35 @@ select:lang(bn),
 button:lang(bn) {
   font-family: var(--font-tiro-bangla), serif;
 }
+
+
+/* Global scrollbar */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #047857 #f1f5f9;
+}
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #047857;
+  border: 2px solid #f1f5f9;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #065f46;
+}
+
+/* Horizontal scrollbar */
+::-webkit-scrollbar-corner {
+  background: #f1f5f9;
+}
