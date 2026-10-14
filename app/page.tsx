@@ -8,6 +8,7 @@ import RiverActivities from "./RiverActivities";
 import { prisma } from "./utils/db";
 import FloatingContact from "./FloatingContact";
 import Footer from "./Footer";
+import LatestNews from "./LatestNews";
 
 const photos = {
   wetland:
@@ -139,6 +140,7 @@ async function HomepageSections() {
         activities={riverActivities}
         fallbackImage={photos.river}
       />
+      <LatestNews />
     </>
   );
 }
