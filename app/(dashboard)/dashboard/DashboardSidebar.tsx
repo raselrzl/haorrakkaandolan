@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -212,7 +211,7 @@ export default function DashboardSidebar({
       {/* Desktop sidebar */}
       <aside
         className={`hidden h-screen shrink-0 flex-col border-r border-slate-200 bg-white transition-[width] duration-200 lg:sticky lg:top-0 lg:flex ${
-          collapsed ? "w-[76px]" : "w-[260px]"
+          collapsed ? "w-19" : "w-65"
         }`}
       >
         <div
@@ -257,7 +256,7 @@ export default function DashboardSidebar({
               type="button"
               onClick={() => onCollapsedChange(false)}
               aria-label="Expand sidebar"
-              className="absolute left-[60px] top-[76px] z-20 hidden h-7 w-7 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:text-emerald-600 xl:flex"
+              className="absolute left-15 top-19 z-20 hidden h-7 w-7 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:text-emerald-600 xl:flex"
             >
               <ChevronRight size={15} />
             </button>
@@ -300,7 +299,7 @@ export default function DashboardSidebar({
             className="absolute inset-0 bg-slate-950/40 backdrop-blur-[2px]"
           />
 
-          <aside className="absolute inset-y-0 left-0 flex w-[280px] max-w-[85vw] flex-col border-r border-slate-200 bg-white shadow-xl">
+          <aside className="absolute inset-y-0 left-0 flex w-70 max-w-[85vw] flex-col border-r border-slate-200 bg-white shadow-xl">
             <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-100 px-4">
               <Link
                 href="/dashboard"

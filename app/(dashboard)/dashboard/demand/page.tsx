@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useCallback, useEffect, useState, type FormEvent } from "react";
@@ -240,10 +239,7 @@ function DemandPointCard({
     setBusy(true);
 
     try {
-      const result = await deleteDemandPointAction(
-        point.demandId,
-        point.id,
-      );
+      const result = await deleteDemandPointAction(point.demandId, point.id);
 
       if (!result.success) {
         notify(result.message, true);
@@ -274,10 +270,10 @@ function DemandPointCard({
 
           {!editing && (
             <div className="mt-3 grid gap-3 md:grid-cols-2">
-              <p className="whitespace-pre-wrap break-words text-sm leading-6 text-slate-600">
+              <p className="whitespace-pre-wrap wrap-break-words text-sm leading-6 text-slate-600">
                 {point.descriptionBn}
               </p>
-              <p className="whitespace-pre-wrap break-words text-sm leading-6 text-slate-600">
+              <p className="whitespace-pre-wrap wrap-break-word text-sm leading-6 text-slate-600">
                 {point.descriptionEn}
               </p>
             </div>
@@ -312,10 +308,7 @@ function DemandPointCard({
           onSubmit={savePoint}
           className="border-t border-slate-100 bg-slate-50 p-4"
         >
-          <PointFields
-            point={form}
-            onChange={setForm}
-          />
+          <PointFields point={form} onChange={setForm} />
 
           <div className="mt-3 flex justify-end">
             <button
@@ -442,7 +435,7 @@ function DemandCard({
 
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="break-words text-base font-bold text-slate-900">
+              <h3 className="wrap-break-words text-base font-bold text-slate-900">
                 {demand.titleBn}
               </h3>
 
@@ -554,17 +547,13 @@ function DemandCard({
                 <Field
                   label="শিরোনাম (বাংলা)"
                   value={form.titleBn}
-                  onChange={(value) =>
-                    setForm({ ...form, titleBn: value })
-                  }
+                  onChange={(value) => setForm({ ...form, titleBn: value })}
                   required
                 />
                 <Field
                   label="Title (English)"
                   value={form.titleEn}
-                  onChange={(value) =>
-                    setForm({ ...form, titleEn: value })
-                  }
+                  onChange={(value) => setForm({ ...form, titleEn: value })}
                   required
                 />
                 <Field
@@ -587,9 +576,7 @@ function DemandCard({
                   label="Publication date"
                   type="datetime-local"
                   value={form.publishedAt}
-                  onChange={(value) =>
-                    setForm({ ...form, publishedAt: value })
-                  }
+                  onChange={(value) => setForm({ ...form, publishedAt: value })}
                   required
                 />
 
@@ -646,10 +633,7 @@ function DemandCard({
                 Add another demand point
               </h4>
 
-              <PointFields
-                point={newPoint}
-                onChange={setNewPoint}
-              />
+              <PointFields point={newPoint} onChange={setNewPoint} />
 
               <div className="flex justify-end gap-2">
                 <button
@@ -676,9 +660,7 @@ function DemandCard({
           )}
 
           <div className="flex items-center justify-between gap-3">
-            <h4 className="text-sm font-bold text-slate-800">
-              Demand points
-            </h4>
+            <h4 className="text-sm font-bold text-slate-800">Demand points</h4>
             <span className="text-xs text-slate-500">
               {demand.points.length} total
             </span>
@@ -805,10 +787,7 @@ export default function DemandPage() {
               disabled={loading}
               className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
             >
-              <RefreshCw
-                size={14}
-                className={loading ? "animate-spin" : ""}
-              />
+              <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
               Refresh
             </button>
 
@@ -900,7 +879,8 @@ export default function DemandPage() {
                   Create a demand document
                 </h2>
                 <p className="mt-0.5 text-xs text-slate-500">
-                  Add a 12-point demand, 13-point demand, or any future campaign.
+                  Add a 12-point demand, 13-point demand, or any future
+                  campaign.
                 </p>
               </div>
             </div>
@@ -943,9 +923,7 @@ export default function DemandPage() {
                   label="Publication date"
                   type="datetime-local"
                   value={form.publishedAt}
-                  onChange={(value) =>
-                    setForm({ ...form, publishedAt: value })
-                  }
+                  onChange={(value) => setForm({ ...form, publishedAt: value })}
                   required
                 />
               </div>
@@ -957,7 +935,8 @@ export default function DemandPage() {
                       Demand points
                     </h3>
                     <p className="mt-1 text-xs text-slate-500">
-                      Every point needs a heading and description in both languages.
+                      Every point needs a heading and description in both
+                      languages.
                     </p>
                   </div>
                   <span className="rounded-md bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-800">
