@@ -243,7 +243,7 @@ export default function DashboardSidebar() {
         }
         aria-expanded={mobileOpen}
         onClick={() => setMobileOpen((open) => !open)}
-        className="fixed left-4 top-4 z-[70] flex size-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50 lg:hidden"
+        className="fixed left-4 top-4 z-70 flex size-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50 lg:hidden"
       >
         {mobileOpen ? <X size={20} /> : <Menu size={20} />}
       </button>
@@ -254,20 +254,20 @@ export default function DashboardSidebar() {
           type="button"
           aria-label="Close navigation menu"
           onClick={closeMobileMenu}
-          className="fixed inset-0 z-[60] bg-slate-950/40 backdrop-blur-[1px] lg:hidden"
+          className="fixed inset-0 z-60 bg-slate-950/40 backdrop-blur-[1px] lg:hidden"
         />
       )}
 
       {/* Mobile drawer */}
       <aside
         aria-label="Mobile dashboard sidebar"
-        className={`fixed inset-y-0 left-0 z-[65] flex w-[280px] max-w-[85vw] flex-col border-r border-slate-200 bg-white shadow-xl transition-transform duration-200 ease-out lg:hidden ${
+        className={`fixed inset-y-0 left-0 z-65 flex w-70 max-w-[85vw] flex-col border-r border-slate-200 bg-white shadow-xl transition-transform duration-200 ease-out lg:hidden ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         aria-hidden={!mobileOpen}
         inert={!mobileOpen}
       >
-        <div className="flex h-[72px] shrink-0 items-center justify-between border-b border-slate-100 px-5">
+        <div className="flex h-18 shrink-0 items-center justify-between border-b border-slate-100 px-5">
           <Link href="/dashboard" onClick={closeMobileMenu} className="min-w-0">
             <span className="block truncate text-base font-bold tracking-tight text-slate-900">
               Haor Rokkha Andolan
@@ -298,11 +298,11 @@ export default function DashboardSidebar() {
       <aside
         aria-label="Dashboard sidebar"
         className={`sticky top-0 hidden h-screen shrink-0 flex-col border-r border-slate-200 bg-white transition-[width] duration-200 lg:flex ${
-          collapsed ? "w-[76px]" : "w-[260px]"
+          collapsed ? "w-19" : "w-65"
         }`}
       >
         <div
-          className={`flex h-[72px] shrink-0 items-center border-b border-slate-100 ${
+          className={`flex h-18 shrink-0 items-center border-b border-slate-100 ${
             collapsed ? "justify-center px-2" : "justify-between px-5"
           }`}
         >
