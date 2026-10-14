@@ -329,10 +329,7 @@ export default function MyAccountPage() {
       <main className="mx-auto w-full max-w-6xl p-4 sm:p-6">
         <div className="flex min-h-64 items-center justify-center rounded-xl border border-slate-200 bg-white">
           <div className="flex items-center gap-3 text-sm text-slate-500">
-            <LoaderCircle
-              size={20}
-              className="animate-spin text-emerald-700"
-            />
+            <LoaderCircle size={20} className="animate-spin text-emerald-700" />
             Loading account details...
           </div>
         </div>
@@ -437,7 +434,7 @@ export default function MyAccountPage() {
           </div>
 
           <div className="min-w-0 flex-1">
-            <h2 className="break-words text-xl font-semibold text-slate-900">
+            <h2 className="wrap-break-words text-xl font-semibold text-slate-900">
               {account.name}
             </h2>
 
@@ -596,7 +593,8 @@ export default function MyAccountPage() {
                         setUploadingPhoto(false);
                         setProfileNotice({
                           type: "error",
-                          message: error.message || "Profile photo upload failed.",
+                          message:
+                            error.message || "Profile photo upload failed.",
                         });
                       }}
                       appearance={{
@@ -605,7 +603,9 @@ export default function MyAccountPage() {
                         allowedContent: "text-xs text-slate-500",
                       }}
                       content={{
-                        button: uploadingPhoto ? "Uploading..." : "Upload photo",
+                        button: uploadingPhoto
+                          ? "Uploading..."
+                          : "Upload photo",
                       }}
                     />
                   </div>
@@ -618,8 +618,8 @@ export default function MyAccountPage() {
                   )}
 
                   <p className="mt-2 text-xs text-slate-500">
-                    Your photo is saved to your account automatically after
-                    a successful upload.
+                    Your photo is saved to your account automatically after a
+                    successful upload.
                   </p>
                 </div>
               </div>
