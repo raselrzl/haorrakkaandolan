@@ -813,11 +813,13 @@ export default function NewsActivitiesPage() {
                     ),
                   }}
                   appearance={{
-                    container: "flex flex-col gap-1",
-                    button:
-                      "ut-ready:bg-emerald-800 ut-ready:hover:bg-emerald-900 text-white text-xs px-3 py-2 rounded-lg font-semibold",
-                    allowedContent: "text-[10px] text-slate-500",
-                  }}
+                        container:
+                          "flex flex-col items-center gap-1.5 text-center",
+                        button:
+                          "ut-ready:bg-emerald-800 ut-ready:hover:bg-emerald-900 ut-uploading:cursor-not-allowed inline-flex h-10 items-center justify-center rounded-md border border-emerald-800 bg-emerald-800 px-4 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 disabled:opacity-60",
+                        allowedContent:
+                          "w-full text-center text-xs text-slate-500",
+                      }}
                 />
 
                 <p className="mt-2 text-[11px] text-slate-500">

@@ -598,9 +598,12 @@ export default function MyAccountPage() {
                         });
                       }}
                       appearance={{
+                        container:
+                          "flex flex-col items-center gap-1.5 text-center",
                         button:
-                          "ut-ready:bg-emerald-800 ut-ready:hover:bg-emerald-900 ut-uploading:cursor-not-allowed rounded-lg px-4 py-2 text-sm font-semibold",
-                        allowedContent: "text-xs text-slate-500",
+                          "ut-ready:bg-emerald-800 ut-ready:hover:bg-emerald-900 ut-uploading:cursor-not-allowed inline-flex h-10 items-center justify-center rounded-md border border-emerald-800 bg-emerald-800 px-4 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 disabled:opacity-60",
+                        allowedContent:
+                          "w-full text-center text-xs text-slate-500",
                       }}
                       content={{
                         button: uploadingPhoto
@@ -625,7 +628,7 @@ export default function MyAccountPage() {
               </div>
             </div>
 
-            <label className={labelClass}>
+            {/*          <label className={labelClass}>
               Or enter a profile image URL
               <input
                 type="url"
@@ -637,7 +640,7 @@ export default function MyAccountPage() {
               <span className="mt-1.5 block text-xs font-normal text-slate-500">
                 If you change this URL manually, click Save profile to save it.
               </span>
-            </label>
+            </label> */}
 
             <div className="flex flex-col-reverse gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end">
               <button
