@@ -249,83 +249,84 @@ export default function HaorPage() {
     >
       <Navbar />
 
-      {/* HERO */}
-      <section className="relative isolate flex min-h-110 items-center justify-center overflow-hidden bg-emerald-950 sm:min-h-125">
-        <Image
-          src="/hm3.jpg"
-          alt={
-            language === "bn"
-              ? "বাংলাদেশের হাওরাঞ্চলের প্রাকৃতিক দৃশ্য"
-              : "Haor wetland landscape in Bangladesh"
-          }
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center"
-        />
+    {/* HERO */}
+<section className="relative isolate mt-16 overflow-hidden bg-emerald-950">
+  <Image
+    src="/hm3.jpg"
+    alt={
+      language === "bn"
+        ? "বাংলাদেশের হাওরাঞ্চলের প্রাকৃতিক দৃশ্য"
+        : "Haor wetland landscape in Bangladesh"
+    }
+    fill
+    priority
+    sizes="100vw"
+    className="object-cover object-center"
+  />
 
-        <div className="absolute inset-0 bg-black/55" />
+  <div className="absolute inset-0 bg-linear-to-r from-emerald-950/95 via-emerald-950/80 to-emerald-950/50" />
 
-        <div className="relative z-10 mx-auto w-full max-w-4xl px-5 py-14 text-center">
-          <p className="text-xs font-semibold tracking-[0.15em] text-white/90 sm:text-sm">
-            {t.eyebrow}
-          </p>
+  <div className="relative mx-auto flex min-h-72.5 max-w-7xl items-center px-5 py-10 sm:min-h-82.5">
+    <div className="max-w-3xl">
+      <p className="text-xs font-semibold tracking-wider text-emerald-100 uppercase sm:text-sm">
+        {t.eyebrow}
+      </p>
 
-          <h1 className="mt-4 text-3xl leading-tight font-bold text-white sm:text-4xl md:text-5xl">
-            {t.heroTitle}
-          </h1>
+      <h1 className="mt-4 max-w-3xl text-3xl leading-tight font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+        {t.heroTitle}
+      </h1>
 
-          <p className="mt-3 text-xl font-semibold text-white sm:text-2xl">
-            {t.heroBangla}
-          </p>
+      <p className="mt-2 text-xl font-semibold text-emerald-50 sm:text-2xl">
+        {t.heroBangla}
+      </p>
 
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/90 sm:text-base">
-            {t.heroDescription}
-          </p>
+      <p className="mt-4 max-w-2xl text-sm leading-7 text-emerald-50/90 sm:text-base">
+        {t.heroDescription}
+      </p>
 
-          {/* LANGUAGE SWITCH */}
-          <div
-            className="mx-auto mt-6 inline-flex items-center rounded-md border border-white/40 bg-black/25 p-1"
-            aria-label="Choose language"
+      <div className="mt-5 flex flex-wrap items-center gap-2">
+        <a
+          href="#haor-mission"
+          className="inline-flex items-center justify-center gap-2 rounded-md bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-600"
+        >
+          {t.explore}
+          <ArrowRight size={16} />
+        </a>
+
+        <div
+          className="flex w-fit items-center gap-1 rounded-full border border-slate-200 bg-slate-100 p-1"
+          aria-label="Choose language"
+        >
+          <button
+            type="button"
+            onClick={() => setLanguage("en")}
+            aria-pressed={language === "en"}
+            className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
+              language === "en"
+                ? "bg-emerald-700 text-white shadow-sm"
+                : "text-slate-600 hover:text-emerald-800"
+            }`}
           >
-            <button
-              type="button"
-              onClick={() => setLanguage("bn")}
-              aria-pressed={language === "bn"}
-              className={`min-w-20 rounded px-4 py-2 text-sm font-semibold transition ${
-                language === "bn"
-                  ? "bg-white text-emerald-900"
-                  : "text-white hover:bg-white/15"
-              }`}
-            >
-              বাংলা
-            </button>
+            English
+          </button>
 
-            <button
-              type="button"
-              onClick={() => setLanguage("en")}
-              aria-pressed={language === "en"}
-              className={`min-w-20 rounded px-4 py-2 text-sm font-semibold transition ${
-                language === "en"
-                  ? "bg-white text-emerald-900"
-                  : "text-white hover:bg-white/15"
-              }`}
-            >
-              English
-            </button>
-          </div>
-
-          <div>
-            <a
-              href="#haor-mission"
-              className="mt-6 inline-flex items-center justify-center gap-2 rounded-md bg-emerald-800 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-900"
-            >
-              {t.explore}
-              <ArrowRight size={17} />
-            </a>
-          </div>
+          <button
+            type="button"
+            onClick={() => setLanguage("bn")}
+            aria-pressed={language === "bn"}
+            className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
+              language === "bn"
+                ? "bg-emerald-700 text-white shadow-sm"
+                : "text-slate-600 hover:text-emerald-800"
+            }`}
+          >
+            বাংলা
+          </button>
         </div>
-      </section>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* INTRODUCTION */}
       <section

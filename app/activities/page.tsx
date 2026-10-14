@@ -240,51 +240,13 @@ export default function ActivitiesPage() {
     <main className="min-h-screen bg-[#f7f9f6]">
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative isolate flex h-130 items-center mt-16 justify-center overflow-hidden bg-emerald-950 sm:min-h-70">
-        <Image
-          src="/monu1.jpg"
-          alt="Haor landscape"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-
-        <div className="absolute inset-0 bg-linear-to-r from-emerald-950/95 via-emerald-950/80 to-emerald-950/60" />
-
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-12 text-center sm:px-6 lg:px-8">
-          <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.24em] text-emerald-300 sm:text-xs">
-            Haor Rokkha Andolan · Moulvibazar
-          </p>
-
-          <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
-            News &amp; Activities
-          </h1>
-          <div className="mx-auto mt-5 h-1 w-14 rounded-full bg-emerald-400" />
-        </div>
-      </section>
-
       {/* News and activities */}
-      <section className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+      <section className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8 mt-16">
         {/* News Header, Search & Filters */}
         <div className="mb-5 border-b border-emerald-900/10 pb-4">
-          {/* Search + Filters */}
-          <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
-            {/* Search */}
-            <div className="w-full shrink-0 sm:w-52 lg:w-64">
-              <input
-                type="search"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search news and activities..."
-                aria-label="Search news and activities"
-                className="h-9 w-full rounded-md border border-slate-200 bg-white px-3 text-xs text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/10 sm:h-10 sm:text-sm"
-              />
-            </div>
-
-            {/* Horizontally Scrollable Filters */}
-            <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin sm:flex-1">
+          <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            {/* Horizontally Scrollable Filters — Left */}
+            <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin sm:flex-1 sm:order-1">
               {filters.map((option) => (
                 <button
                   key={option.value}
@@ -300,6 +262,18 @@ export default function ActivitiesPage() {
                   {option.label}
                 </button>
               ))}
+            </div>
+
+            {/* Search — Right */}
+            <div className="w-full shrink-0 sm:order-2 sm:w-52 lg:w-64">
+              <input
+                type="search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search news and activities..."
+                aria-label="Search news and activities"
+                className="h-9 w-full rounded-md border border-slate-200 bg-white px-3 text-xs text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/10 sm:h-10 sm:text-sm"
+              />
             </div>
           </div>
         </div>
