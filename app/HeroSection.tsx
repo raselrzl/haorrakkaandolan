@@ -72,7 +72,7 @@ export default function HeroSection({
 }: HeroSectionProps) {
   // Limit the panel to two records per category.
   const latestUpdates = updates.slice(0, 2);
-  const latestNews = news.slice(0, 2);
+  const latestNews = news.slice(0, 2); 
 
   return (
     <section className="relative isolate mt-16 w-full overflow-hidden">
