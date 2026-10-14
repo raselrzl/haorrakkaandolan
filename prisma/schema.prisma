@@ -195,3 +195,16 @@ model DemandPoint {
   @@unique([demandId, pointNumber])
   @@index([demandId, pointNumber])
 }
+
+model DonationAccount {
+  id            String   @id @default(cuid())
+  accountName   String
+  providerName  String
+  accountNumber String
+  bankAddress   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([providerName])
+  @@index([createdAt])
+}
