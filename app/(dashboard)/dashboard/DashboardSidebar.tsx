@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -15,6 +14,7 @@ import {
   ExternalLink,
   PanelLeftClose,
   FileText,
+  Inbox,
 } from "lucide-react";
 
 const navigation = [
@@ -50,6 +50,11 @@ const navigation = [
         label: "News & Activities",
         href: "/dashboard/newactivity",
         icon: FileText,
+      },
+      {
+        label: "Inbox",
+        href: "/dashboard/inbox",
+        icon: Inbox,
       },
     ],
   },
