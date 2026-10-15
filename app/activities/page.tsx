@@ -549,8 +549,8 @@ export default function ActivitiesPage() {
                   {selectedItem.details}
                 </div>
 
-                <div className="mt-6 border-slate-200 pt-4">
-                  <p className="text-[8px] font-bold uppercase tracking-[0.18em] text-emerald-800">
+                <div className="mt-6 border-slate-200 pt-4 flex justify-center text-center">
+                  <p className="text-center text-[8px] font-bold uppercase tracking-[0.18em] text-emerald-800">
                     হাওর রক্ষা আন্দোলন · Moulvibazar
                   </p>
                 </div>
