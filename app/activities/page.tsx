@@ -246,24 +246,23 @@ export default function ActivitiesPage() {
         <div className="mb-5 border-b border-emerald-900/10 pb-4">
           <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             {/* Horizontally Scrollable Filters — Left */}
-           {/* Filters — Full Width, Four Columns on Mobile */}
-<div className="grid min-w-0 grid-cols-5 gap-1.5 sm:flex sm:flex-1 sm:order-1 sm:gap-1.5 sm:overflow-x-auto sm:pb-1">
-  {filters.map((option) => (
-    <button
-      key={option.value}
-      type="button"
-      onClick={() => changeFilter(option.value)}
-      aria-pressed={filter === option.value}
-      className={`h-9 w-full min-w-0 whitespace-nowrap rounded-md px-1 text-[10px] font-semibold transition sm:h-10 sm:w-auto sm:shrink-0 sm:px-3 sm:text-xs ${
-        filter === option.value
-          ? "bg-emerald-900 text-white"
-          : "border border-slate-200 bg-white text-slate-600 hover:border-emerald-700 hover:text-emerald-800"
-      }`}
-    >
-      {option.label}
-    </button>
-  ))}
-</div>
+            <div className="grid min-w-0 grid-cols-5 gap-1.5 sm:flex sm:flex-1 sm:order-1 sm:gap-1.5 sm:overflow-x-auto sm:pb-1">
+              {filters.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => changeFilter(option.value)}
+                  aria-pressed={filter === option.value}
+                  className={`h-9 w-full min-w-0 whitespace-nowrap rounded-md px-1 text-[10px] font-semibold transition sm:h-10 sm:w-auto sm:shrink-0 sm:px-3 sm:text-xs ${
+                    filter === option.value
+                      ? "bg-emerald-900 text-white"
+                      : "border border-slate-200 bg-white text-slate-600 hover:border-emerald-700 hover:text-emerald-800"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
 
             {/* Search — Right */}
             <div className="w-full shrink-0 sm:order-2 sm:w-52 lg:w-64">
@@ -474,7 +473,7 @@ export default function ActivitiesPage() {
             className="relative my-auto flex max-h-[80dvh] w-full max-w-xl flex-col overflow-hidden rounded-lg border border-white/20 bg-white shadow-2xl"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 bg-emerald-950 px-4 py-1 text-white sm:px-5">
+            <div className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-4 py-1 text-green-900 sm:px-5">
               <div className="flex min-w-0 items-center gap-2">
                 {selectedItem.type === "ACTIVITY" ? (
                   <Waves size={14} className="shrink-0 text-emerald-300" />
@@ -482,10 +481,8 @@ export default function ActivitiesPage() {
                   <Newspaper size={14} className="shrink-0 text-emerald-300" />
                 )}
 
-                <span className="truncate text-xs font-bold uppercase tracking-[0.15em] text-emerald-100">
-                  {selectedItem.type === "ACTIVITY"
-                    ? "Activity Details"
-                    : "News Details"}
+                <span className="truncate text-xs font-bold uppercase tracking-[0.15em] text-green-900">
+                  {selectedItem.type === "ACTIVITY" ? "Details" : "Details"}
                 </span>
               </div>
 
@@ -493,7 +490,7 @@ export default function ActivitiesPage() {
                 type="button"
                 onClick={() => setSelectedItem(null)}
                 aria-label="Close story details"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-red-700 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
               >
                 <X size={16} />
               </button>
@@ -564,7 +561,7 @@ export default function ActivitiesPage() {
               <button
                 type="button"
                 onClick={() => setSelectedItem(null)}
-                className="rounded-md bg-emerald-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
+                className="rounded-md bg-emerald-900 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
               >
                 Close
               </button>
