@@ -47,7 +47,7 @@ export default async function LatestNews() {
             </p>
           </div>
 
-          <Link
+        {/*   <Link
             href="/activities"
             className="group hidden shrink-0 items-center gap-2 text-sm font-semibold text-emerald-800 transition hover:text-emerald-950 sm:inline-flex"
           >
@@ -56,7 +56,7 @@ export default async function LatestNews() {
               size={17}
               className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
             />
-          </Link>
+          </Link> */}
         </div>
 
         {/* Latest four news */}
@@ -173,7 +173,7 @@ export default async function LatestNews() {
           </div>
         )}
 
-        <div className="mt-6 sm:hidden">
+   {/*      <div className="mt-6 sm:hidden">
           <Link
             href="/news"
             className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-800"
@@ -181,7 +181,7 @@ export default async function LatestNews() {
             View all news
             <ArrowUpRight size={17} />
           </Link>
-        </div>
+        </div> */}
       </div>
     </section>
   );
