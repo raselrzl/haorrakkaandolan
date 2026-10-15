@@ -162,7 +162,7 @@ export default async function NewsDetailsPage({ params }: PageProps) {
                 </span>
               </div>
 
-              <h1 className="break-words text-3xl font-bold leading-tight tracking-tight text-slate-950 sm:text-2xl">
+              <h1 className="wrap-break-words text-3xl font-bold leading-tight tracking-tight text-slate-950 sm:text-2xl">
                 {title}
               </h1>
 
@@ -236,7 +236,7 @@ export default async function NewsDetailsPage({ params }: PageProps) {
               </div>
 
               {/* Activity description */}
-              <div className="whitespace-pre-wrap break-words text-[15px] leading-8 text-slate-700 sm:text-base sm:leading-9">
+              <div className="whitespace-pre-wrap wrap-break-words text-[15px] leading-8 text-slate-700 sm:text-base sm:leading-9 text-justify">
                 {details || "No activity details are available."}
               </div>
 

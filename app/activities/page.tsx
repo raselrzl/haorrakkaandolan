@@ -545,13 +545,13 @@ export default function ActivitiesPage() {
 
                 <div className="my-4 h-1 w-12 rounded-full bg-emerald-600" />
 
-                <div className="whitespace-pre-wrap wrap-break-words text-sm leading-7 text-slate-700 sm:text-base sm:leading-8">
+                <div className="whitespace-pre-wrap wrap-break-words text-sm leading-7 text-slate-700 sm:text-base sm:leading-8 text-justify">
                   {selectedItem.details}
                 </div>
 
-                <div className="mt-6 border-t border-slate-200 pt-4">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-800">
-                    Haor Rokkha Andolan · Moulvibazar
+                <div className="mt-6 border-slate-200 pt-4">
+                  <p className="text-[8px] font-bold uppercase tracking-[0.18em] text-emerald-800">
+                    হাওর রক্ষা আন্দোলন · Moulvibazar
                   </p>
                 </div>
               </div>
