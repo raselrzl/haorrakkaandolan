@@ -62,16 +62,16 @@ export default function HaorActivities({
               initiatives.
             </p>
           </div>
-<Link
-  href="/activities"
-  className="group inline-flex items-center gap-2 rounded-full bg-emerald-800 px-4 py-2 text-xs font-semibold text-white transition-colors duration-200 hover:bg-emerald-900"
->
-  All Activities
-  <span className="flex items-center transition-transform duration-300 group-hover:translate-x-1">
-    <ChevronRight size={15} />
-    <ChevronRight size={15} className="-ml-2" />
-  </span>
-</Link>
+          <Link
+            href="/activities"
+            className="group inline-flex items-center gap-2 rounded-full bg-emerald-800 px-4 py-2 text-xs font-semibold text-white transition-colors duration-200 hover:bg-emerald-900"
+          >
+            All Activities
+            <span className="flex items-center transition-transform duration-300 group-hover:translate-x-1">
+              <ChevronRight size={15} />
+              <ChevronRight size={15} className="-ml-2" />
+            </span>
+          </Link>
         </div>
 
         {activities.length > 0 ? (
