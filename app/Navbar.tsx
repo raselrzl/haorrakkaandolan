@@ -165,7 +165,7 @@ export default function Navbar() {
           aria-expanded={menuOpen}
           aria-controls="mobile-navigation"
           onClick={() => setMenuOpen((open) => !open)}
-          className="flex h-10 w-10 shrink-0 items-center justify-center border border-slate-200 text-[#123b2b] transition-colors hover:bg-slate-50 lg:hidden"
+          className="flex h-9 w-9 shrink-0 items-center justify-center border rounded border-slate-200 bg-green-900 text-green-200 transition-colors hover:bg-slate-50 lg:hidden"
         >
           {menuOpen ? <X size={21} /> : <Menu size={21} />}
         </button>
