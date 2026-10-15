@@ -246,23 +246,24 @@ export default function ActivitiesPage() {
         <div className="mb-5 border-b border-emerald-900/10 pb-4">
           <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             {/* Horizontally Scrollable Filters — Left */}
-            <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin sm:flex-1 sm:order-1">
-              {filters.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  onClick={() => changeFilter(option.value)}
-                  aria-pressed={filter === option.value}
-                  className={`h-8 shrink-0 whitespace-nowrap rounded-md px-3 text-[10px] font-semibold transition sm:h-10 sm:px-3 sm:text-xs ${
-                    filter === option.value
-                      ? "bg-emerald-900 text-white"
-                      : "border border-slate-200 bg-white text-slate-600 hover:border-emerald-700 hover:text-emerald-800"
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
+           {/* Filters — Full Width, Four Columns on Mobile */}
+<div className="grid min-w-0 grid-cols-5 gap-1.5 sm:flex sm:flex-1 sm:order-1 sm:gap-1.5 sm:overflow-x-auto sm:pb-1">
+  {filters.map((option) => (
+    <button
+      key={option.value}
+      type="button"
+      onClick={() => changeFilter(option.value)}
+      aria-pressed={filter === option.value}
+      className={`h-9 w-full min-w-0 whitespace-nowrap rounded-md px-1 text-[10px] font-semibold transition sm:h-10 sm:w-auto sm:shrink-0 sm:px-3 sm:text-xs ${
+        filter === option.value
+          ? "bg-emerald-900 text-white"
+          : "border border-slate-200 bg-white text-slate-600 hover:border-emerald-700 hover:text-emerald-800"
+      }`}
+    >
+      {option.label}
+    </button>
+  ))}
+</div>
 
             {/* Search — Right */}
             <div className="w-full shrink-0 sm:order-2 sm:w-52 lg:w-64">
