@@ -48,7 +48,7 @@ function ContactForm({
               id="floating-contact-title"
               className="text-sm font-bold text-slate-900"
             >
-              Get in touch
+              হাওর রক্ষা আন্দোলন
             </h2>
             <p className="text-[11px] text-slate-500">Haor Rokkha Andolan</p>
           </div>
