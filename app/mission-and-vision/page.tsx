@@ -98,13 +98,13 @@ export default function MissionVisionPage() {
               {t.eyebrow}
             </p>
 
-            <h1 className="mt-4 text-3xl leading-tight font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
+            <h1 className="mt-4 text-3xl leading-tight font-bold tracking-tight text-white sm:text-4xl">
               {t.title}
             </h1>
 
-            <p className="mt-3 text-xl font-semibold text-white sm:text-2xl">
+            {/*     <p className="mt-3 text-xl font-semibold text-white sm:text-2xl">
               {t.banglaTitle}
-            </p>
+            </p> */}
 
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/90 sm:text-base sm:leading-8">
               {t.description}
@@ -112,14 +112,14 @@ export default function MissionVisionPage() {
 
             {/* LANGUAGE SWITCH */}
             <div
-              className="mx-auto mt-6 inline-flex items-center rounded-md border border-white/40 bg-black/25 p-1"
+              className="mx-auto mt-4 inline-flex items-center rounded-md border border-white/40 bg-black/25 p-0.5"
               aria-label="Choose language"
             >
               <button
                 type="button"
                 onClick={() => setLanguage("bn")}
                 aria-pressed={language === "bn"}
-                className={`min-w-20 rounded px-4 py-2 text-sm font-semibold transition ${
+                className={`min-w-14 rounded px-2.5 py-1 text-xs font-semibold transition ${
                   language === "bn"
                     ? "bg-white text-emerald-900"
                     : "text-white hover:bg-white/15"
@@ -132,7 +132,7 @@ export default function MissionVisionPage() {
                 type="button"
                 onClick={() => setLanguage("en")}
                 aria-pressed={language === "en"}
-                className={`min-w-20 rounded px-4 py-2 text-sm font-semibold transition ${
+                className={`min-w-14 rounded px-2.5 py-1 text-xs font-semibold transition ${
                   language === "en"
                     ? "bg-white text-emerald-900"
                     : "text-white hover:bg-white/15"

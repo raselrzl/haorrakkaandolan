@@ -323,7 +323,7 @@ export default function LawPageContent() {
               {bn ? "আইন ও পরিবেশ সুরক্ষা" : "Law & environmental protection"}
             </span>
 
-            <h1 className="mt-4 max-w-3xl text-3xl leading-tight font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+            <h1 className="mt-4 max-w-3xl text-3xl leading-tight font-bold tracking-tight text-white sm:text-4xl">
               {bn
                 ? "হাওর, নদী ও জলাভূমি রক্ষার আইন"
                 : "Haor, River & Wetland Protection Laws"}
