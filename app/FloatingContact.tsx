@@ -35,7 +35,7 @@ function ContactForm({
     <section
       aria-labelledby="floating-contact-title"
       aria-live="polite"
-      className="w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl shadow-slate-900/10 sm:w-[330px] animate-contact-in"
+      className="w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl shadow-slate-900/10 sm:w-82.5 animate-contact-in"
     >
       <div className="flex items-center justify-between border-b border-slate-100 bg-white px-4 py-3">
         <div className="flex items-center gap-2.5">
@@ -99,7 +99,7 @@ function ContactForm({
           {/* Honeypot for basic spam protection */}
           <div
             aria-hidden="true"
-            className="absolute -left-[10000px] top-auto h-px w-px overflow-hidden"
+            className="absolute left-[-10000px] top-auto h-px w-px overflow-hidden"
           >
             <label htmlFor="contact-website">Website</label>
             <input
@@ -311,9 +311,9 @@ export default function FloatingContact() {
         }
       `}</style>
 
-      <div className="fixed bottom-4 right-4 z-[100] sm:bottom-5 sm:right-5">
+      <div className="fixed bottom-4 right-4 z-100 sm:bottom-5 sm:right-5">
         {open && (
-          <div className="absolute bottom-[58px] right-0">
+          <div className="absolute bottom-14.5 right-0">
             <ContactForm
               key={formVersion}
               onClose={() => setOpen(false)}
@@ -336,9 +336,9 @@ export default function FloatingContact() {
 
           <span className={!open ? "contact-float relative" : "relative"}>
             {open ? (
-              <X className="h-[18px] w-[18px]" />
+              <X className="h-4.5 w-4.5" />
             ) : (
-              <MessageCircle className="h-[21px] w-[21px] fill-white/20 stroke-[2.2]" />
+              <MessageCircle className="h-5.25 w-5.25 fill-white/20 stroke-[2.2]" />
             )}
           </span>
         </button>
