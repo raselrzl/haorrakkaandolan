@@ -88,7 +88,8 @@ export default function RiverSection({
   return (
     <section
       id="river"
-      className="scroll-mt-20 border-y border-slate-200 bg-white py-8 sm:py-10"
+      className="scroll-mt-20 border-slate-200 py-6  
+      rounded-2xl m-2"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-stretch gap-6 lg:grid-cols-2 lg:gap-8">
@@ -259,7 +260,7 @@ export default function RiverSection({
                             <Link href={href}>{item.title}</Link>
                           </h3>
 
-                          <p className="mt-1 line-clamp-2 text-xs leading-[1.15rem] text-slate-600">
+                          <p className="mt-1 line-clamp-2 text-xs leading-[1.15rem] text-slate-600 text-justify">
                             {item.description}
                           </p>
 
@@ -275,13 +276,15 @@ export default function RiverSection({
                     );
                   })}
                 </div>
-
                 <Link
                   href="/activities"
-                  className="mt-auto flex items-center justify-between border-t border-slate-200 pt-3 text-xs font-bold text-emerald-800 transition hover:text-emerald-950"
+                  className="group inline-flex items-center gap-2 rounded-full bg-emerald-800 px-4 py-2 text-xs font-semibold text-white transition-colors duration-200 hover:bg-emerald-900"
                 >
-                  All River Activities
-                  <ArrowRight size={15} />
+                  All Activities
+                  <span className="flex items-center transition-transform duration-300 group-hover:translate-x-1">
+                    <ChevronRight size={15} />
+                    <ChevronRight size={15} className="-ml-2" />
+                  </span>
                 </Link>
               </>
             ) : (

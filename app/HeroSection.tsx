@@ -90,38 +90,30 @@ export default function HeroSection({
       />
 
       <div className="relative mx-auto flex min-h-130 max-w-7xl flex-col px-5 pb-8 pt-16 sm:min-h-140 sm:px-8 sm:pt-20 lg:min-h-[55vh] lg:max-h-162.5 lg:justify-center lg:px-10 lg:pb-20 lg:pt-12">
-        {/* Main hero content */}
-        <div className="max-w-2xl text-white">
-          <h1 className="mt-6 font-heading text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-            Protect Our Haors.
-            <span className="mt-1 block text-green-300">
-              Protect Our Future.
-            </span>
-          </h1>
+       {/* Main hero content */}
+<div className="max-w-2xl text-white">
+  <h1 className="mt-6 animate-[fadeInUp_0.8s_ease-out_both] text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+    Protect Our Haors.
+    <span className="mt-1 block animate-[fadeInUp_0.8s_ease-out_0.25s_both] text-green-300">
+      Protect Our Future.
+    </span>
+  </h1>
 
-          <p className="mt-5 max-w-xl text-sm leading-7 text-white/90 sm:text-base sm:leading-8">
-            Standing together to protect haors, rivers, wetlands, fisheries,
-            agriculture and the natural heritage of Bangladesh.
-          </p>
+  <p className="mt-5 max-w-xl animate-[fadeInUp_0.8s_ease-out_0.4s_both] text-sm leading-7 text-white/90 sm:text-base sm:leading-8">
+    Standing together to protect haors, rivers, wetlands, fisheries,
+    agriculture and the natural heritage of Bangladesh.
+  </p>
 
-          <div className="mt-7 flex flex-wrap gap-3">
-            {/*      <Link
-              href="#updates"
-              className="group inline-flex items-center justify-center gap-3 rounded-full bg-green-700 px-6 py-2 text-sm font-semibold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:bg-green-800"
-            >
-              Latest Updates
-              <AnimatedChevron />
-            </Link> */}
-
-            <Link
-              href="/contact"
-              className="group inline-flex items-center justify-center gap-3 rounded-full bg-green-700 px-6 py-2 text-sm font-semibold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:bg-green-800"
-            >
-              Get Involved
-              <AnimatedChevron />
-            </Link>
-          </div>
-        </div>
+  <div className="mt-7 flex flex-wrap gap-3 animate-[fadeInUp_0.8s_ease-out_0.6s_both]">
+    <Link
+      href="/contact"
+      className="group inline-flex items-center justify-center gap-3 rounded-full bg-green-700 px-6 py-2 text-sm font-semibold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:bg-green-800"
+    >
+      Get Involved
+      <AnimatedChevron />
+    </Link>
+  </div>
+</div>
 
         {/* Updates panel: four items maximum */}
         <div className="mt-10 w-full self-end lg:absolute lg:-bottom-4 lg:-right-12 lg:mt-0 lg:w-110">

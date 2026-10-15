@@ -68,7 +68,7 @@ export default async function LatestNews() {
                 className="group flex min-w-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition duration-300 hover:-translate-y-1 hover:border-emerald-800/30 hover:shadow-lg hover:shadow-emerald-950/5"
               >
                 {/* Media */}
-                <div className="relative aspect-[16/10] overflow-hidden bg-emerald-950">
+                <div className="relative aspect-16/10 overflow-hidden bg-emerald-950">
                   {item.mediaUrl && item.mediaType === "IMAGE" ? (
                     <Link
                       href={`/news/${item.id}`}
@@ -142,17 +142,21 @@ export default async function LatestNews() {
                     </h3>
                   </Link>
 
-                  {/*     <p className="mt-2 line-clamp-3 flex-1 text-sm leading-6 text-slate-500">
+                  <p className="mt-2 flex-1 text-sm leading-6 text-slate-500 line-clamp-2">
                     {item.details}
-                  </p> */}
-
-                  <Link
-                    href={`/news/${item.id}`}
-                    className="mt-4 inline-flex w-fit items-center gap-1.5 border-b border-emerald-800/30 pb-1 text-xs font-bold text-emerald-800 transition hover:border-emerald-800 hover:text-emerald-950"
-                  >
-                    Details
-                    <ArrowUpRight size={14} />
-                  </Link>
+                  </p>
+                  <div className="mt-4 flex justify-end">
+                    <Link
+                      href={`/news/${item.id}`}
+                      className="group inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-800 transition-colors hover:text-emerald-950"
+                    >
+                      Details
+                      <ArrowUpRight
+                        size={14}
+                        className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                      />
+                    </Link>
+                  </div>
                 </div>
               </article>
             ))}
