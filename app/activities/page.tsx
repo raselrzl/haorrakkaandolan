@@ -557,7 +557,7 @@ export default function ActivitiesPage() {
               </div>
             </div>
 
-            <div className="flex shrink-0 justify-end border-t border-slate-200 bg-slate-50 px-4 py-2">
+            <div className="flex shrink-0 justify-end border-t border-slate-200 bg-slate-50 px-4 py-1">
               <button
                 type="button"
                 onClick={() => setSelectedItem(null)}
