@@ -3,8 +3,6 @@
 import { NextResponse } from "next/server";
 import { markDonationFailed, processValidatedPayment } from "../../_lib/sslcommerz";
 
-export const runtime = "nodejs";
-
 export async function POST(request: Request) {
   try {
     const form = await request.formData();
