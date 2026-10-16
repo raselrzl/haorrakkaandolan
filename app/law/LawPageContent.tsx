@@ -316,7 +316,7 @@ export default function LawPageContent() {
           <div className="absolute inset-0 bg-linear-to-r from-emerald-950/95 via-emerald-950/80 to-emerald-950/50" />
         </div>
 
-        <div className="relative mx-auto flex min-h-72.5 max-w-7xl items-center px-5 py-10 sm:min-h-82.5">
+        <div className="relative mx-auto flex h-130 max-w-7xl items-center px-5 py-10 sm:min-h-82.5">
           <div className="max-w-3xl">
             <span className="inline-flex items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-900/50 px-3 py-1.5 text-[10px] font-bold tracking-wider text-emerald-100 uppercase">
               <Scale size={14} />

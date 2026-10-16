@@ -87,7 +87,7 @@ export default function AboutPage() {
    {/* Hero */}
 <section className="relative isolate mt-16 overflow-hidden bg-emerald-950">
   <Image
-    src="/monu1.jpg"
+    src="/us1.jpg"
     alt="Haor Rokkha Andolan"
     fill
     priority
@@ -95,9 +95,9 @@ export default function AboutPage() {
     className="object-cover object-center"
   />
 
-  <div className="absolute inset-0 bg-linear-to-r from-emerald-950/95 via-emerald-950/80 to-emerald-950/65" />
+  <div className="absolute inset-0 bg-linear-to-r from-emerald-950/30 via-emerald-950/50 to-emerald-950/40" />
 
-  <div className="relative mx-auto flex min-h-72.5 max-w-7xl items-center justify-center px-4 py-10 text-center sm:min-h-82.5 sm:px-6 lg:px-8">
+  <div className="relative mx-auto flex h-130 max-w-7xl items-center justify-center px-4 py-10 text-center sm:min-h-82.5 sm:px-6 lg:px-8">
     <div>
       <p className="mb-2 text-[9px] font-bold tracking-[0.2em] text-emerald-300 uppercase sm:text-xs sm:tracking-[0.28em]">
         Haor Rokkha Andolan · Moulvibazar

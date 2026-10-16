@@ -78,7 +78,7 @@ export default function MissionVisionPage() {
       {/* HERO */}
       <section className="relative isolate mt-16 overflow-hidden bg-emerald-950">
         <Image
-          src="/monu5.jpg"
+          src="/monu.jpg"
           alt={
             language === "bn"
               ? "বাংলাদেশের হাওর ও জলাভূমির প্রাকৃতিক দৃশ্য"
@@ -90,9 +90,9 @@ export default function MissionVisionPage() {
           className="object-cover object-center"
         />
 
-        <div className="absolute inset-0 bg-linear-to-r from-emerald-950/95 via-emerald-950/80 to-emerald-950/50" />
+        <div className="absolute inset-0 bg-linear-to-r from-emerald-950/30 via-emerald-950/50 to-emerald-950/30" />
 
-        <div className="relative mx-auto flex min-h-72.5 max-w-7xl items-center justify-center px-5 py-10 sm:min-h-82.5 sm:px-8">
+        <div className="relative mx-auto flex h-130 max-w-7xl items-center justify-center px-5 py-10 sm:min-h-82.5 sm:px-8">
           <div className="w-full max-w-4xl text-center">
             <p className="text-xs font-semibold tracking-[0.15em] text-white/90 sm:text-sm">
               {t.eyebrow}

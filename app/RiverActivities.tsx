@@ -29,30 +29,30 @@ type RiverSectionProps = {
 
 const riverSlides = [
   {
-    name: "Surma River",
-    image: "/monu1.jpg",
-    alt: "Surma River",
+    name: "Monu River",
+    image: "/mon.gif",
+    alt: "Monu River",
   },
   {
-    name: "Kushiyara River",
-    image: "/monu2.jpg",
-    alt: "Kushiyara River",
+    name: "Dholai River",
+    image: "/dholai.jpg",
+    alt: "Dholai River",
   },
   {
-    name: "Meghna River",
-    image: "/monu3.jpg",
-    alt: "Meghna River",
+    name: "Fanai River",
+    image: "/fanai.jpg",
+    alt: "Fanai River",
   },
   {
-    name: "Rivers of Bangladesh",
-    image: "/monu4.jpg",
-    alt: "Bangladesh river",
+    name: "Laghata River",
+    image: "/laghata.jpg",
+    alt: "Laghata river",
   },
-  {
+/*   {
     name: "Protect Our Waterways",
     image: "/monu5.jpg",
     alt: "Natural waterways",
-  },
+  }, */
 ];
 
 function formatActivityDate(date: string | Date) {
@@ -133,17 +133,17 @@ export default function RiverSection({
             {/* Carousel content */}
             <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-300">
-                Rivers of Bangladesh
+                Rivers in Moulvibazar.
               </p>
 
               <h2 className="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl">
                 {slide.name}
               </h2>
 
-              <p className="mt-2 max-w-md text-sm leading-5 text-white/80">
+  {/*             <p className="mt-2 max-w-md text-sm leading-5 text-white/80">
                 Protecting rivers, biodiversity, and the communities that depend
                 on them.
-              </p>
+              </p> */}
 
               <Link
                 href="/river"

@@ -12,12 +12,12 @@ const haorSlides = [
   },
   {
     name: "Kawadighi Haor",
-    image: "/hm1.jpg",
+    image: "/hm2.jpg",
     alt: "Kawadighi Haor wetland landscape in Bangladesh",
   },
   {
     name: "Hail Haor",
-    image: "/hm3.jpg",
+    image: "/hail.webp",
     alt: "Hail Haor wetland landscape in Bangladesh",
   },
 ];

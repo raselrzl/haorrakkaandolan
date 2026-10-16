@@ -53,9 +53,9 @@ export default function ConstitutionPublicView({ documents }: Props) {
           style={{ backgroundImage: "url('/h11.jpg')" }}
         >
           {/* Dark overlay for readable text */}
-          <div className="absolute inset-0 bg-emerald-950/75" />
+          <div className="absolute inset-0 bg-emerald-950/55" />
 
-          <div className="relative mx-auto flex min-h-72.5 max-w-6xl items-center px-5 py-10 sm:min-h-82.5 sm:px-8">
+          <div className="relative mx-auto flex h-130 max-w-6xl items-center px-5 py-10 sm:min-h-82.5 sm:px-8">
             <div className="flex w-full flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0">
                 <Link
