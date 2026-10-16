@@ -208,3 +208,36 @@ model DonationAccount {
   @@index([providerName])
   @@index([createdAt])
 }
+
+
+enum DonationPaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
+  REVIEW
+}
+
+model Donation {
+  id                String                @id @default(cuid())
+  tranId             String                @unique
+  donorName          String
+  donorEmail         String
+  donorPhone         String
+  amount             Decimal               @db.Decimal(10, 2)
+  currency           String                @default("BDT")
+  message            String?               @db.Text
+  status             DonationPaymentStatus @default(PENDING)
+  valId              String?               @unique
+  bankTranId         String?
+  cardType           String?
+  riskLevel          Int?
+  validationResponse Json?
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+  paidAt             DateTime?
+
+  @@index([status, createdAt])
+  @@index([donorEmail])
+  @@index([bankTranId])
+}

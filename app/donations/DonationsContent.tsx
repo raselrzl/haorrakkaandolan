@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -11,6 +12,7 @@ import {
   Wallet,
 } from "lucide-react";
 import Navbar from "../Navbar";
+import DonateNow from "./DonateNow";
 
 type DonationAccount = {
   id: string;
@@ -20,93 +22,105 @@ type DonationAccount = {
   bankAddress: string | null;
 };
 
-type Props = {
+type DonationsContentProps = {
   accounts: DonationAccount[];
 };
 
-export default function DonationsContent({ accounts }: Props) {
+export default function DonationsContent({
+  accounts,
+}: DonationsContentProps) {
   const [language, setLanguage] = useState<"en" | "bn">("en");
   const bn = language === "bn";
 
   const t = {
-    eyebrow: bn ? "অনুদান" : "DONATION",
-    title: bn
-      ? "হাওর রক্ষা আন্দোলনের পাশে থাকুন"
-      : "Support Haor Rokkha Andolan",
-    intro: bn
-      ? "হাওর, নদী, জলাভূমি, জীববৈচিত্র্য ও স্থানীয় মানুষের জীবন-জীবিকা রক্ষায় আপনার সহযোগিতা গুরুত্বপূর্ণ।"
-      : "Your contribution supports our efforts to protect haors, rivers, wetlands, biodiversity, and local communities.",
-    donate: bn ? "অনুদান দিন" : "Donate Now",
-    details: bn ? "অনুদানের তথ্য" : "DONATION DETAILS",
-    accounts: bn ? "অনুদানের অ্যাকাউন্টসমূহ" : "Donation Accounts",
+    donate: bn ? "এখনই অনুদান দিন" : "Donate Now",
+    accounts: bn ? "অনুদানের অ্যাকাউন্ট" : "Donation Accounts",
     accountIntro: bn
-      ? "নিচের তথ্য ব্যবহার করে অনুদান পাঠান।"
-      : "Use the account details below to send your contribution.",
-    payment: bn ? "পেমেন্টের মাধ্যম" : "Payment Method",
+      ? "নিচের অ্যাকাউন্টগুলোর মাধ্যমে সরাসরি অনুদান দিতে পারেন।"
+      : "You can support our work directly through the accounts below.",
     accountName: bn ? "অ্যাকাউন্টের নাম" : "Account Name",
-    accountNumber: bn ? "অ্যাকাউন্ট নম্বর" : "Account Number",
+    provider: bn ? "ব্যাংক / সেবা প্রদানকারী" : "Bank / Provider",
+    number: bn ? "অ্যাকাউন্ট নম্বর" : "Account Number",
     address: bn ? "শাখা / ঠিকানা" : "Branch / Address",
-    verify: bn
-      ? "অনুদান পাঠানোর আগে প্রাপকের তথ্য যাচাই করুন।"
-      : "Please verify the recipient details before transferring.",
-    emptyTitle: bn
-      ? "অনুদানের অ্যাকাউন্টের তথ্য শিগগিরই প্রকাশ করা হবে।"
-      : "Donation accounts will be available soon.",
-    emptyText: bn
-      ? "পরে আবার দেখুন অথবা সহায়তার জন্য যোগাযোগ করুন।"
-      : "Please check back later or contact us for assistance.",
-    thanks: bn ? "আপনার অনুদানের জন্য ধন্যবাদ" : "Thank You for Your Support",
-    thanksText: bn
-      ? "হাওর ও প্রকৃতি রক্ষায় আপনার সহযোগিতা আমাদের অনুপ্রেরণা।"
-      : "Your support inspires our shared efforts to protect our haors and nature.",
-    helpTitle: bn ? "সহায়তা প্রয়োজন?" : "Need Help?",
-    helpText: bn
-      ? "অনুদান সম্পর্কে জানতে বা সহায়তা পেতে আমাদের সঙ্গে যোগাযোগ করুন।"
-      : "Contact us if you have questions or need help with your donation.",
-    contact: bn ? "যোগাযোগ করুন" : "Contact Us",
+    noAccounts: bn
+      ? "বর্তমানে কোনো অনুদান অ্যাকাউন্ট প্রকাশিত নেই।"
+      : "No donation accounts are currently published.",
+    copy: bn ? "নম্বর কপি করুন" : "Copy Account Number",
+    copied: bn ? "কপি হয়েছে" : "Copied",
+    missionTitle: bn
+      ? "হাওর রক্ষায় আপনার অবদান"
+      : "Your Contribution Protects Our Haors",
+    missionText: bn
+      ? "আপনার অনুদান হাওর, জীববৈচিত্র্য, পরিবেশ এবং হাওরনির্ভর জনগোষ্ঠীর সুরক্ষায় আমাদের উদ্যোগকে এগিয়ে নিতে সহায়তা করে।"
+      : "Your contribution helps support initiatives focused on protecting haors, biodiversity, the environment, and communities that depend on these wetlands.",
+    howTitle: bn ? "কীভাবে অনুদান দেবেন" : "How to Donate",
+    stepOne: bn
+      ? "অনলাইনে অনুদানের জন্য Donate Now নির্বাচন করুন।"
+      : "Select Donate Now to start an online donation.",
+    stepTwo: bn
+      ? "পরিমাণ ও যোগাযোগের তথ্য পূরণ করুন।"
+      : "Enter your donation amount and contact details.",
+    stepThree: bn
+      ? "SSLCommerz পেমেন্ট পেজে গিয়ে পেমেন্ট সম্পন্ন করুন।"
+      : "Continue to SSLCommerz and complete your payment.",
+    manualNote: bn
+      ? "ব্যাংক বা অন্যান্য অ্যাকাউন্টে সরাসরি পাঠালে সঠিক অ্যাকাউন্টের তথ্য যাচাই করে নিন।"
+      : "For direct transfers, please verify the account details before sending money.",
+    contactTitle: bn
+      ? "অনুদান সম্পর্কে সহায়তা প্রয়োজন?"
+      : "Need Help With Your Donation?",
+    contactText: bn
+      ? "অনুদান সংক্রান্ত তথ্য বা সহায়তার জন্য আমাদের সঙ্গে যোগাযোগ করুন।"
+      : "Contact us if you need assistance or have questions about making a donation.",
     footer: bn
-      ? "হাওর, নদী, জলাভূমি ও প্রকৃতি রক্ষায় আমরা একসঙ্গে।"
-      : "Together for our haors, rivers, wetlands, and nature.",
-    count: bn ? "টি অ্যাকাউন্ট" : "accounts",
+      ? "হাওর, প্রকৃতি ও মানুষের কল্যাণে আপনার সহযোগিতার জন্য ধন্যবাদ।"
+      : "Thank you for supporting our work for haors, nature, and local communities.",
   };
 
+  async function copyAccountNumber(accountNumber: string) {
+    try {
+      await navigator.clipboard.writeText(accountNumber);
+      window.alert(t.copied);
+    } catch {
+      window.alert(
+        bn
+          ? "কপি করা যায়নি। অনুগ্রহ করে নম্বরটি হাতে কপি করুন।"
+          : "Could not copy. Please copy the account number manually.",
+      );
+    }
+  }
+
   return (
-    <main className="min-h-screen bg-white text-slate-900">
+    <main className="min-h-screen bg-slate-50 text-slate-800">
       <Navbar />
 
-      {/* Compact hero */}
-      <section
-        className="relative isolate flex min-h-100 mt-16 items-center overflow-hidden bg-emerald-950 text-white sm:min-h-105"
-        style={{
-          backgroundImage: "url('/monu1.jpg')",
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <div className="absolute inset-0 -z-10 bg-emerald-950/75" />
-        <div className="absolute inset-0 -z-10 bg-linear-to-r from-emerald-950/95 via-emerald-950/75 to-emerald-950/35" />
+      {/* Hero */}
+      <section className="relative isolate overflow-hidden bg-emerald-950">
+        <div
+          className="absolute inset-0 -z-20 bg-cover bg-center"
+          style={{ backgroundImage: "url('/monu1.jpg')" }}
+        />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-emerald-950/95 via-emerald-950/80 to-emerald-950/55" />
 
-        <div className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 sm:py-12">
-          <div className="mb-8 flex items-center justify-between gap-3">
-            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.16em] text-emerald-200">
-              <Heart size={15} />
-              {t.eyebrow}
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white">
+              <Heart size={14} />
+              {bn ? "হাওর রক্ষা আন্দোলন" : "Haor Rokkha Andolan"}
             </span>
 
-            {/* English / Bangla toggle */}
             <div
-              className="inline-flex shrink-0 rounded-lg border border-white/25 bg-black/20 p-1 backdrop-blur-sm"
-              aria-label="Choose page language"
+              className="inline-flex items-center rounded-lg border border-white/30 bg-black/20 p-1"
+              aria-label="Choose language"
             >
               <button
                 type="button"
                 onClick={() => setLanguage("en")}
                 aria-pressed={!bn}
-                className={`rounded-md px-3 py-1.5 text-xs font-semibold transition ${
+                className={`rounded-md px-3 py-1.5 text-xs font-bold transition ${
                   !bn
                     ? "bg-white text-emerald-950"
-                    : "text-white/85 hover:bg-white/10"
+                    : "text-white hover:bg-white/10"
                 }`}
               >
                 English
@@ -115,10 +129,10 @@ export default function DonationsContent({ accounts }: Props) {
                 type="button"
                 onClick={() => setLanguage("bn")}
                 aria-pressed={bn}
-                className={`rounded-md px-3 py-1.5 text-xs font-semibold transition ${
+                className={`rounded-md px-3 py-1.5 text-xs font-bold transition ${
                   bn
                     ? "bg-white text-emerald-950"
-                    : "text-white/85 hover:bg-white/10"
+                    : "text-white hover:bg-white/10"
                 }`}
               >
                 বাংলা
@@ -126,177 +140,205 @@ export default function DonationsContent({ accounts }: Props) {
             </div>
           </div>
 
-          <h1 className="max-w-2xl text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
-            {t.title}
-          </h1>
+          <div className="mt-9 max-w-3xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-200">
+              {bn ? "আপনার সহযোগিতা গুরুত্বপূর্ণ" : "Your Support Matters"}
+            </p>
 
-          <p className="mt-4 max-w-xl text-sm leading-6 text-white/90 sm:text-base sm:leading-7">
-            {t.intro}
-          </p>
+            <h1 className="mt-3 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
+              {bn
+                ? "হাওর রক্ষায় আপনার সহযোগিতা দিন"
+                : "Support the Protection of Our Haors"}
+            </h1>
 
-          <a
-            href="#donation-accounts"
-            className="mt-6 inline-flex min-h-10 items-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-bold text-emerald-950 transition hover:bg-emerald-50"
-          >
-            {t.donate}
-            <ArrowRight size={16} />
-          </a>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-emerald-50 sm:text-base">
+              {t.missionText}
+            </p>
+
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+            {/*   <DonateNow language={language} /> */}
+
+              <a
+                href="#donation-accounts"
+                className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-white/30 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/20"
+              >
+                {bn ? "অনুদানের অ্যাকাউন্ট দেখুন" : "View Donation Accounts"}
+                <ArrowRight size={16} />
+              </a>
+            </div>
+          </div>
         </div>
-
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-linear-to-t from-emerald-950/40 to-transparent" />
       </section>
 
-      {/* Donation accounts */}
+      {/* Mission */}
+      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="grid gap-4 md:grid-cols-[1.4fr_1fr]">
+          <div className="rounded-xl border border-emerald-900/10 bg-white p-5 shadow-sm sm:p-6">
+            <div className="flex items-start gap-3">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-800">
+                <Heart size={20} />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-slate-900">
+                  {t.missionTitle}
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  {t.missionText}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-emerald-900/10 bg-white p-5 shadow-sm sm:p-6">
+            <div className="flex items-center gap-3">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-sky-800">
+                <Wallet size={20} />
+              </div>
+              <h2 className="text-lg font-bold text-slate-900">
+                {t.howTitle}
+              </h2>
+            </div>
+
+            <ol className="mt-4 space-y-3 text-sm leading-5 text-slate-600">
+              {[t.stepOne, t.stepTwo, t.stepThree].map((step, index) => (
+                <li key={step} className="flex items-start gap-3">
+                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-900">
+                    {index + 1}
+                  </span>
+                  <span>{step}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      {/* Donation Accounts */}
       <section
         id="donation-accounts"
-        className="scroll-mt-4 bg-slate-50 px-4 py-9 sm:px-6 sm:py-11"
+        className="mx-auto max-w-7xl scroll-mt-24 px-4 pb-10 sm:px-6 lg:px-8"
       >
-        <div className="mx-auto max-w-5xl">
-          <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
-            <div>
-              <p className="text-[11px] font-bold tracking-[0.15em] text-emerald-800">
-                {t.details}
-              </p>
-              <h2 className="mt-1.5 text-2xl font-bold tracking-tight sm:text-3xl">
-                {t.accounts}
-              </h2>
-              <p className="mt-1.5 text-sm text-slate-600">{t.accountIntro}</p>
-            </div>
-
-            <span className="inline-flex w-fit items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600">
-              <Wallet size={15} className="text-emerald-800" />
-              {accounts.length} {t.count}
-            </span>
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-800">
+              {bn ? "সরাসরি অনুদান" : "Direct Contributions"}
+            </p>
+            <h2 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900">
+              {t.accounts}
+            </h2>
+            <p className="mt-2 text-sm text-slate-600">{t.accountIntro}</p>
           </div>
 
-          {accounts.length === 0 ? (
-            <div className="mt-5 rounded-xl border border-dashed border-slate-300 bg-white px-4 py-9 text-center">
-              <Building2 size={26} className="mx-auto text-emerald-800" />
-              <h3 className="mt-3 text-sm font-bold text-slate-800">
-                {t.emptyTitle}
-              </h3>
-              <p className="mt-1.5 text-sm text-slate-600">{t.emptyText}</p>
-            </div>
-          ) : (
-            <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2">
-              {accounts.map((account) => (
-                <article
-                  key={account.id}
-                  className="overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:border-emerald-200 hover:shadow-sm"
-                >
-                  <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-3">
-                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-800">
-                      <CreditCard size={19} />
-                    </div>
+          <span className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600">
+            <Building2 size={15} />
+            {accounts.length} {bn ? "টি অ্যাকাউন্ট" : "accounts"}
+          </span>
+        </div>
 
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[11px] text-slate-500">{t.payment}</p>
-                      <h3 className="wrap-break-words text-sm font-bold text-slate-900">
-                        {account.providerName}
-                      </h3>
-                    </div>
-
-                    <span className="rounded-md bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-800">
-                      DONATE
-                    </span>
+        {accounts.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-slate-300 bg-white px-5 py-12 text-center">
+            <Wallet className="mx-auto text-slate-400" size={30} />
+            <p className="mt-3 text-sm text-slate-600">{t.noAccounts}</p>
+          </div>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {accounts.map((account) => (
+              <article
+                key={account.id}
+                className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:border-emerald-800/40 hover:shadow-md"
+              >
+                <div className="flex items-center gap-3 border-b border-slate-100 bg-emerald-950 px-4 py-4 text-white">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-white/10">
+                    <Building2 size={20} />
                   </div>
-
-                  <div className="space-y-3 px-4 py-3.5">
-                    <div>
-                      <p className="text-[11px] font-medium text-slate-500">
-                        {t.accountName}
-                      </p>
-                      <p className="mt-0.5 wrap-break-words text-sm font-semibold text-slate-800">
-                        {account.accountName}
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className="text-[11px] font-medium text-slate-500">
-                        {t.accountNumber}
-                      </p>
-                      <p className="mt-1 break-all rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 font-mono text-sm font-bold tracking-wide text-slate-900">
-                        {account.accountNumber}
-                      </p>
-                    </div>
-
-                    {account.bankAddress && (
-                      <div className="flex items-start gap-2">
-                        <MapPin
-                          size={14}
-                          className="mt-0.5 shrink-0 text-emerald-800"
-                        />
-                        <div className="min-w-0">
-                          <p className="text-[11px] font-medium text-slate-500">
-                            {t.address}
-                          </p>
-                          <p className="mt-0.5 whitespace-pre-line wrap-break-words text-sm leading-5 text-slate-700">
-                            {account.bankAddress}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="border-t border-slate-100 bg-slate-50 px-4 py-2">
-                    <p className="text-xs leading-5 text-slate-600">
-                      {t.verify}
+                  <div className="min-w-0">
+                    <h3 className="truncate text-base font-bold">
+                      {account.accountName}
+                    </h3>
+                    <p className="mt-0.5 truncate text-xs text-emerald-100">
+                      {account.providerName}
                     </p>
                   </div>
-                </article>
-              ))}
-            </div>
-          )}
-        </div>
+                </div>
+
+                <div className="space-y-4 p-4">
+                  <div>
+                    <p className="text-xs font-medium text-slate-500">
+                      {t.number}
+                    </p>
+                    <div className="mt-1 flex items-center justify-between gap-3">
+                      <p className="break-all font-mono text-sm font-bold text-slate-900">
+                        {account.accountNumber}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          void copyAccountNumber(account.accountNumber)
+                        }
+                        className="shrink-0 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-semibold text-emerald-900 transition hover:border-emerald-800 hover:bg-emerald-50"
+                      >
+                        {t.copy}
+                      </button>
+                    </div>
+                  </div>
+
+                  {account.bankAddress && (
+                    <div className="flex items-start gap-2 border-t border-slate-100 pt-3">
+                      <MapPin
+                        size={16}
+                        className="mt-0.5 shrink-0 text-emerald-800"
+                      />
+                      <div>
+                        <p className="text-xs font-medium text-slate-500">
+                          {t.address}
+                        </p>
+                        <p className="mt-1 text-sm leading-5 text-slate-700">
+                          {account.bankAddress}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+
+        <p className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-5 text-amber-900">
+          {t.manualNote}
+        </p>
       </section>
 
-      {/* Compact thank-you section */}
-      <section className="px-4 py-8 sm:px-6 sm:py-10">
-        <div className="mx-auto flex max-w-5xl items-start gap-3 rounded-xl border border-emerald-100 bg-emerald-50/70 p-4 sm:p-5">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-800">
-            <Heart size={20} />
-          </div>
-          <div>
-            <h2 className="text-lg font-bold text-emerald-950">{t.thanks}</h2>
-            <p className="mt-1 text-sm leading-6 text-slate-700">
-              {t.thanksText}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact */}
-      <section className="border-t border-slate-200 bg-white px-4 py-7 sm:px-6">
-        <div className="mx-auto flex max-w-5xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      {/* Support */}
+      <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
+        <div className="flex flex-col justify-between gap-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:p-6">
           <div className="flex items-start gap-3">
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-emerald-800">
-              <MessageCircle size={19} />
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-900">
+              <MessageCircle size={20} />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-slate-900">
-                {t.helpTitle}
+              <h2 className="text-base font-bold text-slate-900">
+                {t.contactTitle}
               </h2>
-              <p className="mt-1 max-w-2xl text-sm leading-5 text-slate-600">
-                {t.helpText}
+              <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600">
+                {t.contactText}
               </p>
             </div>
           </div>
 
           <a
             href="/contact"
-            className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-lg bg-emerald-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-800"
+            className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-lg bg-emerald-900 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-emerald-800"
           >
-            {t.contact}
-            <ArrowRight size={15} />
+            {bn ? "যোগাযোগ করুন" : "Contact Us"}
+            <ArrowRight size={16} />
           </a>
         </div>
-      </section>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-200 bg-slate-50 px-4 py-4 text-center">
-        <p className="text-sm font-bold text-slate-800">Haor Rokkha Andolan</p>
-        <p className="mt-1 text-xs leading-5 text-slate-500">{t.footer}</p>
-      </footer>
+        <p className="mt-6 text-center text-xs leading-5 text-slate-500">
+          {t.footer}
+        </p>
+      </section>
     </main>
   );
 }
