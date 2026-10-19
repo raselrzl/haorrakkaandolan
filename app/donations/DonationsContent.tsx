@@ -91,7 +91,7 @@ export default function DonationsContent({
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-800">
+    <main className="min-h-screen bg-slate-50 text-slate-800 mt-16">
       <Navbar />
 
       {/* Hero */}
@@ -100,7 +100,7 @@ export default function DonationsContent({
           className="absolute inset-0 -z-20 bg-cover bg-center"
           style={{ backgroundImage: "url('/monu1.jpg')" }}
         />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-emerald-950/95 via-emerald-950/80 to-emerald-950/55" />
+        <div className="absolute inset-0 -z-10 bg-linear-to-r from-emerald-950/95 via-emerald-950/80 to-emerald-950/55" />
 
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
           <div className="flex flex-wrap items-center justify-between gap-3">
