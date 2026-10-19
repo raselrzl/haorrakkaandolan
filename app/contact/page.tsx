@@ -18,6 +18,7 @@ import {
 
 import Navbar from "../Navbar";
 import { submitContactMessage, type ContactFormState } from "./actions";
+import Footer from "../Footer";
 
 const initialState: ContactFormState = {
   success: false,
@@ -421,6 +422,7 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
+      <Footer />
     </main>
   );
 }

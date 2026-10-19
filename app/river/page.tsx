@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import RiverContent from "./RiverContent";
+import Footer from "../Footer";
 
 export const metadata: Metadata = {
   title: "মনু নদী রক্ষা | Protect the Monu River",
@@ -8,5 +9,11 @@ export const metadata: Metadata = {
 };
 
 export default function MoulvibazarPage() {
-  return <RiverContent />;
+  return (
+    <>
+      {" "}
+      <RiverContent />
+      <Footer />
+    </>
+  );
 }

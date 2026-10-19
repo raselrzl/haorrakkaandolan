@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -16,6 +15,7 @@ import {
   Waves,
 } from "lucide-react";
 import Navbar from "../Navbar";
+import Footer from "../Footer";
 
 type Language = "en" | "bn";
 
@@ -249,84 +249,84 @@ export default function HaorPage() {
     >
       <Navbar />
 
-    {/* HERO */}
-<section className="relative isolate mt-16 overflow-hidden bg-emerald-950">
-  <Image
-    src="/hm3.jpg"
-    alt={
-      language === "bn"
-        ? "বাংলাদেশের হাওরাঞ্চলের প্রাকৃতিক দৃশ্য"
-        : "Haor wetland landscape in Bangladesh"
-    }
-    fill
-    priority
-    sizes="100vw"
-    className="object-cover object-center"
-  />
+      {/* HERO */}
+      <section className="relative isolate mt-16 overflow-hidden bg-emerald-950">
+        <Image
+          src="/hm3.jpg"
+          alt={
+            language === "bn"
+              ? "বাংলাদেশের হাওরাঞ্চলের প্রাকৃতিক দৃশ্য"
+              : "Haor wetland landscape in Bangladesh"
+          }
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
 
-  <div className="absolute inset-0 bg-linear-to-r from-emerald-950/95 via-emerald-950/80 to-emerald-950/50" />
+        <div className="absolute inset-0 bg-linear-to-r from-emerald-950/95 via-emerald-950/80 to-emerald-950/50" />
 
-  <div className="relative mx-auto flex min-h-72.5 max-w-7xl items-center px-5 py-10 sm:min-h-82.5">
-    <div className="max-w-3xl">
-      <p className="text-xs font-semibold tracking-wider text-emerald-100 uppercase sm:text-sm">
-        {t.eyebrow}
-      </p>
+        <div className="relative mx-auto flex min-h-72.5 max-w-7xl items-center px-5 py-10 sm:min-h-82.5">
+          <div className="max-w-3xl">
+            <p className="text-xs font-semibold tracking-wider text-emerald-100 uppercase sm:text-sm">
+              {t.eyebrow}
+            </p>
 
-      <h1 className="mt-4 max-w-3xl text-3xl leading-tight font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
-        {t.heroTitle}
-      </h1>
+            <h1 className="mt-4 max-w-3xl text-3xl leading-tight font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+              {t.heroTitle}
+            </h1>
 
-      <p className="mt-2 text-xl font-semibold text-emerald-50 sm:text-2xl">
-        {t.heroBangla}
-      </p>
+            <p className="mt-2 text-xl font-semibold text-emerald-50 sm:text-2xl">
+              {t.heroBangla}
+            </p>
 
-      <p className="mt-4 max-w-2xl text-sm leading-7 text-emerald-50/90 sm:text-base">
-        {t.heroDescription}
-      </p>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-emerald-50/90 sm:text-base">
+              {t.heroDescription}
+            </p>
 
-      <div className="mt-5 flex flex-wrap items-center gap-2">
-        <a
-          href="#haor-mission"
-          className="inline-flex items-center justify-center gap-2 rounded-md bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-600"
-        >
-          {t.explore}
-          <ArrowRight size={16} />
-        </a>
+            <div className="mt-5 flex flex-wrap items-center gap-2">
+              <a
+                href="#haor-mission"
+                className="inline-flex items-center justify-center gap-2 rounded-md bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-600"
+              >
+                {t.explore}
+                <ArrowRight size={16} />
+              </a>
 
-        <div
-          className="flex w-fit items-center gap-1 rounded-full border border-slate-200 bg-slate-100 p-1"
-          aria-label="Choose language"
-        >
-          <button
-            type="button"
-            onClick={() => setLanguage("en")}
-            aria-pressed={language === "en"}
-            className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
-              language === "en"
-                ? "bg-emerald-700 text-white shadow-sm"
-                : "text-slate-600 hover:text-emerald-800"
-            }`}
-          >
-            English
-          </button>
+              <div
+                className="flex w-fit items-center gap-1 rounded-full border border-slate-200 bg-slate-100 p-1"
+                aria-label="Choose language"
+              >
+                <button
+                  type="button"
+                  onClick={() => setLanguage("en")}
+                  aria-pressed={language === "en"}
+                  className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
+                    language === "en"
+                      ? "bg-emerald-700 text-white shadow-sm"
+                      : "text-slate-600 hover:text-emerald-800"
+                  }`}
+                >
+                  English
+                </button>
 
-          <button
-            type="button"
-            onClick={() => setLanguage("bn")}
-            aria-pressed={language === "bn"}
-            className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
-              language === "bn"
-                ? "bg-emerald-700 text-white shadow-sm"
-                : "text-slate-600 hover:text-emerald-800"
-            }`}
-          >
-            বাংলা
-          </button>
+                <button
+                  type="button"
+                  onClick={() => setLanguage("bn")}
+                  aria-pressed={language === "bn"}
+                  className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
+                    language === "bn"
+                      ? "bg-emerald-700 text-white shadow-sm"
+                      : "text-slate-600 hover:text-emerald-800"
+                  }`}
+                >
+                  বাংলা
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
       {/* INTRODUCTION */}
       <section
@@ -355,9 +355,7 @@ export default function HaorPage() {
       {/* WHY HAORS MATTER */}
       <section className="px-4 py-9 sm:px-6 sm:py-11 lg:px-8">
         <div className="mx-auto max-w-4xl border-t border-slate-200 pt-8">
-          <p className="text-sm font-semibold text-emerald-800">
-            {t.whyLabel}
-          </p>
+          <p className="text-sm font-semibold text-emerald-800">{t.whyLabel}</p>
 
           <h2 className="mt-2 text-2xl font-bold text-slate-900 sm:text-3xl">
             {t.whyTitle}
@@ -369,10 +367,7 @@ export default function HaorPage() {
 
               return (
                 <article key={item.title} className="flex gap-4 py-4">
-                  <Icon
-                    size={22}
-                    className="mt-1 shrink-0 text-emerald-800"
-                  />
+                  <Icon size={22} className="mt-1 shrink-0 text-emerald-800" />
 
                   <div>
                     <h3 className="font-semibold text-slate-900">
@@ -413,9 +408,7 @@ export default function HaorPage() {
                 </span>
 
                 <div className="min-w-0 flex-1">
-                  <h3 className="font-semibold text-slate-900">
-                    {haor.title}
-                  </h3>
+                  <h3 className="font-semibold text-slate-900">{haor.title}</h3>
 
                   <p className="mt-2 text-sm leading-7 text-slate-600">
                     {haor.description}
@@ -444,10 +437,7 @@ export default function HaorPage() {
 
               return (
                 <article key={item.title} className="flex gap-4 py-4">
-                  <Icon
-                    size={21}
-                    className="mt-1 shrink-0 text-emerald-800"
-                  />
+                  <Icon size={21} className="mt-1 shrink-0 text-emerald-800" />
 
                   <div>
                     <h3 className="font-semibold text-slate-900">
@@ -509,9 +499,7 @@ export default function HaorPage() {
       <footer className="border-t border-slate-200 bg-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-5 text-sm sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
           <div>
-            <p className="font-semibold text-slate-900">
-              Haor Rokkha Andolan
-            </p>
+            <p className="font-semibold text-slate-900">Haor Rokkha Andolan</p>
 
             <p className="mt-1 text-slate-500">{t.footer}</p>
           </div>
@@ -525,6 +513,7 @@ export default function HaorPage() {
           </Link>
         </div>
       </footer>
+      <Footer />
     </main>
   );
 }

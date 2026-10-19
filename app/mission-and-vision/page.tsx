@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { Target, Eye, ArrowDown } from "lucide-react";
 import Navbar from "../Navbar";
+import Footer from "../Footer";
 
 const content = {
   en: {
@@ -219,6 +220,7 @@ export default function MissionVisionPage() {
           </p>
         </div>
       </section>
+      <Footer />
     </main>
   );
 }

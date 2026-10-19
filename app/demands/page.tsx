@@ -1,8 +1,8 @@
-
 import { Suspense } from "react";
 import { prisma } from "../utils/db";
 import DemandsList from "./DemandsList";
 import Navbar from "../Navbar";
+import Footer from "../Footer";
 export const instant = false;
 
 async function PublishedDemands() {
@@ -45,7 +45,6 @@ async function PublishedDemands() {
 function DemandsLoading() {
   return (
     <main className="min-h-screen bg-slate-50 pt-16">
-      
       <div className="h-36 animate-pulse bg-emerald-950" />
       <section className="mx-auto max-w-6xl space-y-4 px-5 py-7 sm:px-8">
         <div className="h-5 w-40 animate-pulse rounded-lg bg-slate-200" />
@@ -58,6 +57,7 @@ function DemandsLoading() {
           ))}
         </div>
       </section>
+      <Footer />
     </main>
   );
 }
@@ -65,9 +65,10 @@ function DemandsLoading() {
 export default function DemandsPage() {
   return (
     <>
-    <Navbar />
-    <Suspense fallback={<DemandsLoading />}>
-      <PublishedDemands />
-    </Suspense></>
+      <Navbar />
+      <Suspense fallback={<DemandsLoading />}>
+        <PublishedDemands />
+      </Suspense>
+    </>
   );
 }

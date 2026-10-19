@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import DonationsData from "./DonationsData";
+import Footer from "../Footer";
 
 export const metadata = {
   title: "Donations | Haor Rokkha Andolan",
@@ -15,13 +16,11 @@ function DonationsLoading() {
         <div className="h-8 w-64 rounded bg-slate-200" />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 3 }).map((_, index) => (
-            <div
-              key={index}
-              className="h-36 rounded-xl bg-slate-200"
-            />
+            <div key={index} className="h-36 rounded-xl bg-slate-200" />
           ))}
         </div>
       </div>
+     
     </main>
   );
 }
@@ -30,6 +29,7 @@ export default function DonationsPage() {
   return (
     <Suspense fallback={<DonationsLoading />}>
       <DonationsData />
+       <Footer />
     </Suspense>
   );
 }

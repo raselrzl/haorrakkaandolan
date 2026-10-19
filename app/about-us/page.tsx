@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { getPublicTeamAction } from "./aboutActions";
 import FloatingContact from "../FloatingContact";
+import Footer from "../Footer";
 
 type TeamPerson = Awaited<ReturnType<typeof getPublicTeamAction>>[number];
 
@@ -473,6 +474,7 @@ export default function AboutPage() {
         </section>
       </div>
        <FloatingContact />
+       <Footer />
     </main>
   );
 }

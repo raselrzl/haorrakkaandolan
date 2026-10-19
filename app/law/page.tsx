@@ -1,6 +1,6 @@
-
 import type { Metadata } from "next";
 import LawPageContent from "./LawPageContent";
+import Footer from "../Footer";
 
 export const metadata: Metadata = {
   title: "Haor, River & Wetland Protection Laws | Haor Rokkha Andolan",
@@ -9,5 +9,10 @@ export const metadata: Metadata = {
 };
 
 export default function LawsPage() {
-  return <LawPageContent />;
+  return (
+    <>
+      <LawPageContent />
+      <Footer />
+    </>
+  );
 }

@@ -1,4 +1,4 @@
-
+import Footer from "../Footer";
 import { prisma } from "../utils/db";
 import ConstitutionPublicView from "./ConstitutionPublicView";
 
@@ -20,5 +20,10 @@ export default async function ConstitutionPage() {
     lastUpdatedAt: document.lastUpdatedAt.toISOString(),
   }));
 
-  return <ConstitutionPublicView documents={documents} />;
+  return (
+    <>
+      <ConstitutionPublicView documents={documents} />
+      <Footer />
+    </>
+  );
 }

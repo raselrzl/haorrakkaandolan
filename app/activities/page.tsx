@@ -15,6 +15,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { getPublicNewsPageAction, type PublicNewsFilter } from "../newsActions";
+import Footer from "../Footer";
 
 type NewsItem = Awaited<
   ReturnType<typeof getPublicNewsPageAction>
@@ -569,6 +570,7 @@ export default function ActivitiesPage() {
           </section>
         </div>
       )}
+      <Footer />
     </main>
   );
 }

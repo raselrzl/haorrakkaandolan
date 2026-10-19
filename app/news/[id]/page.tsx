@@ -13,6 +13,7 @@ import {
   Play,
 } from "lucide-react";
 import { prisma } from "@/app/utils/db";
+import Footer from "@/app/Footer";
 
 export const instant = false;
 
@@ -30,6 +31,66 @@ async function getNews(id: string) {
   } catch (error) {
     console.error("Unable to fetch public activity:", error);
     return null;
+  }
+}
+
+async function getRelatedNews(
+  currentId: string,
+  riverOrHaor: string,
+  type: string,
+) {
+  try {
+    const related = await prisma.news.findMany({
+      where: {
+        id: { not: currentId },
+        OR: [{ riverOrHaor: riverOrHaor as never }, { type: type as never }],
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 4,
+      select: {
+        id: true,
+        heading: true,
+        details: true,
+        mediaUrl: true,
+        mediaType: true,
+        riverOrHaor: true,
+        type: true,
+        createdAt: true,
+      },
+    });
+
+    if (related.length < 4) {
+      const existingIds = [currentId, ...related.map((item) => item.id)];
+
+      const additional = await prisma.news.findMany({
+        where: {
+          id: { notIn: existingIds },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 4 - related.length,
+        select: {
+          id: true,
+          heading: true,
+          details: true,
+          mediaUrl: true,
+          mediaType: true,
+          riverOrHaor: true,
+          type: true,
+          createdAt: true,
+        },
+      });
+
+      return [...related, ...additional];
+    }
+
+    return related;
+  } catch (error) {
+    console.error("Unable to fetch related news:", error);
+    return [];
   }
 }
 
@@ -116,15 +177,20 @@ export default async function NewsDetailsPage({ params }: PageProps) {
 
   const video = mediaUrl ? isVideo(mediaUrl, news.mediaType) : false;
 
+  const relatedNews = await getRelatedNews(
+    news.id,
+    String(news.riverOrHaor),
+    String(news.type),
+  );
+
   return (
     <>
       <Navbar />
 
       <main className="min-h-screen bg-white text-slate-900">
-        {/* White page header */}
+        {/* Page header */}
         <section className="bg-white">
           <div className="mx-auto max-w-7xl px-4 py-7 sm:px-6 sm:py-10 lg:px-8">
-            {/* Breadcrumb */}
             <nav
               aria-label="Breadcrumb"
               className="mb-7 flex flex-wrap items-center gap-2 text-xs text-slate-500 sm:text-sm"
@@ -166,9 +232,8 @@ export default async function NewsDetailsPage({ params }: PageProps) {
                 {title}
               </h1>
 
-              <div className=" flex items-center gap-2 text-sm text-slate-500">
+              <div className="flex items-center gap-2 text-sm text-slate-500">
                 <CalendarDays className="h-4 w-4 shrink-0 text-emerald-700" />
-
                 <time dateTime={news.createdAt.toISOString()}>
                   {formatDate(news.createdAt)}
                 </time>
@@ -181,29 +246,24 @@ export default async function NewsDetailsPage({ params }: PageProps) {
         <section className="mx-auto max-w-7xl bg-white px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
           <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-12">
             <article className="min-w-0">
-              {/* Full-width image or video */}
+              {/* Main image or video */}
               {mediaUrl && (
-                <div className="mb-8 overflow-hidden rounded-xl border border-slate-200 bg-black">
-                  <div className="relative aspect-video w-full">
-                    {video ? (
-                      <>
-                        <video
-                          src={mediaUrl}
-                          controls
-                          playsInline
-                          preload="metadata"
-                          aria-label={title}
-                          className="absolute inset-0 h-full w-full object-cover"
-                        >
-                          Your browser does not support video playback.
-                        </video>
-
-                        <div className="pointer-events-none absolute left-3 top-3 flex items-center gap-2 rounded-md bg-black/60 px-3 py-1.5 text-xs font-medium text-white">
-                          <Play className="h-3.5 w-3.5" />
-                          Video
-                        </div>
-                      </>
-                    ) : (
+                <div className="mb-8">
+                  {video ? (
+                    <div className="relative aspect-video w-full overflow-hidden bg-black">
+                      <video
+                        className="absolute inset-0 h-full w-full bg-black object-contain"
+                        controls
+                        preload="metadata"
+                        playsInline
+                        aria-label={title}
+                      >
+                        <source src={mediaUrl} />
+                        Your browser does not support this video.
+                      </video>
+                    </div>
+                  ) : (
+                    <div className="relative aspect-video w-full overflow-hidden">
                       <Image
                         src={mediaUrl}
                         alt={title}
@@ -213,8 +273,8 @@ export default async function NewsDetailsPage({ params }: PageProps) {
                         sizes="(max-width: 1024px) 100vw, 900px"
                         className="object-cover"
                       />
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -228,7 +288,6 @@ export default async function NewsDetailsPage({ params }: PageProps) {
                   <h2 className="text-base font-bold text-slate-950">
                     Activity details
                   </h2>
-
                   <p className="mt-1 text-xs text-slate-500">
                     Published by Haor Rokkha Andolan
                   </p>
@@ -236,7 +295,7 @@ export default async function NewsDetailsPage({ params }: PageProps) {
               </div>
 
               {/* Activity description */}
-              <div className="whitespace-pre-wrap wrap-break-words text-[15px] leading-8 text-slate-700 sm:text-base sm:leading-9 text-justify">
+              <div className="whitespace-pre-wrap wrap-break-words text-justify text-[15px] leading-8 text-slate-700 sm:text-base sm:leading-9">
                 {details || "No activity details are available."}
               </div>
 
@@ -268,7 +327,6 @@ export default async function NewsDetailsPage({ params }: PageProps) {
                     <p className="text-sm font-semibold text-slate-900">
                       Haor Rokkha Andolan
                     </p>
-
                     <p className="mt-1 text-xs leading-5 text-slate-500">
                       Activities and updates supporting the protection of haors,
                       rivers, wetlands and biodiversity.
@@ -281,7 +339,6 @@ export default async function NewsDetailsPage({ params }: PageProps) {
                     <p className="text-xs font-medium text-slate-500">
                       Activity type
                     </p>
-
                     <p className="mt-1 text-sm font-semibold text-slate-800">
                       {newsType}
                     </p>
@@ -291,7 +348,6 @@ export default async function NewsDetailsPage({ params }: PageProps) {
                     <p className="text-xs font-medium text-slate-500">
                       Coverage
                     </p>
-
                     <p className="mt-1 text-sm font-semibold text-slate-800">
                       {coverage}
                     </p>
@@ -301,7 +357,6 @@ export default async function NewsDetailsPage({ params }: PageProps) {
                     <p className="text-xs font-medium text-slate-500">
                       Publication date
                     </p>
-
                     <p className="mt-1 text-sm font-semibold text-slate-800">
                       {formatDate(news.createdAt)}
                     </p>
@@ -329,8 +384,135 @@ export default async function NewsDetailsPage({ params }: PageProps) {
               </section>
             </aside>
           </div>
+
+          {/* Related news and activities */}
+          {relatedNews.length > 0 && (
+            <section className="mt-12 border-t border-slate-200 pt-8 sm:mt-16 sm:pt-10">
+              <div className="mb-6 flex items-end justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="mb-2 flex items-center gap-2">
+                    <span className="h-5 w-1 rounded-full bg-emerald-700" />
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-800">
+                      Discover more
+                    </p>
+                  </div>
+
+                  <h2 className="text-xl font-bold tracking-tight text-slate-950 sm:text-2xl">
+                    Related News & Activities
+                  </h2>
+
+                  <p className="mt-1 text-xs text-slate-500 sm:text-sm">
+                    Updates from our rivers, haors and wetlands.
+                  </p>
+                </div>
+
+                <Link
+                  href="/activities"
+                  className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-emerald-200 px-3 py-2 text-xs font-semibold text-emerald-800 transition-colors hover:border-emerald-800 hover:bg-emerald-800 hover:text-white sm:px-4 sm:text-sm"
+                >
+                  View all
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+                {relatedNews.map((item) => {
+                  const itemMediaUrl =
+                    typeof item.mediaUrl === "string"
+                      ? item.mediaUrl.trim()
+                      : "";
+
+                  const itemIsVideo = itemMediaUrl
+                    ? isVideo(itemMediaUrl, item.mediaType)
+                    : false;
+
+                  return (
+                    <Link
+                      key={item.id}
+                      href={`/news/${item.id}`}
+                      className="group flex min-w-0 flex-col overflow-hidden rounded-lg border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-lg sm:rounded-xl"
+                    >
+                      {/* Actual image or video preview; no gradient */}
+                      <div className="relative aspect-4/3 overflow-hidden bg-black">
+                        {itemMediaUrl && itemIsVideo ? (
+                          <>
+                            <video
+                              className="absolute inset-0 h-full w-full object-cover"
+                              src={itemMediaUrl}
+                              muted
+                              playsInline
+                              preload="metadata"
+                              aria-label={item.heading}
+                            />
+
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black/65 text-white shadow-md transition-transform duration-300 group-hover:scale-110 sm:h-12 sm:w-12">
+                                <Play className="h-5 w-5 fill-current" />
+                              </div>
+                            </div>
+                          </>
+                        ) : itemMediaUrl ? (
+                          <Image
+                            src={itemMediaUrl}
+                            alt={item.heading}
+                            fill
+                            unoptimized
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center bg-white text-emerald-800">
+                            <Droplets className="h-8 w-8 opacity-50 sm:h-10 sm:w-10" />
+                          </div>
+                        )}
+
+                        <span className="absolute left-2 top-2 max-w-[calc(100%-1rem)] truncate rounded-md bg-white/95 px-2 py-1 text-[9px] font-bold text-emerald-900 shadow-sm sm:text-[10px]">
+                          {formatLabel(item.type, "Activity")}
+                        </span>
+
+                        {itemIsVideo && itemMediaUrl && (
+                          <span className="absolute bottom-2 right-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/65 text-white">
+                            <Play className="h-3.5 w-3.5 fill-current" />
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Card content */}
+                      <div className="flex flex-1 flex-col p-2.5 sm:p-3.5">
+                        <div className="mb-2 flex min-w-0 items-center gap-1.5 text-[9px] text-slate-500 sm:text-[11px]">
+                          <CalendarDays className="h-3 w-3 shrink-0 text-emerald-700" />
+                          <time
+                            dateTime={item.createdAt.toISOString()}
+                            className="truncate"
+                          >
+                            {formatDate(item.createdAt)}
+                          </time>
+                        </div>
+
+                        <h3 className="line-clamp-2 min-h-9 wrap-break-words text-xs font-bold leading-[1.15rem] text-slate-900 transition-colors group-hover:text-emerald-800 sm:min-h-11 sm:text-sm sm:leading-5">
+                          {item.heading}
+                        </h3>
+
+                        <p className="mt-1.5 line-clamp-2 wrap-break-words text-[10px] leading-4 text-slate-500 sm:mt-2 sm:text-xs sm:leading-5">
+                          {item.details}
+                        </p>
+
+                        <div className="mt-3 flex items-center justify-between gap-1 border-t border-slate-100 pt-2.5 sm:pt-3">
+                          <span className="text-[10px] font-bold text-emerald-800 sm:text-xs">
+                            Read more
+                          </span>
+                          <ChevronRight className="h-3.5 w-3.5 shrink-0 text-emerald-700 transition-transform duration-200 group-hover:translate-x-1" />
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
+          )}
         </section>
       </main>
+      <Footer />
     </>
   );
 }
