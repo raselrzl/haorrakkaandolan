@@ -9,6 +9,7 @@ import { prisma } from "./utils/db";
 import FloatingContact from "./FloatingContact";
 import Footer from "./Footer";
 import LatestNews from "./LatestNews";
+import LatestVideos from "./LatestVideos";
 
 const photos = {
   wetland:
@@ -141,6 +142,7 @@ async function HomepageSections() {
         fallbackImage={photos.river}
       />
       <LatestNews />
+      <LatestVideos />
     </>
   );
 }

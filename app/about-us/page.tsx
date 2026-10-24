@@ -84,11 +84,11 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen bg-[#f7f9f6]">
       <Navbar />
-
+ 
    {/* Hero */}
 <section className="relative isolate mt-16 overflow-hidden bg-emerald-950">
   <Image
-    src="/us1.jpg"
+    src="/hail.webp"
     alt="Haor Rokkha Andolan"
     fill
     priority
