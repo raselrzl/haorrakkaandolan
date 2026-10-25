@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { getPublicNewsPageAction, type PublicNewsFilter } from "../newsActions";
 import Footer from "../Footer";
+import LanguageSwitcher from "../LanguageSwitcher";
 
 type NewsItem = Awaited<
   ReturnType<typeof getPublicNewsPageAction>
@@ -571,6 +572,9 @@ export default function ActivitiesPage() {
         </div>
       )}
       <Footer />
+      <div className="fixed right-4 top-1/2 z-[9999] -translate-y-1/2">
+        <LanguageSwitcher />
+      </div>
     </main>
   );
 }

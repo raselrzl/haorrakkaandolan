@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import { Playfair_Display, Roboto, Tiro_Bangla } from "next/font/google";
 import { connection } from "next/server";
@@ -10,6 +9,7 @@ import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
 import FloatingContact from "./FloatingContact";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-playfair-display",
@@ -126,11 +126,7 @@ export const metadata: Metadata = {
 async function UploadThingSSR() {
   await connection();
 
-  return (
-    <NextSSRPlugin
-      routerConfig={extractRouterConfig(ourFileRouter)}
-    />
-  );
+  return <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />;
 }
 
 export default function RootLayout({
@@ -143,13 +139,13 @@ export default function RootLayout({
       lang="bn"
       className={`${playfairDisplay.variable} ${roboto.variable} ${tiroBangla.variable}`}
     >
+      
       <body>
         <Suspense fallback={null}>
           <UploadThingSSR />
         </Suspense>
-
+   
         {children}
-       
       </body>
     </html>
   );

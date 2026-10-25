@@ -112,3 +112,44 @@ html {
     transform: translateY(0);
   }
 }
+
+
+/* Hide Google's top translation banner */
+.goog-te-banner-frame,
+iframe.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+body > .skiptranslate {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  max-height: 0 !important;
+}
+
+/* Prevent Google Translate from shifting the page */
+html,
+html body,
+body.translated-ltr,
+body.translated-rtl {
+  top: 0 !important;
+  margin-top: 0 !important;
+  position: static !important;
+}
+
+/* Hide Google Translate tooltips and branding */
+#goog-gt-tt,
+.goog-tooltip,
+.goog-tooltip:hover,
+.goog-te-balloon-frame,
+.goog-logo-link,
+.goog-te-gadget .goog-te-gadget-simple img {
+  display: none !important;
+}
+
+/* Keep the custom language button visible */
+.goog-te-gadget {
+  font-size: 0 !important;
+}
+
+#google_translate_element {
+  display: none !important;
+}

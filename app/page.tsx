@@ -10,6 +10,7 @@ import FloatingContact from "./FloatingContact";
 import Footer from "./Footer";
 import LatestNews from "./LatestNews";
 import LatestVideos from "./LatestVideos";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const photos = {
   wetland:
@@ -128,6 +129,9 @@ async function HomepageSections() {
 
   return (
     <>
+         <div className="fixed right-4 top-1/2 z-[9999] -translate-y-1/2">
+          <LanguageSwitcher />
+        </div>
       <HeroSection updates={updates} news={news} />
 
       <HaorSection />
