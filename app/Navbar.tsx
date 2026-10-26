@@ -80,9 +80,9 @@ export default function Navbar() {
 
             <p
               translate="no"
-              className="notranslate text-[10px] tracking-wide text-slate-500 sm:block sm:text-[11px]"
+              className="notranslate text-[14px] tracking-tight text-slate-500 sm:block sm:text-[14px]"
             >
-              Wetlands Resilience initiatives
+              Wetlands Resilience Initiatives
             </p>
           </div>
         </Link>
