@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -84,7 +85,7 @@ export default function LanguageSwitcher() {
       const select =
         document.querySelector<HTMLSelectElement>(".goog-te-combo");
 
-      if (select) {
+      if (select && select.value !== next) {
         select.value = next;
         select.dispatchEvent(new Event("change"));
       }
@@ -112,7 +113,10 @@ export default function LanguageSwitcher() {
       setReady(true);
       hideGoogleBanner();
 
-      window.setTimeout(() => applyGoogleLanguage(getSavedLanguage()), 500);
+      window.setTimeout(() => {
+        applyGoogleLanguage(getSavedLanguage());
+        hideGoogleBanner();
+      }, 500);
     };
 
     const onContentUpdated = () => {
@@ -171,7 +175,7 @@ export default function LanguageSwitcher() {
 
     const select = document.querySelector<HTMLSelectElement>(".goog-te-combo");
 
-    if (select) {
+    if (select && select.value !== next) {
       select.value = next;
       select.dispatchEvent(new Event("change"));
     }

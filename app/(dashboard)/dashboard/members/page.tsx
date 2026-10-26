@@ -1,10 +1,10 @@
+
 import { Suspense } from "react";
 import { connection } from "next/server";
 import { prisma } from "@/app/utils/db";
 import MembersPageClient from "./MembersPageClient";
 
 async function MembersData() {
-  // Wait for an incoming request before querying the database.
   await connection();
 
   const members = await prisma.user.findMany({
@@ -18,6 +18,7 @@ async function MembersData() {
       phone: true,
       designation: true,
       imageUrl: true,
+      biography: true,
       status: true,
       startDate: true,
       endDate: true,
