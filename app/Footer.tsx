@@ -37,11 +37,16 @@ export default function Footer() {
             <div className="text-center sm:text-left">
               <Link
                 href="/"
-                className="text-sm font-bold text-[#123b2b] transition-colors hover:text-emerald-700"
+                translate="no"
+                className="notranslate text-sm font-bold text-[#123b2b] transition-colors hover:text-emerald-700"
               >
                 হাওর রক্ষা আন্দোলন
               </Link>
-              <p className="mt-1 text-xs text-slate-500 italic">
+
+              <p
+                translate="no"
+                className="notranslate mt-1 text-xs text-slate-500 italic"
+              >
                 Protecting Wetlands, Preserving Life.
               </p>
             </div>
