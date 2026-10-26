@@ -139,12 +139,11 @@ export default function RootLayout({
       lang="bn"
       className={`${playfairDisplay.variable} ${roboto.variable} ${tiroBangla.variable}`}
     >
-      
       <body>
         <Suspense fallback={null}>
           <UploadThingSSR />
         </Suspense>
-   
+
         {children}
       </body>
     </html>
