@@ -39,6 +39,11 @@ const riverSlides = [
     alt: "Dholai River",
   },
   {
+    name: "Kushiyara River",
+    image: "/kushiara.avif",
+    alt: "Kushiyara River",
+  },
+  {
     name: "Fanai River",
     image: "/fanai.jpg",
     alt: "Fanai River",
@@ -48,7 +53,7 @@ const riverSlides = [
     image: "/laghata.jpg",
     alt: "Laghata river",
   },
-/*   {
+  /*   {
     name: "Protect Our Waterways",
     image: "/monu5.jpg",
     alt: "Natural waterways",
@@ -140,7 +145,7 @@ export default function RiverSection({
                 {slide.name}
               </h2>
 
-  {/*             <p className="mt-2 max-w-md text-sm leading-5 text-white/80">
+              {/*             <p className="mt-2 max-w-md text-sm leading-5 text-white/80">
                 Protecting rivers, biodiversity, and the communities that depend
                 on them.
               </p> */}
