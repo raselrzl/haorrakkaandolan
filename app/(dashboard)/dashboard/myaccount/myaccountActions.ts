@@ -1,7 +1,9 @@
+
 "use server";
 
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
+import { Designation } from "@/app/generated/prisma/client";
 
 import { prisma } from "@/app/utils/db";
 import { requireAdmin } from "@/app/utils/auth";
@@ -11,7 +13,7 @@ export type MyAccountData = {
   name: string;
   email: string;
   phone: string;
-  designation: string | null;
+  designation: Designation | null;
   imageUrl: string | null;
   role: string;
   status: string;
@@ -46,6 +48,12 @@ function isValidImageUrl(value: string): boolean {
   } catch {
     return false;
   }
+}
+
+function isValidDesignation(value: string): value is Designation {
+  return Object.values(Designation).some(
+    (designation) => designation === value,
+  );
 }
 
 export async function getMyAccountAction(): Promise<
@@ -113,7 +121,7 @@ export async function updateMyAccountAction(input: {
     const name = input.name?.trim();
     const email = input.email?.trim().toLowerCase();
     const phone = input.phone?.trim();
-    const designation = input.designation?.trim() || null;
+    const rawDesignation = input.designation?.trim() ?? "";
     const imageUrl = input.imageUrl?.trim() || null;
 
     if (!name || !email || !phone) {
@@ -147,11 +155,25 @@ export async function updateMyAccountAction(input: {
       };
     }
 
-    if (designation && designation.length > 120) {
+    if (rawDesignation.length > 120) {
       return {
         success: false,
         message: "Designation must be 120 characters or fewer.",
       };
+    }
+
+    let designation: Designation | null = null;
+
+    if (rawDesignation) {
+      if (!isValidDesignation(rawDesignation)) {
+        return {
+          success: false,
+          message:
+            "Please select a valid designation from the available options.",
+        };
+      }
+
+      designation = rawDesignation;
     }
 
     if (imageUrl && (imageUrl.length > 2048 || !isValidImageUrl(imageUrl))) {
