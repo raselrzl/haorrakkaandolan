@@ -34,8 +34,8 @@ export default function PrivacyPolicyPage() {
                 If you contact us, submit a form, or communicate with our
                 organisation, we may receive information such as your name,
                 email address, phone number, and the contents of your message.
-                Please do not submit sensitive personal information unless it
-                is necessary for your request.
+                Please do not submit sensitive personal information unless it is
+                necessary for your request.
               </p>
             </section>
 
@@ -58,8 +58,8 @@ export default function PrivacyPolicyPage() {
                 Haor Rokkha Andolan is an independent civic and environmental
                 initiative committed to wetland conservation, environmental
                 protection, and the public interest. Unless expressly stated
-                otherwise, the organisation is not affiliated with, operated
-                by, or officially endorsed by any political party or government
+                otherwise, the organisation is not affiliated with, operated by,
+                or officially endorsed by any political party or government
                 ministry, department, agency, or institution. Our activities,
                 publications, campaigns, and public communications reflect our
                 own objectives and positions. References to government bodies,
@@ -100,9 +100,9 @@ export default function PrivacyPolicyPage() {
                 We do not intend to sell your personal information. Information
                 may be processed by service providers supporting website
                 hosting, communications, or security, or disclosed where
-                required by law. We take reasonable steps to protect information,
-                but no internet transmission or storage system can be guaranteed
-                completely secure.
+                required by law. We take reasonable steps to protect
+                information, but no internet transmission or storage system can
+                be guaranteed completely secure.
               </p>
             </section>
 
