@@ -51,12 +51,12 @@ function formatDate(date: string, language: Language) {
 }
 
 export default function DemandsPublicView({ demands }: Props) {
-  const [language, setLanguage] = useState<Language>("bn");
+  const [language, setLanguage] = useState<Language>("en");
   const isBangla = language === "bn";
 
   return (
     <>
-  {/*     <Navbar /> */}
+      {/*     <Navbar /> */}
 
       <main className="mt-16 min-h-screen bg-slate-50 text-slate-900">
         {/* Hero */}
