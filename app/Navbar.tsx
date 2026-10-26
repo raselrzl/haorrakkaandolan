@@ -73,16 +73,16 @@ export default function Navbar() {
           <div className="min-w-0">
             <p
               translate="no"
-              className="notranslate truncate text-[18px] font-extrabold tracking-tight text-[#123b2b] sm:text-sm"
+              className="notranslate truncate text-[14px] font-extrabold tracking-tight text-[#123b2b] sm:text-sm"
             >
-              হাওর রক্ষা আন্দোলন
+              Wetlands Resilience Initiatives
             </p>
 
             <p
               translate="no"
               className="notranslate text-[14px] tracking-tight text-slate-500 sm:block sm:text-[14px]"
             >
-              Wetlands Resilience Initiatives
+               হাওর রক্ষা আন্দোলন
             </p>
           </div>
         </Link>
