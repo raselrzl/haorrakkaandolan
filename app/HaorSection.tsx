@@ -15,11 +15,11 @@ const haorSlides = [
     image: "/hm2.jpg",
     alt: "Kawadighi Haor wetland landscape in Bangladesh",
   },
-  {
+/*   {
     name: "Hail Haor",
     image: "/hail.webp",
     alt: "Hail Haor wetland landscape in Bangladesh",
-  },
+  }, */
 ];
 
 export default function HaorSection() {

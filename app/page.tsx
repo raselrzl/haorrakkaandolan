@@ -17,8 +17,7 @@ const photos = {
     "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1100&q=85",
   river:
     "https://images.unsplash.com/photo-1437482078695-73f5ca6c96e2?auto=format&fit=crop&w=800&q=85",
-  bird:
-    "https://images.unsplash.com/photo-1444464666168-49d633b86797?auto=format&fit=crop&w=800&q=85",
+  bird: "https://images.unsplash.com/photo-1444464666168-49d633b86797?auto=format&fit=crop&w=800&q=85",
   water:
     "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=85",
   community:
@@ -129,9 +128,9 @@ async function HomepageSections() {
 
   return (
     <>
-         <div className="fixed right-4 top-1/2 z-[9999] -translate-y-1/2">
-          <LanguageSwitcher />
-        </div>
+      <div className="fixed right-4 top-1/2 z-[9999] -translate-y-1/2">
+        <LanguageSwitcher />
+      </div>
       <HeroSection updates={updates} news={news} />
 
       <HaorSection />
@@ -173,8 +172,8 @@ export default function Home() {
       <Suspense fallback={<HomepageFallback />}>
         <HomepageSections />
       </Suspense>
-       <FloatingContact />
-       <Footer />
+      <FloatingContact />
+      <Footer />
     </main>
   );
 }
