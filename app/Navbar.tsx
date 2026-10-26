@@ -71,11 +71,18 @@ export default function Navbar() {
           </div>
 
           <div className="min-w-0">
-            <p className="truncate text-[18px] font-extrabold tracking-tight text-[#123b2b] sm:text-sm">
+            <p
+              translate="no"
+              className="notranslate truncate text-[18px] font-extrabold tracking-tight text-[#123b2b] sm:text-sm"
+            >
               হাওর রক্ষা আন্দোলন
             </p>
-            <p className="mt-0.5 hidden text-[10px] tracking-wide text-slate-500 sm:block sm:text-[11px]">
-              Protecting Wetlands, Preserving Life.
+
+            <p
+              translate="no"
+              className="notranslate text-[10px] tracking-wide text-slate-500 sm:block sm:text-[11px]"
+            >
+              Wetlands Resilience initiatives
             </p>
           </div>
         </Link>
@@ -222,9 +229,7 @@ export default function Navbar() {
                   }`}
                 >
                   <span className="flex items-center gap-2.5">
-                    {link.href === "/demands" && (
-                      <ClipboardList size={17} />
-                    )}
+                    {link.href === "/demands" && <ClipboardList size={17} />}
                     {link.label}
                   </span>
 
