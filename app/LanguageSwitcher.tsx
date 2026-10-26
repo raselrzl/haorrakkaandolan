@@ -198,7 +198,7 @@ export default function LanguageSwitcher() {
           className="inline-flex items-center gap-2 rounded-lg border border-emerald-800/20 bg-white px-3 py-2 text-sm font-semibold text-emerald-900 shadow-sm transition hover:bg-emerald-50"
         >
           <Languages size={16} />
-          <span>{language === "bn" ? "বাংলা" : "English"}</span>
+          <span>{language === "bn" ? "Bengali" : "English"}</span>
           <ChevronDown
             size={14}
             className={`transition-transform ${open ? "rotate-180" : ""}`}
@@ -218,7 +218,7 @@ export default function LanguageSwitcher() {
                     : "text-slate-700"
                 }`}
               >
-                {item === "en" ? "English" : "বাংলা"}
+                {item === "en" ? "English" : "Bengali"}
                 {language === item && (
                   <span className="text-emerald-700">✓</span>
                 )}
