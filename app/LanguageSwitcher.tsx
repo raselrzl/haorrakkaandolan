@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -195,13 +194,17 @@ export default function LanguageSwitcher() {
           onClick={() => setOpen((previous) => !previous)}
           aria-label="Change website language"
           aria-expanded={open}
-          className="inline-flex items-center gap-2 rounded-lg border border-emerald-800/20 bg-white px-3 py-2 text-sm font-semibold text-emerald-900 shadow-sm transition hover:bg-emerald-50"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-800/20 bg-white px-2 py-1.5 text-xs font-semibold text-emerald-900 shadow-sm transition hover:bg-emerald-50 sm:gap-2 sm:px-3 sm:py-2 sm:text-sm"
         >
-          <Languages size={16} />
+          <Languages size={14} className="sm:h-4 sm:w-4" />
+
           <span>{language === "bn" ? "Bengali" : "English"}</span>
+
           <ChevronDown
-            size={14}
-            className={`transition-transform ${open ? "rotate-180" : ""}`}
+            size={12}
+            className={`transition-transform sm:h-[14px] sm:w-[14px] ${
+              open ? "rotate-180" : ""
+            }`}
           />
         </button>
 
