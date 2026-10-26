@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -26,9 +25,7 @@ type DonationsContentProps = {
   accounts: DonationAccount[];
 };
 
-export default function DonationsContent({
-  accounts,
-}: DonationsContentProps) {
+export default function DonationsContent({ accounts }: DonationsContentProps) {
   const [language, setLanguage] = useState<"en" | "bn">("en");
   const bn = language === "bn";
 
@@ -41,11 +38,11 @@ export default function DonationsContent({
     accountName: bn ? "অ্যাকাউন্টের নাম" : "Account Name",
     provider: bn ? "ব্যাংক / সেবা প্রদানকারী" : "Bank / Provider",
     number: bn ? "অ্যাকাউন্ট নম্বর" : "Account Number",
-    address: bn ? "শাখা / ঠিকানা" : "Branch / Address",
+    address: bn ? "ব্যাংক /শাখা / ঠিকানা" : "Bank/ Branch / Address",
     noAccounts: bn
       ? "বর্তমানে কোনো অনুদান অ্যাকাউন্ট প্রকাশিত নেই।"
       : "No donation accounts are currently published.",
-    copy: bn ? "নম্বর কপি করুন" : "Copy Account Number",
+    copy: bn ? "কপি করুন" : "Copy",
     copied: bn ? "কপি হয়েছে" : "Copied",
     missionTitle: bn
       ? "হাওর রক্ষায় আপনার অবদান"
@@ -156,7 +153,7 @@ export default function DonationsContent({
             </p>
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
-            {/*   <DonateNow language={language} /> */}
+              {/*   <DonateNow language={language} /> */}
 
               <a
                 href="#donation-accounts"
@@ -194,9 +191,7 @@ export default function DonationsContent({
               <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-sky-800">
                 <Wallet size={20} />
               </div>
-              <h2 className="text-lg font-bold text-slate-900">
-                {t.howTitle}
-              </h2>
+              <h2 className="text-lg font-bold text-slate-900">{t.howTitle}</h2>
             </div>
 
             <ol className="mt-4 space-y-3 text-sm leading-5 text-slate-600">
@@ -255,16 +250,16 @@ export default function DonationsContent({
                     <h3 className="truncate text-base font-bold">
                       {account.accountName}
                     </h3>
-                    <p className="mt-0.5 truncate text-xs text-emerald-100">
+                    {/*     <p className="mt-0.5 truncate text-xs text-emerald-100">
                       {account.providerName}
-                    </p>
+                    </p> */}
                   </div>
                 </div>
 
                 <div className="space-y-4 p-4">
                   <div>
                     <p className="text-xs font-medium text-slate-500">
-                      {t.number}
+                      {account.providerName}
                     </p>
                     <div className="mt-1 flex items-center justify-between gap-3">
                       <p className="break-all font-mono text-sm font-bold text-slate-900">

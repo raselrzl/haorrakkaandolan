@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -16,6 +17,7 @@ import {
   ChevronDown,
   ChevronRight,
   ClipboardList,
+  Wallet,
 } from "lucide-react";
 
 type NavigationItem = {
@@ -81,6 +83,16 @@ const navigation: NavigationGroup[] = [
     ],
   },
   {
+    label: "Donation Management",
+    items: [
+      {
+        label: "Donation Accounts",
+        href: "/dashboard/donation-accounts",
+        icon: Wallet,
+      },
+    ],
+  },
+  {
     label: "General",
     items: [
       {
@@ -107,6 +119,7 @@ export default function DashboardSidebar({
     "Overview",
     "Account Management",
     "Content Management",
+    "Donation Management",
     "General",
   ]);
 
