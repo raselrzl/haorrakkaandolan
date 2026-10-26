@@ -12,6 +12,20 @@ enum Role {
   USER
   MEMBER
   CHAIRMAN
+  SOVAPOTI
+  SOHOSOVAPOTI
+  SADHARONSOMPADOK
+  SOHOSADHARONSOMPADOK
+  SANGOTONIKSOMPADOK
+  SOHOSANGOTONIKSOMPADOK
+  ARTHOSOMPADOK
+  PROCHARSOMPADOK
+  DOPTORSOMPADOK
+  SANGSKRITIKSOMPADOK
+  MOHILASOMPADOK
+  AINBISHOYOKSOMPADOK
+  CHATROOJUBOSOMPADOK
+  KARJONIRBAHISODOSSHO
 }
 
 enum Status {
@@ -30,16 +44,18 @@ enum NewsType {
 }
 
 model User {
-  id                  String               @id @default(cuid())
-  name                String
-  email               String               @unique
-  phone               String               @unique
-  password            String
-  role                Role                 @default(USER)
-  designation         String?
-  imageUrl            String?
-  startDate           DateTime?
-  endDate             DateTime?
+  id          String       @id @default(cuid())
+  name        String
+  email       String       @unique
+  phone       String       @unique
+  password    String
+  role        Role         @default(USER)
+  designation Designation?
+  imageUrl    String?
+  startDate   DateTime?
+  endDate     DateTime?
+  biography   String?      @db.Text
+
   status              Status               @default(ACTIVE)
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
@@ -48,6 +64,26 @@ model User {
   news                News[]
 
   @@index([role, status])
+}
+
+enum Designation {
+  MEMBER
+  CHAIRMAN
+  SOVAPOTI
+  SOHOSOVAPOTI
+  SADHARONSOMPADOK
+  SOHOSADHARONSOMPADOK
+  SANGOTONIKSOMPADOK
+  SOHOSANGOTONIKSOMPADOK
+  ARTHOSOMPADOK
+  PROCHARSOMPADOK
+  DOPTORSOMPADOK
+  SANGSKRITIKSOMPADOK
+  MOHILASOMPADOK
+  AINBISHOYOKSOMPADOK
+  CHATROOJUBOSOMPADOK
+  KARJONIRBAHISODOSSHO
+  UPODESTAPORISHOD
 }
 
 model WebsiteContent {
@@ -125,72 +161,70 @@ model ContactMessage {
   @@index([reason, createdAt])
 }
 
-
 model Constitution {
-  id                  String   @id @default(cuid())
+  id String @id @default(cuid())
 
   // Bilingual document information
-  titleBn             String   @default("গঠনতন্ত্র")
-  titleEn             String   @default("Constitution")
-  descriptionBn       String?  @db.Text
-  descriptionEn       String?  @db.Text
+  titleBn       String  @default("গঠনতন্ত্র")
+  titleEn       String  @default("Constitution")
+  descriptionBn String? @db.Text
+  descriptionEn String? @db.Text
 
   // Bilingual PDF documents
-  pdfUrlBn            String?
-  pdfUrlEn            String?
+  pdfUrlBn String?
+  pdfUrlEn String?
 
   // Publication and update dates
-  publishedAt         DateTime @default(now())
-  lastUpdatedAt       DateTime @updatedAt
+  publishedAt   DateTime @default(now())
+  lastUpdatedAt DateTime @updatedAt
 
   // Admin and publication status
-  uploadedById        String?
-  status              Status   @default(ACTIVE)
+  uploadedById String?
+  status       Status  @default(ACTIVE)
 
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([status, publishedAt])
   @@index([updatedAt])
 }
 
-
 model Demand {
-  id            String        @id @default(cuid())
-  titleBn       String        @default("দাবিসমূহ")
-  titleEn       String        @default("Our Demands")
-  descriptionBn String?       @db.Text
-  descriptionEn String?       @db.Text
+  id            String  @id @default(cuid())
+  titleBn       String  @default("দাবিসমূহ")
+  titleEn       String  @default("Our Demands")
+  descriptionBn String? @db.Text
+  descriptionEn String? @db.Text
 
   // Publication date and automatic update timestamp
-  publishedAt   DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  publishedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  status        Status        @default(ACTIVE)
-  createdById   String?
-  points        DemandPoint[]
+  status      Status        @default(ACTIVE)
+  createdById String?
+  points      DemandPoint[]
 
-  createdAt     DateTime      @default(now())
+  createdAt DateTime @default(now())
 
   @@index([status, publishedAt])
   @@index([updatedAt])
 }
 
 model DemandPoint {
-  id            String   @id @default(cuid())
-  demandId      String
+  id       String @id @default(cuid())
+  demandId String
 
-  pointNumber   Int
+  pointNumber Int
 
   headingBn     String
   headingEn     String
-  descriptionBn String   @db.Text
-  descriptionEn String   @db.Text
+  descriptionBn String @db.Text
+  descriptionEn String @db.Text
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  demand Demand @relation(fields: [demandId],references: [id], onDelete: Cascade)
+  demand Demand @relation(fields: [demandId], references: [id], onDelete: Cascade)
 
   @@unique([demandId, pointNumber])
   @@index([demandId, pointNumber])
@@ -209,7 +243,6 @@ model DonationAccount {
   @@index([createdAt])
 }
 
-
 enum DonationPaymentStatus {
   PENDING
   SUCCESS
@@ -219,7 +252,7 @@ enum DonationPaymentStatus {
 }
 
 model Donation {
-  id                String                @id @default(cuid())
+  id                 String                @id @default(cuid())
   tranId             String                @unique
   donorName          String
   donorEmail         String

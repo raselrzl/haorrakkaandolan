@@ -42,6 +42,7 @@ type Member = {
   phone: string;
   designation: string | null;
   imageUrl: string | null;
+  biography: string | null;
   status: MemberStatus;
   startDate: Date | string | null;
   endDate: Date | string | null;
@@ -59,28 +60,91 @@ type MemberForm = {
   password: string;
   designation: string;
   imageUrl: string;
+  biography: string;
   startDate: string;
   endDate: string;
 };
 
 const designations = [
-  "Chairperson",
-  "Vice Chairperson",
-  "General Secretary",
-  "Joint Secretary",
-  "Organizing Secretary",
-  "Treasurer",
-  "Executive Member",
-  "General Member",
-];
+  { value: "MEMBER", label: "General Member" },
+  { value: "CHAIRMAN", label: "Chairman" },
+  { value: "SOVAPOTI", label: "সভাপতি (President)" },
+  { value: "SOHOSOVAPOTI", label: "সহ-সভাপতি (Vice President)" },
+  {
+    value: "SADHARONSOMPADOK",
+    label: "সাধারণ সম্পাদক (General Secretary)",
+  },
+  {
+    value: "SOHOSADHARONSOMPADOK",
+    label: "সহ-সাধারণ সম্পাদক (Joint General Secretary)",
+  },
+  {
+    value: "SANGOTONIKSOMPADOK",
+    label: "সাংগঠনিক সম্পাদক (Organizing Secretary)",
+  },
+  {
+    value: "SOHOSANGOTONIKSOMPADOK",
+    label: "সহ-সাংগঠনিক সম্পাদক (Joint Organizing Secretary)",
+  },
+  {
+    value: "ARTHOSOMPADOK",
+    label: "অর্থ সম্পাদক (Treasurer)",
+  },
+  {
+    value: "PROCHARSOMPADOK",
+    label: "প্রচার সম্পাদক (Publicity Secretary)",
+  },
+  {
+    value: "DOPTORSOMPADOK",
+    label: "দপ্তর সম্পাদক (Office Secretary)",
+  },
+  {
+    value: "SANGSKRITIKSOMPADOK",
+    label: "সাংস্কৃতিক সম্পাদক (Cultural Secretary)",
+  },
+  {
+    value: "MOHILASOMPADOK",
+    label: "মহিলা সম্পাদক (Women's Secretary)",
+  },
+  {
+    value: "AINBISHOYOKSOMPADOK",
+    label: "আইন বিষয়ক সম্পাদক (Legal Affairs Secretary)",
+  },
+  {
+    value: "CHATROOJUBOSOMPADOK",
+    label: "ছাত্র ও যুব সম্পাদক (Student and Youth Secretary)",
+  },
+  {
+    value: "KARJONIRBAHISODOSSHO",
+    label: "কার্যনির্বাহী সদস্য (Executive Member)",
+  },
+  {
+    value: "UPODESTAPORISHOD",
+    label: "Upazila Vice Chairman",
+    bangla: "উপ-দেষ্টাপরিষদ",
+  },
+] as const;
+
+type DesignationValue = (typeof designations)[number]["value"];
+
+const designationLabels: Record<DesignationValue, string> = Object.fromEntries(
+  designations.map((item) => [item.value, item.label]),
+) as Record<DesignationValue, string>;
+
+function getDesignationLabel(value: string | null): string {
+  if (!value) return designationLabels.MEMBER;
+
+  return designationLabels[value as DesignationValue] ?? value;
+}
 
 const emptyForm: MemberForm = {
   name: "",
   email: "",
   phone: "",
   password: "",
-  designation: "General Member",
+  designation: "MEMBER",
   imageUrl: "",
+  biography: "",
   startDate: "",
   endDate: "",
 };
@@ -147,18 +211,21 @@ export default function MembersPageClient({ initialMembers }: Props) {
   ).length;
 
   const designationCount = new Set(
-    members.map((member) => member.designation || "General Member"),
+    members.map((member) => member.designation || "MEMBER"),
   ).size;
 
   const filteredMembers = useMemo(() => {
     const term = search.trim().toLowerCase();
 
     return members.filter((member) => {
+      const designationLabel = getDesignationLabel(member.designation);
+
       const matchesSearch =
         !term ||
         member.name.toLowerCase().includes(term) ||
         member.email.toLowerCase().includes(term) ||
         member.phone.toLowerCase().includes(term) ||
+        designationLabel.toLowerCase().includes(term) ||
         (member.designation ?? "").toLowerCase().includes(term);
 
       const matchesStatus =
@@ -166,7 +233,7 @@ export default function MembersPageClient({ initialMembers }: Props) {
 
       const matchesDesignation =
         designationFilter === "ALL" ||
-        (member.designation || "General Member") === designationFilter;
+        (member.designation || "MEMBER") === designationFilter;
 
       return matchesSearch && matchesStatus && matchesDesignation;
     });
@@ -195,8 +262,9 @@ export default function MembersPageClient({ initialMembers }: Props) {
       email: member.email,
       phone: member.phone,
       password: "",
-      designation: member.designation || "General Member",
+      designation: member.designation || "MEMBER",
       imageUrl: member.imageUrl || "",
+      biography: member.biography || "",
       startDate: dateInputValue(member.startDate),
       endDate: dateInputValue(member.endDate),
     });
@@ -244,6 +312,7 @@ export default function MembersPageClient({ initialMembers }: Props) {
         phone: form.phone.trim(),
         designation: form.designation,
         imageUrl: form.imageUrl.trim() || null,
+        biography: form.biography.trim() || null,
         startDate: form.startDate || null,
         endDate: form.endDate || null,
       };
@@ -514,9 +583,10 @@ export default function MembersPageClient({ initialMembers }: Props) {
                   className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-emerald-600 sm:w-52"
                 >
                   <option value="ALL">All designations</option>
+
                   {designations.map((designation) => (
-                    <option key={designation} value={designation}>
-                      {designation}
+                    <option key={designation.value} value={designation.value}>
+                      {designation.label}
                     </option>
                   ))}
                 </select>
@@ -599,9 +669,7 @@ export default function MembersPageClient({ initialMembers }: Props) {
                     </td>
 
                     <td className="px-4 py-3">
-                      <span className="inline-flex max-w-45 rounded-md bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800">
-                        {member.designation || "General Member"}
-                      </span>
+                      {getDesignationLabel(member.designation)}
                     </td>
 
                     <td className="px-4 py-3">
@@ -775,8 +843,20 @@ export default function MembersPageClient({ initialMembers }: Props) {
                           content={{
                             button: (
                               <span className="inline-flex items-center gap-2">
-                                <Upload size={14} />
-                                Upload image
+                                {uploadingImage ? (
+                                  <>
+                                    <RefreshCw
+                                      size={14}
+                                      className="animate-spin"
+                                    />
+                                    Uploading...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Upload size={14} />
+                                    Upload image
+                                  </>
+                                )}
                               </span>
                             ),
                           }}
@@ -795,25 +875,6 @@ export default function MembersPageClient({ initialMembers }: Props) {
                         )}
                       </div>
 
-                      <div>
-                        <label
-                          htmlFor="member-image-url"
-                          className="mb-1.5 block text-xs font-semibold text-slate-700"
-                        >
-                          Or paste an image URL
-                        </label>
-                        <input
-                          id="member-image-url"
-                          type="url"
-                          value={form.imageUrl}
-                          onChange={(event) =>
-                            updateField("imageUrl", event.target.value)
-                          }
-                          placeholder="https://example.com/photo.jpg"
-                          className={inputClass}
-                        />
-                      </div>
-
                       {form.imageUrl && (
                         <a
                           href={form.imageUrl}
@@ -825,12 +886,6 @@ export default function MembersPageClient({ initialMembers }: Props) {
                           Open image
                         </a>
                       )}
-
-                      <p className="text-[11px] leading-5 text-slate-500">
-                        Supported file types and size limits are determined by
-                        your UploadThing imageUploader endpoint. Save the form
-                        after uploading to associate the image with this member.
-                      </p>
                     </div>
                   </div>
                 </div>
@@ -855,13 +910,19 @@ export default function MembersPageClient({ initialMembers }: Props) {
                       required
                       value={form.designation}
                       onChange={(event) =>
-                        updateField("designation", event.target.value)
+                        updateField(
+                          "designation",
+                          event.target.value as DesignationValue,
+                        )
                       }
                       className={inputClass}
                     >
                       {designations.map((designation) => (
-                        <option key={designation} value={designation}>
-                          {designation}
+                        <option
+                          key={designation.value}
+                          value={designation.value}
+                        >
+                          {designation.label}
                         </option>
                       ))}
                     </select>
@@ -937,6 +998,25 @@ export default function MembersPageClient({ initialMembers }: Props) {
                       className={inputClass}
                     />
                   </FormField>
+
+                  <div className="sm:col-span-2">
+                    <FormField label="Biography">
+                      <textarea
+                        value={form.biography}
+                        onChange={(event) =>
+                          updateField("biography", event.target.value)
+                        }
+                        placeholder="Write a short biography about this member..."
+                        rows={5}
+                        maxLength={5000}
+                        className={`${inputClass} min-h-28 resize-y`}
+                      />
+
+                      <p className="mt-1 text-right text-[11px] text-slate-400">
+                        {form.biography.length}/5000 characters
+                      </p>
+                    </FormField>
+                  </div>
                 </div>
 
                 {error && (
@@ -957,21 +1037,27 @@ export default function MembersPageClient({ initialMembers }: Props) {
                   >
                     Cancel
                   </button>
+
                   <button
                     type="submit"
                     disabled={busy || uploadingImage}
                     className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-800 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-900 disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    {busy || uploadingImage ? (
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                    ) : null}
-                    {uploadingImage
-                      ? "Uploading image..."
-                      : busy
-                        ? "Saving..."
-                        : selectedMember
-                          ? "Save changes"
-                          : "Create member"}
+                    {uploadingImage ? (
+                      <>
+                        <RefreshCw size={15} className="animate-spin" />
+                        Uploading...
+                      </>
+                    ) : busy ? (
+                      <>
+                        <RefreshCw size={15} className="animate-spin" />
+                        Saving...
+                      </>
+                    ) : selectedMember ? (
+                      "Save changes"
+                    ) : (
+                      "Create member"
+                    )}
                   </button>
                 </div>
               </form>
@@ -1006,7 +1092,7 @@ export default function MembersPageClient({ initialMembers }: Props) {
                     {viewMember.name}
                   </h3>
                   <p className="mt-1 text-sm font-medium text-emerald-800">
-                    {viewMember.designation || "General Member"}
+                    {getDesignationLabel(viewMember.designation)}
                   </p>
                   <div className="mt-3">
                     <StatusBadge status={viewMember.status} />
@@ -1016,6 +1102,14 @@ export default function MembersPageClient({ initialMembers }: Props) {
                 <dl className="mt-4 space-y-3">
                   <DetailRow label="Email" value={viewMember.email} />
                   <DetailRow label="Phone" value={viewMember.phone} />
+
+                  <div className="space-y-1">
+                    <dt className="text-sm text-slate-500">Biography</dt>
+                    <dd className="whitespace-pre-wrap break-words rounded-lg bg-slate-50 p-3 text-sm leading-6 text-slate-800">
+                      {viewMember.biography || "No biography provided"}
+                    </dd>
+                  </div>
+
                   <DetailRow
                     label="Start date"
                     value={formatDate(viewMember.startDate)}

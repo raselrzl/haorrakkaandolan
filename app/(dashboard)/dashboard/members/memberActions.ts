@@ -7,12 +7,35 @@ import bcrypt from "bcryptjs";
 
 type MemberStatus = "ACTIVE" | "INACTIVE";
 
+const allowedDesignations = [
+  "MEMBER",
+  "CHAIRMAN",
+  "SOVAPOTI",
+  "SOHOSOVAPOTI",
+  "SADHARONSOMPADOK",
+  "SOHOSADHARONSOMPADOK",
+  "SANGOTONIKSOMPADOK",
+  "SOHOSANGOTONIKSOMPADOK",
+  "ARTHOSOMPADOK",
+  "PROCHARSOMPADOK",
+  "DOPTORSOMPADOK",
+  "SANGSKRITIKSOMPADOK",
+  "MOHILASOMPADOK",
+  "AINBISHOYOKSOMPADOK",
+  "CHATROOJUBOSOMPADOK",
+  "KARJONIRBAHISODOSSHO",
+  "UPODESTAPORISHOD",
+] as const;
+
+type Designation = (typeof allowedDesignations)[number];
+
 type MemberInput = {
   name: string;
   email: string;
   phone: string;
   password?: string;
   designation?: string | null;
+  biography?: string | null;
   imageUrl?: string | null;
   startDate?: string | null;
   endDate?: string | null;
@@ -36,7 +59,8 @@ type MemberResult = {
   name: string;
   email: string;
   phone: string;
-  designation: string | null;
+  designation: Designation | null;
+  biography: string | null;
   imageUrl: string | null;
   status: MemberStatus;
   startDate: Date | null;
@@ -52,10 +76,15 @@ type ActionResult<T = never> = {
 /**
  * Verify the logged-in administrator.
  *
- * This assumes your Session model uses the "session" cookie.
- * Change the cookie name if your existing login system uses another one.
+ * This assumes:
+ * - Cookie name: hra_session
+ * - Prisma model: Session
+ * - Session has token, expiresAt, and user
+ * - User has status and role
+ *
+ * Change the cookie name if your existing authentication
+ * system uses a different session cookie.
  */
-
 async function requireAdmin() {
   const cookieStore = await cookies();
   const token = cookieStore.get("hra_session")?.value;
@@ -65,36 +94,48 @@ async function requireAdmin() {
   }
 
   const session = await prisma.session.findUnique({
-    where: { token },
-    include: { user: true },
+    where: {
+      token,
+    },
+    include: {
+      user: true,
+    },
   });
 
   if (!session || session.expiresAt <= new Date()) {
     throw new Error("Your session has expired. Please log in again.");
   }
 
-  if (
-    session.user.status !== "ACTIVE" ||
-    session.user.role !== "ADMIN"
-  ) {
+  if (session.user.status !== "ACTIVE" || session.user.role !== "ADMIN") {
     throw new Error("You are not authorized to manage members.");
   }
 
   return session.user;
 }
 
-
 /**
- * Validate and normalize member input.
+ * Clean and normalize text.
  */
 function cleanText(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
+/**
+ * Parse an optional date.
+ *
+ * Dates are stored at UTC midnight to avoid timezone
+ * inconsistencies when saving date-only values.
+ */
 function parseOptionalDate(value?: string | null): Date | null {
-  if (!value) return null;
+  if (!value) {
+    return null;
+  }
 
   const text = cleanText(value);
+
+  if (!text) {
+    return null;
+  }
 
   if (!/^\d{4}-\d{2}-\d{2}$/.test(text)) {
     throw new Error("Invalid date format.");
@@ -112,12 +153,32 @@ function parseOptionalDate(value?: string | null): Date | null {
   return date;
 }
 
+/**
+ * Validate designation against the allowed designation list.
+ */
+function validateDesignation(value: unknown): Designation {
+  const designation = cleanText(value) || "MEMBER";
+
+  if (!allowedDesignations.includes(designation as Designation)) {
+    throw new Error("Please select a valid member designation.");
+  }
+
+  return designation as Designation;
+}
+
+/**
+ * Validate and normalize member input.
+ */
 function validateMemberInput(input: MemberInput) {
   const name = cleanText(input.name);
   const email = cleanText(input.email).toLowerCase();
   const phone = cleanText(input.phone);
-  const designation = cleanText(input.designation) || "General Member";
+
+  const designation = validateDesignation(input.designation);
+
+  const biography = cleanText(input.biography) || null;
   const imageUrl = cleanText(input.imageUrl) || null;
+
   const startDate = parseOptionalDate(input.startDate);
   const endDate = parseOptionalDate(input.endDate);
 
@@ -125,10 +186,7 @@ function validateMemberInput(input: MemberInput) {
     throw new Error("Name must be between 2 and 120 characters.");
   }
 
-  if (
-    email.length > 254 ||
-    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-  ) {
+  if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     throw new Error("Please enter a valid email address.");
   }
 
@@ -136,8 +194,8 @@ function validateMemberInput(input: MemberInput) {
     throw new Error("Please enter a valid phone number.");
   }
 
-  if (designation.length > 100) {
-    throw new Error("Designation must be 100 characters or fewer.");
+  if (biography && biography.length > 5000) {
+    throw new Error("Biography cannot exceed 5000 characters.");
   }
 
   if (imageUrl) {
@@ -161,12 +219,16 @@ function validateMemberInput(input: MemberInput) {
     email,
     phone,
     designation,
+    biography,
     imageUrl,
     startDate,
     endDate,
   };
 }
 
+/**
+ * Convert server errors into user-friendly messages.
+ */
 function errorMessage(error: unknown): string {
   if (error instanceof Error) {
     if (
@@ -182,6 +244,9 @@ function errorMessage(error: unknown): string {
   return "An unexpected error occurred. Please try again.";
 }
 
+/**
+ * Refresh the members page after successful mutations.
+ */
 function refreshMembersPage() {
   revalidatePath("/members");
 }
@@ -193,33 +258,39 @@ export async function getMembersAction(): Promise<MemberResult[]> {
   await requireAdmin();
 
   return prisma.user.findMany({
-    where: { role: "MEMBER" },
+    where: {
+      role: "MEMBER",
+    },
     select: {
       id: true,
       name: true,
       email: true,
       phone: true,
       designation: true,
+      biography: true,
       imageUrl: true,
       status: true,
       startDate: true,
       endDate: true,
       createdAt: true,
     },
-    orderBy: { createdAt: "desc" },
-  });
+    orderBy: {
+      createdAt: "desc",
+    },
+  }) as Promise<MemberResult[]>;
 }
 
 /**
  * CREATE MEMBER
  */
 export async function createMemberAction(
-  input: MemberInput & { role?: string }
+  input: MemberInput & { role?: string },
 ): Promise<ActionResult<MemberResult>> {
   try {
     await requireAdmin();
 
     const data = validateMemberInput(input);
+
     const password = cleanText(input.password);
 
     if (password.length < 8 || password.length > 128) {
@@ -229,11 +300,23 @@ export async function createMemberAction(
       };
     }
 
+    /**
+     * Check email and phone duplicates.
+     */
     const existing = await prisma.user.findFirst({
       where: {
-        OR: [{ email: data.email }, { phone: data.phone }],
+        OR: [
+          {
+            email: data.email,
+          },
+          {
+            phone: data.phone,
+          },
+        ],
       },
-      select: { id: true },
+      select: {
+        id: true,
+      },
     });
 
     if (existing) {
@@ -243,8 +326,17 @@ export async function createMemberAction(
       };
     }
 
+    /**
+     * Hash password before saving.
+     */
     const hashedPassword = await bcrypt.hash(password, 12);
 
+    /**
+     * Create member.
+     *
+     * Role is always MEMBER.
+     * Status is always ACTIVE initially.
+     */
     const member = await prisma.user.create({
       data: {
         ...data,
@@ -258,6 +350,7 @@ export async function createMemberAction(
         email: true,
         phone: true,
         designation: true,
+        biography: true,
         imageUrl: true,
         status: true,
         startDate: true,
@@ -271,7 +364,7 @@ export async function createMemberAction(
     return {
       success: true,
       message: "Member created successfully.",
-      member,
+      member: member as MemberResult,
     };
   } catch (error) {
     return {
@@ -285,7 +378,7 @@ export async function createMemberAction(
  * UPDATE MEMBER
  */
 export async function updateMemberAction(
-  input: UpdateMemberInput
+  input: UpdateMemberInput,
 ): Promise<ActionResult<MemberResult>> {
   try {
     await requireAdmin();
@@ -293,26 +386,57 @@ export async function updateMemberAction(
     const id = cleanText(input.id);
 
     if (!id) {
-      return { success: false, message: "Member ID is required." };
+      return {
+        success: false,
+        message: "Member ID is required.",
+      };
     }
 
     const data = validateMemberInput(input);
 
+    /**
+     * Verify member exists.
+     *
+     * Only MEMBER accounts can be edited through
+     * this action.
+     */
     const existingMember = await prisma.user.findFirst({
-      where: { id, role: "MEMBER" },
-      select: { id: true },
+      where: {
+        id,
+        role: "MEMBER",
+      },
+      select: {
+        id: true,
+      },
     });
 
     if (!existingMember) {
-      return { success: false, message: "Member not found." };
+      return {
+        success: false,
+        message: "Member not found.",
+      };
     }
 
+    /**
+     * Prevent duplicate email or phone.
+     */
     const duplicate = await prisma.user.findFirst({
       where: {
-        id: { not: id },
-        OR: [{ email: data.email }, { phone: data.phone }],
+        id: {
+          not: id,
+        },
+        OR: [
+          {
+            email: data.email,
+          },
+          {
+            phone: data.phone,
+          },
+        ],
       },
-      select: { id: true },
+      select: {
+        id: true,
+      },
     });
 
     if (duplicate) {
@@ -322,8 +446,15 @@ export async function updateMemberAction(
       };
     }
 
+    /**
+     * Update member details, including biography.
+     *
+     * Password is intentionally not changed here.
+     */
     const member = await prisma.user.update({
-      where: { id },
+      where: {
+        id,
+      },
       data,
       select: {
         id: true,
@@ -331,6 +462,7 @@ export async function updateMemberAction(
         email: true,
         phone: true,
         designation: true,
+        biography: true,
         imageUrl: true,
         status: true,
         startDate: true,
@@ -344,7 +476,7 @@ export async function updateMemberAction(
     return {
       success: true,
       message: "Member updated successfully.",
-      member,
+      member: member as MemberResult,
     };
   } catch (error) {
     return {
@@ -358,7 +490,7 @@ export async function updateMemberAction(
  * ACTIVATE / DEACTIVATE MEMBER
  */
 export async function toggleMemberStatusAction(
-  input: StatusInput
+  input: StatusInput,
 ): Promise<ActionResult> {
   try {
     await requireAdmin();
@@ -367,20 +499,37 @@ export async function toggleMemberStatusAction(
     const status = input.status;
 
     if (!id) {
-      return { success: false, message: "Member ID is required." };
+      return {
+        success: false,
+        message: "Member ID is required.",
+      };
     }
 
     if (status !== "ACTIVE" && status !== "INACTIVE") {
-      return { success: false, message: "Invalid member status." };
+      return {
+        success: false,
+        message: "Invalid member status.",
+      };
     }
 
+    /**
+     * Update only member accounts.
+     */
     const result = await prisma.user.updateMany({
-      where: { id, role: "MEMBER" },
-      data: { status },
+      where: {
+        id,
+        role: "MEMBER",
+      },
+      data: {
+        status,
+      },
     });
 
     if (result.count === 0) {
-      return { success: false, message: "Member not found." };
+      return {
+        success: false,
+        message: "Member not found.",
+      };
     }
 
     refreshMembersPage();
@@ -403,11 +552,11 @@ export async function toggleMemberStatusAction(
 /**
  * DELETE MEMBER
  *
- * Members with authored news cannot be deleted, preventing the
- * cascade relation from removing their news and activity records.
+ * Members with authored news cannot be deleted.
+ * This protects existing news and activity records.
  */
 export async function deleteMemberAction(
-  input: IdInput
+  input: IdInput,
 ): Promise<ActionResult> {
   try {
     await requireAdmin();
@@ -415,23 +564,40 @@ export async function deleteMemberAction(
     const id = cleanText(input.id);
 
     if (!id) {
-      return { success: false, message: "Member ID is required." };
+      return {
+        success: false,
+        message: "Member ID is required.",
+      };
     }
 
+    /**
+     * Find member and count authored news.
+     */
     const member = await prisma.user.findFirst({
-      where: { id, role: "MEMBER" },
+      where: {
+        id,
+        role: "MEMBER",
+      },
       select: {
         id: true,
         _count: {
-          select: { news: true },
+          select: {
+            news: true,
+          },
         },
       },
     });
 
     if (!member) {
-      return { success: false, message: "Member not found." };
+      return {
+        success: false,
+        message: "Member not found.",
+      };
     }
 
+    /**
+     * Protect authored news and activity records.
+     */
     if (member._count.news > 0) {
       return {
         success: false,
@@ -440,8 +606,13 @@ export async function deleteMemberAction(
       };
     }
 
+    /**
+     * Delete member.
+     */
     await prisma.user.delete({
-      where: { id: member.id },
+      where: {
+        id: member.id,
+      },
     });
 
     refreshMembersPage();

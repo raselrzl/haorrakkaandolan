@@ -7,16 +7,117 @@ import {
   Grid2X2,
   List,
   Phone,
+  Mail,
   Users,
   LoaderCircle,
-  UserRound,
   RefreshCw,
+  ChevronRight,
 } from "lucide-react";
 import { getPublicTeamAction } from "./aboutActions";
 import FloatingContact from "../FloatingContact";
 import Footer from "../Footer";
+import LanguageSwitcher from "../LanguageSwitcher";
 
 type TeamPerson = Awaited<ReturnType<typeof getPublicTeamAction>>[number];
+
+const designationOrder = [
+  "SOVAPOTI",
+  "SADHARONSOMPADOK",
+  "SOHOSOVAPOTI",
+  "SOHOSADHARONSOMPADOK",
+  "SANGOTONIKSOMPADOK",
+  "SOHOSANGOTONIKSOMPADOK",
+  "ARTHOSOMPADOK",
+  "PROCHARSOMPADOK",
+  "DOPTORSOMPADOK",
+  "SANGSKRITIKSOMPADOK",
+  "MOHILASOMPADOK",
+  "AINBISHOYOKSOMPADOK",
+  "CHATROOJUBOSOMPADOK",
+  "UPODESTAPORISHOD",
+  "KARJONIRBAHISODOSSHO",
+  "MEMBER",
+  "CHAIRMAN",
+] as const;
+
+// These two designation sections use one card per row.
+const singleColumnDesignations = ["SOVAPOTI", "SADHARONSOMPADOK"];
+
+const designationLabels: Record<string, string> = {
+  SOVAPOTI: "সভাপতি (President)",
+  SADHARONSOMPADOK: "সাধারণ সম্পাদক (General Secretary)",
+  SOHOSOVAPOTI: "সহ-সভাপতি (Vice President)",
+  SOHOSADHARONSOMPADOK: "সহ-সাধারণ সম্পাদক (Joint General Secretary)",
+  SANGOTONIKSOMPADOK: "সাংগঠনিক সম্পাদক (Organizing Secretary)",
+  SOHOSANGOTONIKSOMPADOK: "সহ-সাংগঠনিক সম্পাদক (Joint Organizing Secretary)",
+  ARTHOSOMPADOK: "অর্থ সম্পাদক (Treasurer)",
+  PROCHARSOMPADOK: "প্রচার সম্পাদক (Publicity Secretary)",
+  DOPTORSOMPADOK: "দপ্তর সম্পাদক (Office Secretary)",
+  SANGSKRITIKSOMPADOK: "সাংস্কৃতিক সম্পাদক (Cultural Secretary)",
+  MOHILASOMPADOK: "মহিলা সম্পাদক (Women's Secretary)",
+  AINBISHOYOKSOMPADOK: "আইন বিষয়ক সম্পাদক (Legal Affairs Secretary)",
+  CHATROOJUBOSOMPADOK: "ছাত্র ও যুব সম্পাদক (Student and Youth Secretary)",
+  UPODESTAPORISHOD: "উপদেষ্টা পরিষদ (Advisory Council)",
+  KARJONIRBAHISODOSSHO: "কার্যনির্বাহী সদস্য (Executive Member)",
+  MEMBER: "সাধারণ সদস্য (General Member)",
+  CHAIRMAN: "চেয়ারম্যান (Chairman)",
+};
+
+function getDesignationKey(person: TeamPerson): string {
+  const designation = person.designation?.trim().toUpperCase();
+
+  if (
+    designation &&
+    designationOrder.includes(designation as (typeof designationOrder)[number])
+  ) {
+    return designation;
+  }
+
+  if (person.role === "CHAIRMAN") {
+    return "CHAIRMAN";
+  }
+
+  return "MEMBER";
+}
+
+function formatDesignation(designation: string): string {
+  return designationLabels[designation] ?? designation.replaceAll("_", " ");
+}
+
+function BiographyToggle({ biography }: { biography: string }) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div className="mt-4 border-t border-emerald-100 pt-3 text-left">
+      <h4 className="mb-2 text-xs font-bold uppercase tracking-wide text-emerald-950">
+        Biography
+      </h4>
+
+      <p
+        className={`whitespace-pre-line break-words text-sm leading-6 text-slate-600 ${
+          expanded ? "" : "line-clamp-3"
+        }`}
+      >
+        {biography}
+      </p>
+
+      <button
+        type="button"
+        onClick={() => setExpanded((previous) => !previous)}
+        aria-expanded={expanded}
+        className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-emerald-800 transition hover:text-emerald-950"
+      >
+        {expanded ? "Show less" : "Read full biography"}
+        <ChevronRight
+          size={14}
+          className={`transition-transform duration-200 ${
+            expanded ? "-rotate-90" : "rotate-90"
+          }`}
+        />
+      </button>
+    </div>
+  );
+}
 
 export default function AboutPage() {
   const [view, setView] = useState<"grid" | "list">("grid");
@@ -57,424 +158,315 @@ export default function AboutPage() {
     };
   }, []);
 
-  // A designation of "Chairperson" takes priority over the database role.
-  const chairperson = people.find(
-    (person) => person.designation?.trim().toLowerCase() === "chairperson",
-  );
-
-  // Fall back to the CHAIRMAN role when no designated Chairperson exists.
-  const chairman = people.find((person) => person.role === "CHAIRMAN");
-
-  const leadershipPerson = chairperson ?? chairman;
-
-  const leadershipTitle = chairperson
-    ? "Chairperson"
-    : leadershipPerson
-      ? "Chairman"
-      : "Chairperson";
-
-  // Do not show the selected leader a second time in the members list.
-  const members = people.filter(
-    (person) => person.role === "MEMBER" && person.id !== leadershipPerson?.id,
-  );
-
   const getImage = (person: TeamPerson) =>
     person.imageUrl?.trim() || "/img/monu1.jpg";
+
+  const groupedPeople = designationOrder
+    .map((designation) => ({
+      designation,
+      label: formatDesignation(designation),
+      people: people
+        .filter((person) => getDesignationKey(person) === designation)
+        .sort((a, b) => a.name.localeCompare(b.name)),
+    }))
+    .filter((group) => group.people.length > 0);
+
+  const renderPerson = (
+    person: TeamPerson,
+    designation: string,
+    index: number,
+  ) => {
+    const biography = person.biography?.trim();
+    const hasBiography = Boolean(biography);
+
+    const email =
+      "email" in person && typeof person.email === "string"
+        ? person.email.trim()
+        : "";
+
+    return (
+      <article
+        key={person.id}
+        style={{ animationDelay: `${index * 90}ms` }}
+        className={`team-card min-w-0 overflow-hidden border border-emerald-900/10 bg-white transition duration-300 hover:border-emerald-700/40 hover:shadow-md ${
+          hasBiography
+            ? "w-full p-4 sm:p-6"
+            : view === "grid"
+              ? "p-3 sm:p-4"
+              : "flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:gap-4 sm:p-4"
+        }`}
+      >
+        <div
+          className={`relative shrink-0 overflow-hidden rounded-full border-2 border-emerald-100 bg-slate-100 ${
+            hasBiography
+              ? "mx-auto h-24 w-24 sm:mx-0 sm:h-28 sm:w-28"
+              : view === "grid"
+                ? "mx-auto h-20 w-20 sm:h-24 sm:w-24"
+                : "mx-auto h-16 w-16 sm:mx-0 sm:h-20 sm:w-20"
+          }`}
+        >
+          <Image
+            src={getImage(person)}
+            alt={person.name}
+            fill
+            sizes="(min-width: 640px) 112px, 96px"
+            className="object-cover transition duration-500 hover:scale-105"
+          />
+        </div>
+
+        <div
+          className={`min-w-0 ${
+            hasBiography
+              ? "mt-4 text-center sm:mt-0 sm:flex-1 sm:text-left"
+              : view === "grid"
+                ? "mt-3 text-center"
+                : "flex-1 text-center sm:text-left"
+          }`}
+        >
+          <h3 className="break-words text-sm font-bold text-slate-900 sm:text-base">
+            {person.name}
+          </h3>
+
+          <p className="mt-1 break-words text-xs font-semibold text-emerald-800">
+            {formatDesignation(designation)}
+          </p>
+
+          {email && (
+            <p className="mt-2 flex min-w-0 items-center justify-center gap-1.5 text-xs text-slate-500 sm:justify-start">
+              <Mail size={13} className="shrink-0 text-emerald-700" />
+              <a
+                href={`mailto:${email}`}
+                className="break-all hover:text-emerald-800"
+              >
+                {email}
+              </a>
+            </p>
+          )}
+
+          {person.phone && (
+            <p className="mt-2 flex min-w-0 items-center justify-center gap-1.5 text-xs text-slate-500 sm:justify-start">
+              <Phone size={13} className="shrink-0 text-emerald-700" />
+              <a
+                href={`tel:${person.phone}`}
+                className="break-all hover:text-emerald-800"
+              >
+                {person.phone}
+              </a>
+            </p>
+          )}
+
+          {biography && <BiographyToggle biography={biography} />}
+        </div>
+      </article>
+    );
+  };
 
   return (
     <main className="min-h-screen bg-[#f7f9f6]">
       <Navbar />
- 
-   {/* Hero */}
-<section className="relative isolate mt-16 overflow-hidden bg-emerald-950">
-  <Image
-    src="/hail.webp"
-    alt="Haor Rokkha Andolan"
-    fill
-    priority
-    sizes="100vw"
-    className="object-cover object-center"
-  />
 
-  <div className="absolute inset-0 bg-linear-to-r from-emerald-950/30 via-emerald-950/50 to-emerald-950/40" />
+      <div className="fixed right-4 top-1/2 z-[9999] -translate-y-1/2">
+        <LanguageSwitcher />
+      </div>
 
-  <div className="relative mx-auto flex h-130 max-w-7xl items-center justify-center px-4 py-10 text-center sm:min-h-82.5 sm:px-6 lg:px-8">
-    <div>
-      <p className="mb-2 text-[9px] font-bold tracking-[0.2em] text-emerald-300 uppercase sm:text-xs sm:tracking-[0.28em]">
-        Haor Rokkha Andolan · Moulvibazar
-      </p>
+      <div className="mx-auto mt-16 w-full max-w-7xl space-y-7 px-4 py-7 sm:space-y-9 sm:px-6 sm:py-10 lg:px-8">
+        <header className="border-b border-emerald-900/10 pb-5">
+          <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-700">
+            Haor Rokkha Andolan
+          </p>
 
-      <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-        About Us
-      </h1>
+          <h1 className="text-2xl font-bold tracking-tight text-emerald-950 sm:text-4xl">
+            Our Organization
+          </h1>
 
-      <div className="mx-auto mt-4 h-1 w-12 rounded-full bg-emerald-400" />
-    </div>
-  </div>
-</section>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+            Meet the people working together to protect our haors and preserve
+            the natural environment.
+          </p>
+        </header>
 
-      <div className="mx-auto w-full max-w-7xl space-y-8 px-4 py-7 sm:space-y-10 sm:px-6 sm:py-10 lg:px-8">
-        {/* About the Organization */}
-        <section>
-          <div className="mb-4">
-            <p className="mb-1 text-[9px] font-bold uppercase tracking-[0.18em] text-emerald-700 sm:text-[10px] sm:tracking-[0.2em]">
-              About the Organization
-            </p>
-
-            <h2 className="text-xl font-bold tracking-tight text-emerald-950 sm:text-3xl">
-              Haor Rokkha Andolan
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h2 className="text-lg font-bold text-emerald-950 sm:text-xl">
+              Committee &amp; Members
             </h2>
-          </div>
-
-          <div className="rounded-lg border border-emerald-900/10 bg-white p-4 sm:rounded-xl sm:p-7">
-            <div className="space-y-4 text-sm leading-7 text-slate-600 sm:text-base">
-              <p>
-                Haor Rokkha Andolan is an environmental and community-oriented
-                initiative dedicated to protecting the haors, rivers, wetlands,
-                and natural ecosystems of the region. The organization seeks to
-                raise public awareness about environmental challenges and
-                encourage collective action to preserve these valuable natural
-                resources for present and future generations.
-              </p>
-
-              <p>
-                The haor region supports a rich diversity of wildlife,
-                fisheries, agriculture, and local livelihoods. Protecting these
-                ecosystems is essential to maintaining environmental balance and
-                safeguarding the well-being of the communities that depend on
-                them.
-              </p>
-
-              <p>
-                Through public awareness, community participation, environmental
-                advocacy, and conservation initiatives, Haor Rokkha Andolan aims
-                to bring people together to address environmental degradation
-                and promote responsible stewardship of nature.
-              </p>
-            </div>
-
-            {/* Mission and Vision */}
-            <div className="mt-5 grid gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-4">
-              <div className="rounded-lg bg-emerald-50 p-4">
-                <h3 className="mb-2 font-bold text-emerald-950">Our Mission</h3>
-
-                <p className="text-sm leading-6 text-slate-600">
-                  To protect haor ecosystems, preserve biodiversity, raise
-                  environmental awareness, and encourage communities to take
-                  meaningful action for conservation.
-                </p>
-              </div>
-
-              <div className="rounded-lg bg-slate-50 p-4">
-                <h3 className="mb-2 font-bold text-slate-900">Our Vision</h3>
-
-                <p className="text-sm leading-6 text-slate-600">
-                  A healthy and sustainable haor region where rivers flow,
-                  biodiversity thrives, and local communities can live in
-                  harmony with nature.
-                </p>
-              </div>
-            </div>
-
-            {/* Objectives */}
-            <div className="mt-3 rounded-lg border border-slate-100 p-4 sm:mt-4">
-              <h3 className="mb-3 font-bold text-emerald-950">
-                Our Objectives
-              </h3>
-
-              <ul className="list-disc space-y-2 pl-5 text-sm leading-6 text-slate-600">
-                <li>Protect haors, rivers, wetlands, and biodiversity.</li>
-                <li>
-                  Raise awareness about pollution and environmental degradation.
-                </li>
-                <li>Encourage community participation in conservation.</li>
-                <li>Promote sustainable use of natural resources.</li>
-                <li>
-                  Support collective efforts to safeguard the region&apos;s
-                  environment.
-                </li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* Chairperson / Chairman Profile */}
-        <section>
-          <div className="mb-4">
-            <p className="mb-1 text-[9px] font-bold uppercase tracking-[0.18em] text-emerald-700 sm:text-[10px] sm:tracking-[0.2em]">
-              Leadership
+            <p className="mt-1 text-xs text-slate-500">
+              Organized by designation
             </p>
-
-            <h2 className="text-xl font-bold tracking-tight text-emerald-950 sm:text-3xl">
-              {leadershipTitle}&apos;s Profile
-            </h2>
           </div>
 
-          {loading ? (
-            <div className="flex min-h-40 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white text-sm text-slate-500">
-              <LoaderCircle size={18} className="animate-spin" />
-              Loading leadership profile...
-            </div>
-          ) : error ? (
-            <div
-              role="alert"
-              className="rounded-lg border border-red-200 bg-white p-5 text-sm text-red-700"
-            >
-              <p>{error}</p>
-
-              <button
-                type="button"
-                onClick={() => window.location.reload()}
-                className="mt-3 inline-flex items-center gap-1 font-semibold text-emerald-800"
-              >
-                <RefreshCw size={13} />
-                Retry
-              </button>
-            </div>
-          ) : leadershipPerson ? (
-            <article className="overflow-hidden rounded-lg border border-emerald-900/10 bg-white sm:rounded-xl">
-              <div className="grid sm:grid-cols-[220px_minmax(0,1fr)] md:grid-cols-[280px_minmax(0,1fr)]">
-                <div className="relative mx-auto mt-5 h-36 w-36 overflow-hidden rounded-full border-4 border-emerald-100 bg-slate-100 sm:mx-0 sm:my-0 sm:h-full sm:min-h-64 sm:w-full sm:rounded-none sm:border-0">
-                  <Image
-                    src={getImage(leadershipPerson)}
-                    alt={leadershipPerson.name}
-                    fill
-                    sizes="(max-width: 640px) 144px, 280px"
-                    className="object-cover"
-                  />
-                </div>
-
-                <div className="min-w-0 p-4 sm:p-6 md:p-8">
-                  <span className="inline-flex rounded-md bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-emerald-800">
-                    {leadershipPerson.designation?.trim() || leadershipTitle}
-                  </span>
-
-                  <h3 className="mt-3 wrap-break-words text-xl font-bold text-slate-950 sm:text-2xl md:text-3xl">
-                    {leadershipPerson.name}
-                  </h3>
-
-                  {leadershipPerson.designation?.trim() && (
-                    <p className="mt-1 text-sm font-semibold text-emerald-800">
-                      {leadershipPerson.designation}
-                    </p>
-                  )}
-
-                  {leadershipPerson.phone && (
-                    <p className="mt-3 flex items-center gap-2 text-sm text-slate-600">
-                      <Phone size={15} className="shrink-0 text-emerald-700" />
-
-                      <a
-                        href={`tel:${leadershipPerson.phone}`}
-                        className="break-all transition hover:text-emerald-800"
-                      >
-                        {leadershipPerson.phone}
-                      </a>
-                    </p>
-                  )}
-
-                  <div className="mt-5 border-t border-slate-100 pt-4">
-                    <h4 className="mb-2 text-sm font-bold text-emerald-950">
-                      Organization Leadership
-                    </h4>
-
-                    <p className="text-sm leading-6 text-slate-600">
-                      {leadershipPerson.name} serves as{" "}
-                      {leadershipPerson.designation?.trim() || leadershipTitle}{" "}
-                      of Haor Rokkha Andolan. The profile information displayed
-                      here comes from the organization&apos;s published member
-                      record.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </article>
-          ) : (
-            <div className="rounded-lg border border-dashed border-slate-300 bg-white px-4 py-10 text-center">
-              <UserRound
-                size={30}
-                className="mx-auto mb-3 text-emerald-800"
-                strokeWidth={1.5}
-              />
-
-              <h3 className="font-bold text-slate-800">
-                Chairperson profile not published
-              </h3>
-
-              <p className="mt-1 text-sm text-slate-500">
-                The Chairperson&apos;s profile will appear here when an active
-                person with the appropriate designation or chairman role is
-                published.
-              </p>
-            </div>
-          )}
-        </section>
-
-        {/* Members */}
-        <section>
-          <div className="mb-4 flex items-center justify-between gap-3 sm:mb-5">
-            <div className="min-w-0">
-              <p className="mb-1 text-[9px] font-bold uppercase tracking-[0.18em] text-emerald-700 sm:text-[10px] sm:tracking-[0.2em]">
-                Our Team
-              </p>
-
-              <h2 className="text-xl font-bold tracking-tight text-emerald-950 sm:text-3xl">
-                Our Members
-              </h2>
-
-              <p className="mt-1 text-xs text-slate-500 sm:mt-2 sm:text-sm">
-                Meet the people working together to protect our haors.
-              </p>
-            </div>
-
-            {/* Grid / List Toggle */}
-            <div className="inline-flex shrink-0 rounded-md border border-slate-200 bg-white p-1">
-              <button
-                type="button"
-                onClick={() => setView("grid")}
-                aria-label="Grid view"
-                aria-pressed={view === "grid"}
-                className={`inline-flex items-center gap-1.5 rounded px-2.5 py-2 text-xs font-semibold transition sm:px-3 ${
-                  view === "grid"
-                    ? "bg-emerald-800 text-white"
-                    : "text-slate-600 hover:bg-slate-50"
-                }`}
-              >
-                <Grid2X2 size={15} />
-                <span>Grid</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setView("list")}
-                aria-label="List view"
-                aria-pressed={view === "list"}
-                className={`inline-flex items-center gap-1.5 rounded px-2.5 py-2 text-xs font-semibold transition sm:px-3 ${
-                  view === "list"
-                    ? "bg-emerald-800 text-white"
-                    : "text-slate-600 hover:bg-slate-50"
-                }`}
-              >
-                <List size={15} />
-                <span>List</span>
-              </button>
-            </div>
-          </div>
-
-          {loading ? (
-            <div className="flex min-h-32 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white text-sm text-slate-500">
-              <LoaderCircle size={18} className="animate-spin" />
-              Loading members...
-            </div>
-          ) : error ? (
-            <div
-              role="alert"
-              className="rounded-lg border border-red-200 bg-white p-4 text-sm text-red-700"
-            >
-              Team information could not be loaded.
-            </div>
-          ) : members.length > 0 ? (
-            <div
-              className={
+          <div className="inline-flex shrink-0 border border-slate-200 bg-white p-1">
+            <button
+              type="button"
+              onClick={() => setView("grid")}
+              aria-label="Grid view"
+              aria-pressed={view === "grid"}
+              className={`inline-flex items-center gap-1.5 px-2.5 py-2 text-xs font-semibold transition ${
                 view === "grid"
-                  ? "grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4"
-                  : "flex flex-col gap-2.5"
-              }
+                  ? "bg-emerald-800 text-white"
+                  : "text-slate-600 hover:bg-slate-50"
+              }`}
             >
-              {members.map((member) => (
-                <article
-                  key={member.id}
-                  className={
-                    view === "grid"
-                      ? "flex min-w-0 flex-col items-center rounded-lg border border-slate-200/80 bg-white p-3 text-center transition hover:border-emerald-700/30 hover:shadow-md sm:p-5"
-                      : "flex min-w-0 items-center gap-3 rounded-lg border border-slate-200/80 bg-white p-3 transition hover:border-emerald-700/30 hover:shadow-sm sm:gap-5 sm:p-4"
-                  }
+              <Grid2X2 size={15} />
+              <span>Grid</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setView("list")}
+              aria-label="List view"
+              aria-pressed={view === "list"}
+              className={`inline-flex items-center gap-1.5 px-2.5 py-2 text-xs font-semibold transition ${
+                view === "list"
+                  ? "bg-emerald-800 text-white"
+                  : "text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              <List size={15} />
+              <span>List</span>
+            </button>
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="flex min-h-40 items-center justify-center gap-2 border border-slate-200 bg-white text-sm text-slate-500">
+            <LoaderCircle size={18} className="animate-spin" />
+            Loading organization members...
+          </div>
+        ) : error ? (
+          <div
+            role="alert"
+            className="border border-red-200 bg-white p-5 text-sm text-red-700"
+          >
+            <p>{error}</p>
+
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="mt-3 inline-flex items-center gap-1 font-semibold text-emerald-800"
+            >
+              <RefreshCw size={13} />
+              Retry
+            </button>
+          </div>
+        ) : groupedPeople.length > 0 ? (
+          <div className="space-y-7 sm:space-y-9">
+            {groupedPeople.map((group, groupIndex) => {
+              const singleColumn = singleColumnDesignations.includes(
+                group.designation,
+              );
+
+              return (
+                <section
+                  key={group.designation}
+                  style={{ animationDelay: `${groupIndex * 100}ms` }}
+                  className="designation-row"
                 >
-                  <div
-                    className={`relative shrink-0 overflow-hidden rounded-full border-2 border-emerald-100 bg-slate-100 ${
-                      view === "grid"
-                        ? "h-20 w-20 sm:h-28 sm:w-28"
-                        : "h-14 w-14 sm:h-20 sm:w-20"
-                    }`}
-                  >
-                    <Image
-                      src={getImage(member)}
-                      alt={member.name}
-                      fill
-                      sizes={
-                        view === "grid"
-                          ? "(max-width: 640px) 80px, 112px"
-                          : "80px"
-                      }
-                      className="object-cover"
+                  <div className="mb-3 flex items-center gap-3 border-b border-emerald-900/15 pb-2.5">
+                    <div className="h-6 w-1 shrink-0 bg-emerald-700" />
+
+                    <div className="min-w-0 flex-1">
+                      <h2 className="text-base font-bold text-emerald-950 sm:text-lg">
+                        {group.label}
+                      </h2>
+
+                      <p className="mt-0.5 text-[11px] text-slate-500">
+                        {group.people.length}{" "}
+                        {group.people.length === 1 ? "person" : "people"}
+                      </p>
+                    </div>
+
+                    <ChevronRight
+                      size={17}
+                      className="shrink-0 text-emerald-700"
                     />
                   </div>
 
                   <div
-                    className={`min-w-0 ${
-                      view === "grid" ? "mt-3 w-full" : "flex-1"
-                    }`}
+                    className={
+                      view === "list"
+                        ? "flex flex-col gap-2.5"
+                        : singleColumn
+                          ? "grid grid-cols-1 gap-3"
+                          : "grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
+                    }
                   >
-                    <h3 className="wrap-break-words text-sm font-bold text-slate-900 sm:text-base">
-                      {member.name}
-                    </h3>
+                    {group.people.map((person, index) => {
+                      const hasBiography = Boolean(person.biography?.trim());
 
-                    {member.designation?.trim() && (
-                      <p className="mt-1 wrap-break-words text-[10px] font-semibold leading-4 text-emerald-800 sm:text-xs">
-                        {member.designation}
-                      </p>
-                    )}
-
-                    {member.phone && (
-                      <p
-                        className={`mt-2 flex min-w-0 items-center gap-1.5 text-[10px] text-slate-500 sm:text-xs ${
-                          view === "grid" ? "justify-center" : ""
-                        }`}
-                      >
-                        <Phone
-                          size={12}
-                          className="shrink-0 text-emerald-700"
-                        />
-
-                        <a
-                          href={`tel:${member.phone}`}
-                          className="min-w-0 break-all hover:text-emerald-800"
+                      return (
+                        <div
+                          key={person.id}
+                          className={
+                            view === "grid" && !singleColumn && hasBiography
+                              ? "col-span-full"
+                              : "min-w-0"
+                          }
                         >
-                          {member.phone}
-                        </a>
-                      </p>
-                    )}
+                          {renderPerson(person, group.designation, index)}
+                        </div>
+                      );
+                    })}
                   </div>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className="rounded-lg border border-dashed border-slate-300 bg-white px-4 py-10 text-center">
-              <Users
-                size={30}
-                className="mx-auto mb-3 text-emerald-800"
-                strokeWidth={1.5}
-              />
+                </section>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="border border-dashed border-slate-300 bg-white px-4 py-10 text-center">
+            <Users
+              size={30}
+              className="mx-auto mb-3 text-emerald-800"
+              strokeWidth={1.5}
+            />
 
-              <h3 className="text-sm font-bold text-slate-800">
-                No members published yet
-              </h3>
+            <h3 className="text-sm font-bold text-slate-800">
+              No active members published yet
+            </h3>
 
-              <p className="mt-1 text-xs text-slate-500 sm:text-sm">
-                Active members will appear here when they are added to the
-                organization.
-              </p>
-            </div>
-          )}
-
-          {!loading && !error && (
-            <p className="mt-3 text-right text-[10px] text-slate-500 sm:text-xs">
-              {members.length} {members.length === 1 ? "member" : "members"}
+            <p className="mt-1 text-xs text-slate-500 sm:text-sm">
+              Designation rows will appear when active members are available.
             </p>
-          )}
-        </section>
+          </div>
+        )}
+
+        {!loading && !error && (
+          <p className="border-t border-slate-200 pt-3 text-right text-xs text-slate-500">
+            {people.length} active {people.length === 1 ? "person" : "people"}
+          </p>
+        )}
       </div>
-       <FloatingContact />
-       <Footer />
+
+      <FloatingContact />
+      <Footer />
+
+      <style jsx>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(14px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .designation-row {
+          animation: fadeInUp 0.55s ease-out both;
+        }
+
+        .team-card {
+          animation: fadeInUp 0.5s ease-out both;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .designation-row,
+          .team-card {
+            animation: none;
+          }
+        }
+      `}</style>
     </main>
   );
 }

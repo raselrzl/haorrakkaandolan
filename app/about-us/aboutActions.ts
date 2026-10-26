@@ -1,6 +1,27 @@
+
 "use server";
 
 import { prisma } from "../utils/db";
+
+const designationPriority: Record<string, number> = {
+  SOVAPOTI: 1,
+  SADHARONSOMPADOK: 2,
+  SOHOSOVAPOTI: 3,
+  SOHOSADHARONSOMPADOK: 4,
+  SANGOTONIKSOMPADOK: 5,
+  SOHOSANGOTONIKSOMPADOK: 6,
+  ARTHOSOMPADOK: 7,
+  PROCHARSOMPADOK: 8,
+  DOPTORSOMPADOK: 9,
+  SANGSKRITIKSOMPADOK: 10,
+  MOHILASOMPADOK: 11,
+  AINBISHOYOKSOMPADOK: 12,
+  CHATROOJUBOSOMPADOK: 13,
+  UPODESTAPORISHOD: 14,
+  KARJONIRBAHISODOSSHO: 15,
+  MEMBER: 16,
+  CHAIRMAN: 17,
+};
 
 export async function getPublicTeamAction() {
   const now = new Date();
@@ -32,28 +53,37 @@ export async function getPublicTeamAction() {
       phone: true,
       imageUrl: true,
       role: true,
+        biography: true,
+
       designation: true,
       startDate: true,
       endDate: true,
     },
-    orderBy: {
-      name: "asc",
-    },
   });
 
-  // Show the designated chairperson first, then other leadership,
-  // followed by members.
   return people.sort((a, b) => {
-    const aIsChairperson =
-      a.designation?.trim().toLowerCase() === "chairperson";
-    const bIsChairperson =
-      b.designation?.trim().toLowerCase() === "chairperson";
+    const aDesignation =
+      a.designation?.trim().toUpperCase() ||
+      (a.role === "CHAIRMAN" ? "CHAIRMAN" : "MEMBER");
 
-    if (aIsChairperson && !bIsChairperson) return -1;
-    if (!aIsChairperson && bIsChairperson) return 1;
+    const bDesignation =
+      b.designation?.trim().toUpperCase() ||
+      (b.role === "CHAIRMAN" ? "CHAIRMAN" : "MEMBER");
 
-    if (a.role === "CHAIRMAN" && b.role !== "CHAIRMAN") return -1;
-    if (a.role !== "CHAIRMAN" && b.role === "CHAIRMAN") return 1;
+    const aPriority = designationPriority[aDesignation] ?? 99;
+    const bPriority = designationPriority[bDesignation] ?? 99;
+
+    if (aPriority !== bPriority) {
+      return aPriority - bPriority;
+    }
+
+    if (a.role === "CHAIRMAN" && b.role !== "CHAIRMAN") {
+      return -1;
+    }
+
+    if (a.role !== "CHAIRMAN" && b.role === "CHAIRMAN") {
+      return 1;
+    }
 
     return a.name.localeCompare(b.name);
   });

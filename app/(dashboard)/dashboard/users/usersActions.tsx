@@ -1,322 +1,227 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+
 import { prisma } from "@/app/utils/db";
 import { requireAdmin } from "@/app/utils/auth";
 
-type EditableRole = "ADMIN" | "USER" | "MEMBER" | "CHAIRMAN";
-type EditableStatus = "ACTIVE" | "INACTIVE";
+export type EditableRole = "ADMIN" | "USER";
+export type EditableStatus = "ACTIVE" | "INACTIVE";
 
-type UserActionResult = {
+type ActionResult = {
   success: boolean;
   message: string;
 };
 
-type GetUsersResult = {
-  success: boolean;
-  users: {
-    id: string;
-    name: string;
-    email: string;
-    phone: string;
-    role: EditableRole;
-    status: EditableStatus;
-    designation: string | null;
-    imageUrl: string | null;
-    startDate: Date | null;
-    endDate: Date | null;
-    createdAt: Date;
-    updatedAt: Date;
-  }[];
-  message: string;
-};
-
-/**
- * Verify that the current user is an active administrator.
- */
 async function authorizeAdmin() {
   const admin = await requireAdmin();
 
-  if (admin.status !== "ACTIVE") {
-    throw new Error("Your administrator account is inactive.");
+  if (!admin || admin.status !== "ACTIVE") {
+    throw new Error("An active administrator account is required.");
   }
 
   return admin;
 }
 
-/**
- * Get all users.
- * Only active administrators can access the complete user list.
- */
-export async function getAllUsersAction(): Promise<GetUsersResult> {
-  try {
-    await authorizeAdmin();
-
-    const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        phone: true,
-        role: true,
-        status: true,
-        designation: true,
-        imageUrl: true,
-        startDate: true,
-        endDate: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
-    return {
-      success: true,
-      users,
-      message: "Users loaded successfully.",
-    };
-  } catch (error) {
-    console.error("getAllUsersAction error:", error);
-
-    return {
-      success: false,
-      users: [],
-      message: "Unable to load users. Please verify your administrator access.",
-    };
-  }
+function isEditableRole(role: string): role is EditableRole {
+  return role === "ADMIN" || role === "USER";
 }
 
-/**
- * Update a user's role.
- * Active administrators can assign any supported role to another account.
- * Administrators cannot change their own role.
- */
+function isEditableStatus(status: string): status is EditableStatus {
+  return status === "ACTIVE" || status === "INACTIVE";
+}
+
+export async function getAllUsersAction() {
+  await authorizeAdmin();
+
+  const users = await prisma.user.findMany({
+    where: {
+      role: {
+        in: ["ADMIN", "USER"],
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      role: true,
+      designation: true,
+      imageUrl: true,
+      startDate: true,
+      endDate: true,
+      status: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return users.map((user) => ({
+    ...user,
+    role: user.role as EditableRole,
+    designation: user.designation as string | null,
+    status: user.status as EditableStatus,
+  }));
+}
+
 export async function updateUserRoleAction(
   userId: string,
   role: EditableRole,
-): Promise<UserActionResult> {
-  try {
-    const admin = await authorizeAdmin();
+): Promise<ActionResult> {
+  const admin = await authorizeAdmin();
 
-    if (!userId || typeof userId !== "string") {
-      return {
-        success: false,
-        message: "Invalid user ID.",
-      };
-    }
+  if (!userId?.trim()) {
+    return { success: false, message: "User ID is required." };
+  }
 
-    const allowedRoles: EditableRole[] = [
-      "ADMIN",
-      "USER",
-      "MEMBER",
-      "CHAIRMAN",
-    ];
+  if (!isEditableRole(role)) {
+    return { success: false, message: "Invalid role selected." };
+  }
 
-    if (!allowedRoles.includes(role)) {
-      return {
-        success: false,
-        message: "Invalid role. Select a valid user role.",
-      };
-    }
-
-    if (admin.id === userId) {
-      return {
-        success: false,
-        message: "You cannot change your own role.",
-      };
-    }
-
-    const targetUser = await prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        name: true,
-        role: true,
-      },
-    });
-
-    if (!targetUser) {
-      return {
-        success: false,
-        message: "User not found.",
-      };
-    }
-
-    if (targetUser.role === role) {
-      return {
-        success: true,
-        message: "The user already has this role.",
-      };
-    }
-
-    await prisma.user.update({
-      where: { id: userId },
-      data: { role },
-    });
-
-    revalidatePath("/dashboard/users");
-
-    return {
-      success: true,
-      message: `${targetUser.name}'s role was updated to ${role}.`,
-    };
-  } catch (error) {
-    console.error("updateUserRoleAction error:", error);
-
+  if (admin.id === userId) {
     return {
       success: false,
-      message:
-        "Unable to update the user role. Please verify administrator access.",
+      message: "You cannot change your own role.",
     };
   }
+
+  const targetUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, role: true },
+  });
+
+  if (!targetUser) {
+    return { success: false, message: "User not found." };
+  }
+
+  if (!isEditableRole(targetUser.role)) {
+    return {
+      success: false,
+      message: "Only Admin and User accounts can be managed here.",
+    };
+  }
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { role },
+  });
+
+  revalidatePath("/dashboard/users");
+
+  return { success: true, message: "User role updated successfully." };
 }
 
-/**
- * Activate or deactivate a user account.
- * Administrators cannot deactivate their own account.
- */
 export async function updateUserStatusAction(
   userId: string,
   status: EditableStatus,
-): Promise<UserActionResult> {
-  try {
-    const admin = await authorizeAdmin();
+): Promise<ActionResult> {
+  const admin = await authorizeAdmin();
 
-    if (!userId || typeof userId !== "string") {
-      return {
-        success: false,
-        message: "Invalid user ID.",
-      };
-    }
+  if (!userId?.trim()) {
+    return { success: false, message: "User ID is required." };
+  }
 
-    if (status !== "ACTIVE" && status !== "INACTIVE") {
-      return {
-        success: false,
-        message: "Invalid status. Select ACTIVE or INACTIVE.",
-      };
-    }
+  if (!isEditableStatus(status)) {
+    return { success: false, message: "Invalid account status." };
+  }
 
-    if (admin.id === userId && status === "INACTIVE") {
-      return {
-        success: false,
-        message: "You cannot deactivate your own account.",
-      };
-    }
-
-    const targetUser = await prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        name: true,
-        status: true,
-      },
-    });
-
-    if (!targetUser) {
-      return {
-        success: false,
-        message: "User not found.",
-      };
-    }
-
-    if (targetUser.status === status) {
-      return {
-        success: true,
-        message: "The user already has this account status.",
-      };
-    }
-
-    await prisma.user.update({
-      where: { id: userId },
-      data: { status },
-    });
-
-    revalidatePath("/dashboard/users");
-
-    return {
-      success: true,
-      message:
-        status === "ACTIVE"
-          ? `${targetUser.name}'s account has been activated.`
-          : `${targetUser.name}'s account has been deactivated.`,
-    };
-  } catch (error) {
-    console.error("updateUserStatusAction error:", error);
-
+  if (admin.id === userId && status !== "ACTIVE") {
     return {
       success: false,
-      message:
-        "Unable to update account status. Please verify administrator access.",
+      message: "You cannot deactivate your own account.",
     };
   }
+
+  const targetUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, role: true },
+  });
+
+  if (!targetUser) {
+    return { success: false, message: "User not found." };
+  }
+
+  if (!isEditableRole(targetUser.role)) {
+    return {
+      success: false,
+      message: "Only Admin and User accounts can be managed here.",
+    };
+  }
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { status },
+  });
+
+  revalidatePath("/dashboard/users");
+
+  return { success: true, message: "Account status updated successfully." };
 }
 
-/**
- * Update a user's profile image.
- */
 export async function updateUserImageAction(
   userId: string,
   imageUrl: string | null,
-): Promise<UserActionResult> {
-  try {
-    await authorizeAdmin();
+): Promise<ActionResult> {
+  const admin = await authorizeAdmin();
 
-    if (!userId || !imageUrl) {
-      return {
-        success: false,
-        message: "User ID and image URL are required.",
-      };
-    }
+  if (!userId?.trim()) {
+    return { success: false, message: "User ID is required." };
+  }
 
-    let parsedUrl: URL;
+  if (admin.id === userId) {
+    // Profile image changes are allowed for the current admin.
+    // This check intentionally does not prevent editing the admin's image.
+  }
 
+  if (imageUrl !== null) {
     try {
-      parsedUrl = new URL(imageUrl);
+      const parsedUrl = new URL(imageUrl);
+
+      if (parsedUrl.protocol !== "https:") {
+        return {
+          success: false,
+          message: "Profile image URL must use HTTPS.",
+        };
+      }
     } catch {
       return {
         success: false,
-        message: "Please provide a valid HTTPS image URL.",
+        message: "Please provide a valid profile image URL.",
       };
     }
+  }
 
-    if (parsedUrl.protocol !== "https:") {
-      return {
-        success: false,
-        message: "Please provide a valid HTTPS image URL.",
-      };
-    }
+  const targetUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, role: true },
+  });
 
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { id: true },
-    });
+  if (!targetUser) {
+    return { success: false, message: "User not found." };
+  }
 
-    if (!user) {
-      return {
-        success: false,
-        message: "User not found.",
-      };
-    }
-
-    await prisma.user.update({
-      where: { id: userId },
-      data: { imageUrl },
-    });
-
-    revalidatePath("/dashboard/users");
-
-    return {
-      success: true,
-      message: "Profile image updated successfully.",
-    };
-  } catch (error) {
-    console.error("updateUserImageAction error:", error);
-
+  if (!isEditableRole(targetUser.role)) {
     return {
       success: false,
-      message: "Failed to update the profile image.",
+      message: "Only Admin and User accounts can be managed here.",
     };
   }
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { imageUrl },
+  });
+
+  revalidatePath("/dashboard/users");
+
+  return {
+    success: true,
+    message:
+      imageUrl === null
+        ? "Profile image removed successfully."
+        : "Profile image updated successfully.",
+  };
 }

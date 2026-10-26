@@ -3,6 +3,40 @@
 import { useEffect, useState } from "react";
 import { Languages, ChevronDown } from "lucide-react";
 
+export type Language = "en" | "bn";
+
+export const LANGUAGE_EVENT = "haor-language-change";
+
+export function getSavedLanguage(): Language {
+  if (typeof window === "undefined") return "en";
+
+  return localStorage.getItem("haor-language") === "bn" ? "bn" : "en";
+}
+
+export function useWebsiteLanguage() {
+  const [language, setLanguage] = useState<Language>("en");
+
+  useEffect(() => {
+    const updateLanguage = (event?: Event) => {
+      const selected =
+        event instanceof CustomEvent
+          ? (event.detail as Language)
+          : getSavedLanguage();
+
+      setLanguage(selected === "bn" ? "bn" : "en");
+    };
+
+    updateLanguage();
+    window.addEventListener(LANGUAGE_EVENT, updateLanguage);
+
+    return () => {
+      window.removeEventListener(LANGUAGE_EVENT, updateLanguage);
+    };
+  }, []);
+
+  return language;
+}
+
 declare global {
   interface Window {
     google?: {
@@ -17,182 +51,150 @@ declare global {
         ) => unknown;
       };
     };
-
     googleTranslateElementInit?: () => void;
   }
 }
 
-type Language = "bn" | "en";
-
 export default function LanguageSwitcher() {
-  const [language, setLanguage] = useState<Language>("bn");
+  const language = useWebsiteLanguage();
   const [ready, setReady] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    let observer: MutationObserver | null = null;
+    let observer: MutationObserver | undefined;
 
-    // Hide Google's injected translation banner and reset page offsets.
     const hideGoogleBanner = () => {
       document
         .querySelectorAll(
           "iframe.goog-te-banner-frame, .goog-te-banner-frame, body > .skiptranslate",
         )
         .forEach((element) => {
-          (element as HTMLElement).style.setProperty(
-            "display",
-            "none",
-            "important",
-          );
-
-          (element as HTMLElement).style.setProperty(
-            "visibility",
-            "hidden",
-            "important",
-          );
-
-          (element as HTMLElement).style.setProperty(
-            "height",
-            "0",
-            "important",
-          );
+          const item = element as HTMLElement;
+          item.style.setProperty("display", "none", "important");
+          item.style.setProperty("visibility", "hidden", "important");
+          item.style.setProperty("height", "0", "important");
         });
 
       document.documentElement.style.setProperty("top", "0px", "important");
-
       document.body.style.setProperty("top", "0px", "important");
-
       document.body.style.setProperty("margin-top", "0px", "important");
     };
 
-    // Observe Google's dynamically injected elements.
-    hideGoogleBanner();
+    const applyGoogleLanguage = (next: Language) => {
+      const select =
+        document.querySelector<HTMLSelectElement>(".goog-te-combo");
 
-    observer = new MutationObserver(() => {
-      hideGoogleBanner();
-    });
-
-    observer.observe(document.documentElement, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ["style", "class"],
-    });
-
-    // Read the currently selected language.
-    const cookie = document.cookie
-      .split("; ")
-      .find((item) => item.startsWith("googtrans="));
-
-    if (cookie) {
-      const value = decodeURIComponent(cookie.split("=")[1]);
-
-      setLanguage(value.endsWith("/en") ? "en" : "bn");
-    }
-
-    // Initialize Google Translate.
-    const initializeGoogleTranslate = () => {
-      if (!window.google?.translate?.TranslateElement) {
-        return;
+      if (select) {
+        select.value = next;
+        select.dispatchEvent(new Event("change"));
       }
+    };
 
-      const element = document.getElementById("google_translate_element");
+    const initialize = () => {
+      const TranslateElement = window.google?.translate?.TranslateElement;
+      const container = document.getElementById("google_translate_element");
 
-      if (!element) {
-        return;
-      }
+      if (!TranslateElement || !container) return;
 
-      if (element.dataset.initialized !== "true") {
-        new window.google.translate.TranslateElement(
+      if (container.dataset.initialized !== "true") {
+        new TranslateElement(
           {
-            pageLanguage: "bn",
-            includedLanguages: "bn,en",
+            pageLanguage: "en",
+            includedLanguages: "en,bn",
             autoDisplay: false,
           },
           "google_translate_element",
         );
 
-        element.dataset.initialized = "true";
+        container.dataset.initialized = "true";
       }
 
       setReady(true);
       hideGoogleBanner();
+
+      window.setTimeout(() => applyGoogleLanguage(getSavedLanguage()), 500);
     };
 
-    window.googleTranslateElementInit = initializeGoogleTranslate;
+    const onContentUpdated = () => {
+      window.setTimeout(() => {
+        applyGoogleLanguage(getSavedLanguage());
+        hideGoogleBanner();
+      }, 300);
+    };
+
+    hideGoogleBanner();
+
+    observer = new MutationObserver(hideGoogleBanner);
+    observer.observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+    });
+
+    window.googleTranslateElementInit = initialize;
+    window.addEventListener("haor-content-updated", onContentUpdated);
 
     if (window.google?.translate?.TranslateElement) {
-      initializeGoogleTranslate();
+      initialize();
+    } else if (!document.getElementById("google-translate-script")) {
+      const script = document.createElement("script");
+      script.id = "google-translate-script";
+      script.src =
+        "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      script.async = true;
+      script.onload = initialize;
+      script.onerror = () => setReady(false);
+      document.body.appendChild(script);
     } else {
-      const existingScript = document.getElementById(
+      const script = document.getElementById(
         "google-translate-script",
-      ) as HTMLScriptElement | null;
+      ) as HTMLScriptElement;
 
-      if (!existingScript) {
-        const script = document.createElement("script");
-
-        script.id = "google-translate-script";
-        script.src =
-          "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-        script.async = true;
-
-        script.onerror = () => {
-          setReady(false);
-        };
-
-        document.body.appendChild(script);
-      } else {
-        existingScript.addEventListener("load", initializeGoogleTranslate);
-      }
+      script.addEventListener("load", initialize);
     }
 
     return () => {
       observer?.disconnect();
+      window.removeEventListener("haor-content-updated", onContentUpdated);
       delete window.googleTranslateElementInit;
     };
   }, []);
 
-  const changeLanguage = (nextLanguage: Language) => {
-    if (!ready) return;
-
+  const changeLanguage = (next: Language) => {
     setOpen(false);
 
-    const value = nextLanguage === "en" ? "/bn/en" : "/bn/bn";
+    localStorage.setItem("haor-language", next);
+    window.dispatchEvent(new CustomEvent(LANGUAGE_EVENT, { detail: next }));
 
-    // Save the translation preference.
+    const value = `/en/${next}`;
+
     document.cookie = `googtrans=${value};path=/;max-age=31536000;SameSite=Lax`;
 
-    document.cookie = `googtrans=${value};path=/;domain=${window.location.hostname};max-age=31536000;SameSite=Lax`;
+    const select = document.querySelector<HTMLSelectElement>(".goog-te-combo");
 
-    setLanguage(nextLanguage);
-
-    // Reload to apply the selected language.
-    window.location.reload();
+    if (select) {
+      select.value = next;
+      select.dispatchEvent(new Event("change"));
+    }
   };
 
   return (
     <>
-      {/* Google Translate initialization */}
       <div
         id="google_translate_element"
         className="hidden"
         aria-hidden="true"
       />
 
-      {/* Custom language selector */}
       <div className="relative">
         <button
           type="button"
           onClick={() => setOpen((previous) => !previous)}
-          disabled={!ready}
           aria-label="Change website language"
           aria-expanded={open}
-          className="inline-flex items-center gap-2 rounded-lg border border-emerald-800/20 bg-white px-3 py-2 text-sm font-semibold text-emerald-900 shadow-sm transition hover:border-emerald-800/40 hover:bg-emerald-50 disabled:cursor-wait disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-lg border border-emerald-800/20 bg-white px-3 py-2 text-sm font-semibold text-emerald-900 shadow-sm transition hover:bg-emerald-50"
         >
           <Languages size={16} />
-
-          <span>{language === "bn" ? "English" : "বাংলা"}</span>
-
+          <span>{language === "bn" ? "বাংলা" : "English"}</span>
           <ChevronDown
             size={14}
             className={`transition-transform ${open ? "rotate-180" : ""}`}
@@ -201,31 +203,23 @@ export default function LanguageSwitcher() {
 
         {open && (
           <div className="absolute right-0 top-full z-[10000] mt-2 min-w-36 overflow-hidden rounded-lg border border-slate-200 bg-white p-1 shadow-lg">
-            <button
-              type="button"
-              onClick={() => changeLanguage("bn")}
-              className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition hover:bg-emerald-50 ${
-                language === "bn"
-                  ? "font-semibold text-emerald-800"
-                  : "text-slate-700"
-              }`}
-            >
-              বাংলা
-              {language === "bn" && <span className="text-emerald-700">✓</span>}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => changeLanguage("en")}
-              className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition hover:bg-emerald-50 ${
-                language === "en"
-                  ? "font-semibold text-emerald-800"
-                  : "text-slate-700"
-              }`}
-            >
-              English
-              {language === "en" && <span className="text-emerald-700">✓</span>}
-            </button>
+            {(["en", "bn"] as const).map((item) => (
+              <button
+                key={item}
+                type="button"
+                onClick={() => changeLanguage(item)}
+                className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-sm hover:bg-emerald-50 ${
+                  language === item
+                    ? "font-semibold text-emerald-800"
+                    : "text-slate-700"
+                }`}
+              >
+                {item === "en" ? "English" : "বাংলা"}
+                {language === item && (
+                  <span className="text-emerald-700">✓</span>
+                )}
+              </button>
+            ))}
           </div>
         )}
       </div>
