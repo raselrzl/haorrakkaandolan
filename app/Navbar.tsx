@@ -80,9 +80,9 @@ export default function Navbar() {
 
             <p
               translate="no"
-              className="notranslate text-[14px] tracking-tight text-slate-500 sm:block sm:text-[14px]"
+              className="notranslate text-[11px] tracking-tight text-slate-500 sm:block sm:text-[14px]"
             >
-               হাওর রক্ষা আন্দোলন
+              হাওর রক্ষা আন্দোলন
             </p>
           </div>
         </Link>
