@@ -1,4 +1,3 @@
-
 "use server";
 
 import { prisma } from "../utils/db";
@@ -53,8 +52,7 @@ export async function getPublicTeamAction() {
       phone: true,
       imageUrl: true,
       role: true,
-        biography: true,
-
+      biography: true,
       designation: true,
       startDate: true,
       endDate: true,

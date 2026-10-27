@@ -68,7 +68,9 @@ function getDesignationKey(person: TeamPerson): string {
 
   if (
     designation &&
-    designationOrder.includes(designation as (typeof designationOrder)[number])
+    designationOrder.includes(
+      designation as (typeof designationOrder)[number],
+    )
   ) {
     return designation;
   }
@@ -124,29 +126,64 @@ export default function AboutPage() {
   const [people, setPeople] = useState<TeamPerson[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [retryCount, setRetryCount] = useState(0);
 
+  // Automatically retries failed requests without requiring a page reload.
   useEffect(() => {
     let cancelled = false;
+    let failures = 0;
+
+    const delay = (milliseconds: number) =>
+      new Promise<void>((resolve) => {
+        setTimeout(resolve, milliseconds);
+      });
 
     async function loadTeam() {
-      try {
-        setLoading(true);
-        setError("");
+      setLoading(true);
+      setError("");
 
-        const result = await getPublicTeamAction();
+      while (!cancelled) {
+        try {
+          const result = await getPublicTeamAction();
 
-        if (!cancelled) {
+          if (cancelled) return;
+
           setPeople(result);
-        }
-      } catch (err) {
-        console.error("Failed to load organization team:", err);
-
-        if (!cancelled) {
-          setError("Unable to load the organization team. Please try again.");
-        }
-      } finally {
-        if (!cancelled) {
+          setError("");
           setLoading(false);
+
+          return;
+        } catch (err) {
+          if (cancelled) return;
+
+          failures += 1;
+
+          console.error(
+            `[getPublicTeamAction] Attempt ${failures} failed:`,
+            err,
+          );
+
+          // Show the error message after three failures,
+          // but keep retrying automatically in the background.
+          if (failures >= 3) {
+            setError(
+              "Unable to load the organization team. Retrying automatically...",
+            );
+            setLoading(false);
+          }
+
+          // Retry quickly at first, then wait longer between attempts.
+          const retryDelay =
+            failures <= 3
+              ? failures * 1000
+              : Math.min(5000 * 2 ** Math.min(failures - 4, 2), 20000);
+
+          await delay(retryDelay);
+
+          if (cancelled) return;
+
+          // Keep the error visible during background retries.
+          // The existing team data is preserved until a request succeeds.
         }
       }
     }
@@ -156,7 +193,7 @@ export default function AboutPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [retryCount]);
 
   const getImage = (person: TeamPerson) =>
     person.imageUrl?.trim() || "/img/monu1.jpg";
@@ -336,17 +373,20 @@ export default function AboutPage() {
         ) : error ? (
           <div
             role="alert"
-            className="border border-red-200 bg-white p-5 text-sm text-red-700"
+            className="border border-amber-200 bg-white p-5 text-sm text-amber-800"
           >
-            <p>{error}</p>
+            <div className="flex items-center gap-2">
+              <LoaderCircle size={16} className="shrink-0 animate-spin" />
+              <p>{error}</p>
+            </div>
 
             <button
               type="button"
-              onClick={() => window.location.reload()}
+              onClick={() => setRetryCount((count) => count + 1)}
               className="mt-3 inline-flex items-center gap-1 font-semibold text-emerald-800"
             >
               <RefreshCw size={13} />
-              Retry
+              Retry now
             </button>
           </div>
         ) : groupedPeople.length > 0 ? (
