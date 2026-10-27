@@ -153,10 +153,7 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="mt-5 flex flex-col items-center gap-2 border-t border-emerald-100 pt-4 text-center text-[11px] text-slate-400 sm:flex-row sm:justify-between sm:text-left">
-          <p>
-            © {new Date().getFullYear()} Haor Rokkha Andolan. All rights
-            reserved.
-          </p>
+          <p>© 2026 Haor Rokkha Andolan. All rights reserved.</p>
 
           <p className="flex items-center gap-1">
             Working together to protect our haors and wetlands.
