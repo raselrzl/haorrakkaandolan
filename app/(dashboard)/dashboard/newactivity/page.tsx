@@ -746,25 +746,6 @@ export default function NewsActivitiesPage() {
                 />
               </label>
 
-              <div>
-                <label className="mb-1 block text-xs font-semibold">
-                  Image or video URL
-                </label>
-
-                <input
-                  type="url"
-                  value={form.mediaUrl}
-                  onChange={(event) => handleMediaUrlChange(event.target.value)}
-                  className={inputClass}
-                  placeholder="Paste an image or video URL"
-                />
-
-                <p className="mt-1 text-[11px] text-slate-500">
-                  Supports image URLs, direct video URLs, YouTube and Vimeo.
-                  Media type is detected automatically.
-                </p>
-              </div>
-
               <div className="rounded-lg border border-slate-200 p-3">
                 <div className="mb-2 flex items-center gap-2 text-xs font-semibold text-slate-700">
                   <Upload size={15} className="text-emerald-800" />
@@ -813,13 +794,11 @@ export default function NewsActivitiesPage() {
                     ),
                   }}
                   appearance={{
-                        container:
-                          "flex flex-col items-center gap-1.5 text-center",
-                        button:
-                          "ut-ready:bg-emerald-800 ut-ready:hover:bg-emerald-900 ut-uploading:cursor-not-allowed inline-flex h-10 items-center justify-center rounded-md border border-emerald-800 bg-emerald-800 px-4 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 disabled:opacity-60",
-                        allowedContent:
-                          "w-full text-center text-xs text-slate-500",
-                      }}
+                    container: "flex flex-col items-center gap-1.5 text-center",
+                    button:
+                      "ut-ready:bg-emerald-800 ut-ready:hover:bg-emerald-900 ut-uploading:cursor-not-allowed inline-flex h-10 items-center justify-center rounded-md border border-emerald-800 bg-emerald-800 px-4 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 disabled:opacity-60",
+                    allowedContent: "w-full text-center text-xs text-slate-500",
+                  }}
                 />
 
                 <p className="mt-2 text-[11px] text-slate-500">
