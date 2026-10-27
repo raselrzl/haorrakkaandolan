@@ -40,7 +40,7 @@ function formatDate(date: string, language: Language) {
 }
 
 export default function ConstitutionPublicView({ documents }: Props) {
-  const [language, setLanguage] = useState<Language>("bn");
+  const [language, setLanguage] = useState<Language>("en");
   const isBangla = language === "bn";
 
   return (

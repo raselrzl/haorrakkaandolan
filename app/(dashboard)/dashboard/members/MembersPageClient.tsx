@@ -835,10 +835,11 @@ export default function MembersPageClient({ initialMembers }: Props) {
                             );
                           }}
                           appearance={{
+                            container:
+                              "flex w-auto flex-row items-center gap-0",
                             button:
-                              "h-10 rounded-lg bg-emerald-800 px-4 text-xs font-semibold text-white transition hover:bg-emerald-900 ut-uploading:cursor-not-allowed ut-uploading:opacity-60",
-                            allowedContent: "mt-1 text-[11px] text-slate-500",
-                            container: "items-start gap-1",
+                              "ut-ready:bg-sky-700 ut-ready:hover:bg-sky-800 ut-uploading:cursor-not-allowed inline-flex h-7 min-w-0 items-center justify-center rounded border border-sky-700 bg-sky-700 px-3 text-[11px] font-semibold text-white shadow-none transition-colors hover:bg-sky-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1 disabled:opacity-60",
+                            allowedContent: "hidden",
                           }}
                           content={{
                             button: (

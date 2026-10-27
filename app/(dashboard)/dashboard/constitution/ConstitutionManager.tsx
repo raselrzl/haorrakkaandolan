@@ -1,9 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, useTransition } from "react";
-import {
-  UploadButton,
-} from "@/app/utils/uploadthing";
+import { UploadButton } from "@/app/utils/uploadthing";
 
 import {
   createConstitutionAction,
@@ -12,7 +10,6 @@ import {
   updateConstitutionAction,
   updateConstitutionStatusAction,
 } from "./constitutionActions";
-
 
 import {
   BookOpen,
@@ -61,9 +58,7 @@ type FormState = {
 const today = () => {
   const date = new Date();
   const offset = date.getTimezoneOffset();
-  return new Date(date.getTime() - offset * 60_000)
-    .toISOString()
-    .slice(0, 10);
+  return new Date(date.getTime() - offset * 60_000).toISOString().slice(0, 10);
 };
 
 const emptyForm = (): FormState => ({
@@ -120,10 +115,7 @@ export default function ConstitutionManager() {
     void loadRecords();
   }, [loadRecords]);
 
-  function setField<K extends keyof FormState>(
-    key: K,
-    value: FormState[K],
-  ) {
+  function setField<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((previous) => ({ ...previous, [key]: value }));
   }
 
@@ -192,8 +184,7 @@ export default function ConstitutionManager() {
     setBusyId(record.id);
 
     try {
-      const nextStatus =
-        record.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+      const nextStatus = record.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
 
       await updateConstitutionStatusAction(record.id, nextStatus);
       setNotice(
@@ -263,10 +254,7 @@ export default function ConstitutionManager() {
               disabled={loading}
               className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:opacity-50"
             >
-              <RefreshCw
-                size={15}
-                className={loading ? "animate-spin" : ""}
-              />
+              <RefreshCw size={15} className={loading ? "animate-spin" : ""} />
               Refresh
             </button>
 
@@ -465,10 +453,7 @@ export default function ConstitutionManager() {
                   <select
                     value={form.status}
                     onChange={(e) =>
-                      setField(
-                        "status",
-                        e.target.value as FormState["status"],
-                      )
+                      setField("status", e.target.value as FormState["status"])
                     }
                     className={inputClass}
                   >
@@ -497,7 +482,11 @@ export default function ConstitutionManager() {
                   ) : (
                     <Save size={16} />
                   )}
-                  {saving ? "Saving..." : editingId ? "Save changes" : "Create document"}
+                  {saving
+                    ? "Saving..."
+                    : editingId
+                      ? "Save changes"
+                      : "Create document"}
                 </button>
               </div>
             </form>
@@ -555,13 +544,18 @@ export default function ConstitutionManager() {
                     <th className="px-4 py-3 font-semibold">Published</th>
                     <th className="px-4 py-3 font-semibold">Last updated</th>
                     <th className="px-4 py-3 font-semibold">Status</th>
-                    <th className="px-5 py-3 text-right font-semibold">Actions</th>
+                    <th className="px-5 py-3 text-right font-semibold">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
 
                 <tbody className="divide-y divide-slate-100">
                   {records.map((record) => (
-                    <tr key={record.id} className="transition hover:bg-slate-50/70">
+                    <tr
+                      key={record.id}
+                      className="transition hover:bg-slate-50/70"
+                    >
                       <td className="px-5 py-4">
                         <p className="font-semibold text-slate-900">
                           {record.titleBn}
@@ -581,7 +575,10 @@ export default function ConstitutionManager() {
                             </span>
                           )}
                           {record.pdfUrlEn ? (
-                            <PdfLink url={record.pdfUrlEn} label="English PDF" />
+                            <PdfLink
+                              url={record.pdfUrlEn}
+                              label="English PDF"
+                            />
                           ) : (
                             <span className="text-xs text-slate-400">
                               English PDF not uploaded
@@ -639,7 +636,10 @@ export default function ConstitutionManager() {
                             className="flex size-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-emerald-50 hover:text-emerald-700 disabled:opacity-50"
                           >
                             {busyId === record.id ? (
-                              <LoaderCircle size={16} className="animate-spin" />
+                              <LoaderCircle
+                                size={16}
+                                className="animate-spin"
+                              />
                             ) : (
                               <CheckCircle2 size={16} />
                             )}
@@ -708,7 +708,9 @@ function SummaryCard({
       </div>
       <div className="min-w-0">
         <p className="text-xs font-medium text-slate-500">{label}</p>
-        <p className="mt-1 truncate text-lg font-bold text-slate-900">{value}</p>
+        <p className="mt-1 truncate text-lg font-bold text-slate-900">
+          {value}
+        </p>
       </div>
     </div>
   );
@@ -793,13 +795,10 @@ function PdfUpload({
               window.alert(`PDF upload failed: ${err.message}`);
             }}
             appearance={{
+              container: "flex w-auto flex-row items-center gap-0",
               button:
-                "h-9 rounded-lg bg-emerald-800 px-3 text-xs font-semibold text-white hover:bg-emerald-900",
-              allowedContent: "mt-2 text-[11px] text-slate-400",
-            }}
-            content={{
-              button: "Upload PDF",
-              allowedContent: "PDF document",
+                "ut-ready:bg-sky-700 ut-ready:hover:bg-sky-800 ut-uploading:cursor-not-allowed inline-flex h-7 min-w-0 items-center justify-center rounded border border-sky-700 bg-sky-700 px-3 text-[11px] font-semibold text-white shadow-none transition-colors hover:bg-sky-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1 disabled:opacity-60",
+              allowedContent: "hidden",
             }}
           />
         </div>

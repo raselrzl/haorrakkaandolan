@@ -62,6 +62,7 @@ model User {
   sessions            Session[]
   passwordResetTokens PasswordResetToken[]
   news                News[]
+  createdPublications Publication[] @relation("PublicationCreatedBy")
 
   @@index([role, status])
 }
@@ -273,4 +274,40 @@ model Donation {
   @@index([status, createdAt])
   @@index([donorEmail])
   @@index([bankTranId])
+}
+
+enum PublicationType {
+  RESEARCH
+  PUBLICATION
+}
+
+model Publication {
+  id       String          @id @default(cuid())
+  title    String
+  subtitle String?
+  type     PublicationType @default(PUBLICATION)
+  excerpt  String?         @db.Text
+  content  String          @db.Text
+
+  coverImageUrl String?
+  documentUrl   String?
+  documentName  String?
+
+  authorName        String
+  authorDesignation String?
+  authorImageUrl    String?
+  authorBio         String? @db.Text
+
+  publishedAt DateTime @default(now())
+  status      Status   @default(ACTIVE)
+
+  createdById String?
+  createdBy   User?   @relation("PublicationCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, publishedAt])
+  @@index([type, publishedAt])
+  @@index([createdById])
 }

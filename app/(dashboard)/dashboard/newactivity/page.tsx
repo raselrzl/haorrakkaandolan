@@ -794,10 +794,10 @@ export default function NewsActivitiesPage() {
                     ),
                   }}
                   appearance={{
-                    container: "flex flex-col items-center gap-1.5 text-center",
+                    container: "flex w-auto flex-row items-center gap-0",
                     button:
-                      "ut-ready:bg-emerald-800 ut-ready:hover:bg-emerald-900 ut-uploading:cursor-not-allowed inline-flex h-10 items-center justify-center rounded-md border border-emerald-800 bg-emerald-800 px-4 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 disabled:opacity-60",
-                    allowedContent: "w-full text-center text-xs text-slate-500",
+                      "ut-ready:bg-sky-700 ut-ready:hover:bg-sky-800 ut-uploading:cursor-not-allowed inline-flex h-7 min-w-0 items-center justify-center rounded border border-sky-700 bg-sky-700 px-3 text-[11px] font-semibold text-white shadow-none transition-colors hover:bg-sky-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1 disabled:opacity-60",
+                    allowedContent: "hidden",
                   }}
                 />
 

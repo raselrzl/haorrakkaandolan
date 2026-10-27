@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -18,6 +17,7 @@ import {
   ChevronRight,
   ClipboardList,
   Wallet,
+  BookOpen,
 } from "lucide-react";
 
 type NavigationItem = {
@@ -66,12 +66,17 @@ const navigation: NavigationGroup[] = [
         icon: Newspaper,
       },
       {
+        label: "Research & Publications",
+        href: "/dashboard/publications",
+        icon: BookOpen,
+      },
+      {
         label: "Constitution / গঠনতন্ত্র",
         href: "/dashboard/constitution",
         icon: FileText,
       },
       {
-        label: "Demand Management",
+        label: "Demands",
         href: "/dashboard/demand",
         icon: ClipboardList,
       },
