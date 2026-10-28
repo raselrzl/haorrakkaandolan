@@ -1,4 +1,5 @@
 "use server";
+import nodemailer from "nodemailer";
 import { ContactFormState } from "./contactTypes";
 import { prisma } from "./utils/db";
 
@@ -231,6 +232,7 @@ export const initialContactFormState: ContactFormState = {
 }; */
 
 
+
 export async function contactMessageAction(
   _previousState: ContactFormState,
   formData: FormData,
@@ -244,6 +246,7 @@ export async function contactMessageAction(
   const message = String(formData.get("message") ?? "").trim();
   const website = String(formData.get("website") ?? "").trim();
 
+  // Honeypot spam protection
   if (website) {
     return {
       success: true,
@@ -296,6 +299,7 @@ export async function contactMessageAction(
     };
   }
 
+  // Save the message first so an email failure does not lose it.
   try {
     await prisma.contactMessage.create({
       data: {
@@ -306,12 +310,6 @@ export async function contactMessageAction(
         message,
       },
     });
-
-    return {
-      success: true,
-      message:
-        "Your message has been sent successfully. Thank you for contacting Haor Rokkha Andolan!",
-    };
   } catch (error) {
     console.error("Unable to save contact message:", error);
 
@@ -321,4 +319,129 @@ export async function contactMessageAction(
         "We couldn't send your message right now. Please try again later.",
     };
   }
+
+  // Send the confirmation email to the sender.
+  try {
+    const host = process.env.SMTP_HOST;
+    const port = Number(process.env.SMTP_PORT || 465);
+    const user = process.env.SMTP_USER;
+    const pass = process.env.SMTP_PASS;
+
+    if (!host || !user || !pass) {
+      throw new Error("SMTP environment variables are missing.");
+    }
+
+    const transporter = nodemailer.createTransport({
+      host,
+      port,
+      secure: port === 465,
+      auth: {
+        user,
+        pass,
+      },
+      connectionTimeout: 15000,
+      greetingTimeout: 15000,
+      socketTimeout: 20000,
+    });
+
+    await transporter.sendMail({
+      from: {
+        name: "Haor Rokkha Andolan",
+        address: user,
+      },
+      to: email,
+      replyTo: user,
+      subject: "Thank you for contacting Haor Rokkha Andolan",
+      text: `Dear ${name},
+
+Thank you for contacting Haor Rokkha Andolan.
+
+We have received your message and appreciate your interest in protecting wetlands and preserving the environment.
+
+Here is a summary of your submission:
+
+Reason: ${reason}
+Name: ${name}
+
+Our team will review your message and contact you if necessary.
+
+Thank you for your support.
+
+Regards,
+Haor Rokkha Andolan
+Protecting Wetlands, Preserving Life.`,
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#334155;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;">
+          <div style="background:#065f46;padding:24px;color:#ffffff;">
+            <h2 style="margin:0;font-size:22px;">Haor Rokkha Andolan</h2>
+            <p style="margin:8px 0 0;font-size:13px;">
+              Protecting Wetlands, Preserving Life
+            </p>
+          </div>
+
+          <div style="padding:24px;">
+            <h3 style="color:#065f46;">Thank you for contacting us!</h3>
+
+            <p>Dear ${escapeHtml(name)},</p>
+
+            <p>
+              We have successfully received your message.
+              Thank you for reaching out to Haor Rokkha Andolan
+              and for your interest in protecting our wetlands
+              and environment.
+            </p>
+
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;padding:16px;border-radius:8px;">
+              <p><strong>Reason:</strong> ${escapeHtml(reason)}</p>
+              <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+            </div>
+
+            <p>
+              Our team will review your message and contact you
+              if necessary.
+            </p>
+
+            <p>Thank you for your support.</p>
+
+            <p style="margin-top:24px;">
+              Regards,<br />
+              <strong>Haor Rokkha Andolan</strong>
+            </p>
+          </div>
+        </div>
+      `,
+    });
+
+    console.info(`Contact confirmation email sent to ${email}`);
+
+    return {
+      success: true,
+      message:
+        "Thank you! Your message was received, and a confirmation email has been sent to your email address.",
+    };
+  } catch (error) {
+    console.error("SMTP confirmation email failed:", error);
+
+    // The message is already saved in the database.
+    return {
+      success: true,
+      message:
+        "Your message was received successfully, but we couldn't send the confirmation email. Please check your email address and try again later if needed.",
+    };
+  }
+}
+
+// Escape user-provided text before inserting it into HTML email content.
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (character) => {
+    const entities: Record<string, string> = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    };
+
+    return entities[character];
+  });
 }
