@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import { Playfair_Display, Roboto, Tiro_Bangla } from "next/font/google";
 import { connection } from "next/server";
@@ -145,6 +144,14 @@ export default function RootLayout({
       lang="bn"
       className={`${playfairDisplay.variable} ${roboto.variable} ${tiroBangla.variable}`}
     >
+      <head>
+        {/* Impact site verification */}
+
+        <meta
+          name="impact-site-verification"
+          content="bfb46410-0651-45ca-b8dd-b2704df55aea"
+        />
+      </head>
       <body>
         <Script
           async
