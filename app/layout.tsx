@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import { Playfair_Display, Roboto, Tiro_Bangla } from "next/font/google";
 import { connection } from "next/server";
@@ -33,6 +34,11 @@ const tiroBangla = Tiro_Bangla({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://haorrokkhaandolan.com"),
+
+  // Google AdSense account verification
+  other: {
+    "google-adsense-account": "ca-pub-5945782633100386",
+  },
 
   title: {
     default: "Haor Rokkha Andolan | Protecting Wetlands, Preserving Life",
@@ -140,12 +146,12 @@ export default function RootLayout({
       className={`${playfairDisplay.variable} ${roboto.variable} ${tiroBangla.variable}`}
     >
       <body>
-
-           <Script
+        <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5945782633100386"
           crossOrigin="anonymous"
-        ></Script>
+        />
+
         <Suspense fallback={null}>
           <UploadThingSSR />
         </Suspense>
