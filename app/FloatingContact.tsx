@@ -5,7 +5,7 @@ import {
   CheckCircle2,
   Droplet,
   LoaderCircle,
-  Mail,
+  Mail, 
   MessageCircle,
   Send,
   X,
