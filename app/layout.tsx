@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Roboto, Tiro_Bangla } from "next/font/google";
 import { connection } from "next/server";
 import { Suspense } from "react";
-
+import Script from "next/script";
 import "./globals.css";
 
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
@@ -140,6 +140,12 @@ export default function RootLayout({
       className={`${playfairDisplay.variable} ${roboto.variable} ${tiroBangla.variable}`}
     >
       <body>
+
+           <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5945782633100386"
+          crossOrigin="anonymous"
+        ></Script>
         <Suspense fallback={null}>
           <UploadThingSSR />
         </Suspense>
