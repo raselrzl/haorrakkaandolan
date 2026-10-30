@@ -103,7 +103,7 @@ export const metadata: Metadata = {
       "Working to conserve Bangladesh's haors, rivers, canals, wetlands, and natural ecosystems through awareness, community action, and environmental responsibility.",
     images: [
       {
-        url: "https://haorrokkhaandolan.com/og-image.jpg",
+        url: "https://haorrokkhaandolan.com/h2.png",
         width: 1200,
         height: 630,
         alt: "Haor Rokkha Andolan - Protecting Wetlands, Preserving Life",
@@ -116,7 +116,7 @@ export const metadata: Metadata = {
     title: "Haor Rokkha Andolan | Protecting Wetlands, Preserving Life",
     description:
       "An environmental movement dedicated to protecting Bangladesh's haors, wetlands, rivers, and biodiversity.",
-    images: ["https://haorrokkhaandolan.com/og-image.jpg"],
+    images: ["https://haorrokkhaandolan.com/h2.png"],
   },
 
   icons: {
