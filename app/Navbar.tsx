@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -36,7 +35,11 @@ export default function Navbar() {
   }, [pathname]);
 
   useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "";
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
 
     return () => {
       document.body.style.overflow = "";
@@ -61,9 +64,8 @@ export default function Navbar() {
   return (
     <>
       {/* HEADER */}
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-emerald-900/10 bg-white/95 shadow-sm backdrop-blur-md">
+      <header className="fixed inset-x-0 top-0 z-[60] border-b border-emerald-900/10 bg-white/95 shadow-sm backdrop-blur-md">
         <div className="mx-auto flex h-16 w-full max-w-[1600px] items-center justify-between gap-2 px-3 sm:gap-3 sm:px-5 lg:px-6">
-
           {/* LOGO */}
           <Link
             href="/"
@@ -82,10 +84,17 @@ export default function Navbar() {
             </div>
 
             <div className="min-w-0 leading-tight">
-              <p className="truncate text-[11px] font-extrabold tracking-tight text-emerald-950 sm:text-sm">
+              <p
+                translate="yes"
+                className="truncate text-[16px] font-extrabold tracking-tight text-emerald-950 sm:text-sm"
+              >
                 Wetlands Resilience Initiatives
               </p>
-              <p className="mt-0.5 truncate text-[10px] font-semibold text-emerald-700 sm:text-xs">
+
+              <p
+                translate="yes"
+                className="mt-0.5 truncate text-[12px] font-semibold text-emerald-700 sm:text-xs"
+              >
                 হাওর রক্ষা আন্দোলন
               </p>
             </div>
@@ -97,8 +106,6 @@ export default function Navbar() {
             className="hidden min-w-0 w-full max-w-3xl flex-1 items-center justify-center md:flex"
           >
             <div className="flex w-full min-w-0 items-center justify-center gap-0.5">
-
-              {/* VISIBLE LINKS */}
               {navLinks.slice(0, 5).map((link) => (
                 <Link
                   key={link.href}
@@ -127,7 +134,7 @@ export default function Navbar() {
                   />
                 </button>
 
-                <div className="invisible absolute right-0 top-full z-50 mt-1 w-56 translate-y-1 rounded-lg border border-slate-200 bg-white p-2 opacity-0 shadow-xl transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 lg:w-60">
+                <div className="invisible absolute right-0 top-full z-[70] mt-1 w-56 translate-y-1 rounded-lg border border-slate-200 bg-white p-2 opacity-0 shadow-xl transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 lg:w-60">
                   {moreLinks.map((link) => (
                     <Link
                       key={link.href}
@@ -168,10 +175,11 @@ export default function Navbar() {
           {/* MOBILE MENU BUTTON */}
           <button
             type="button"
-            onClick={() => setIsOpen(!isOpen)}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-emerald-800/15 bg-emerald-50 text-emerald-900 transition-colors hover:bg-emerald-100 md:hidden"
+            onClick={() => setIsOpen((current) => !current)}
+            className="relative z-[80] flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-emerald-800/15 bg-emerald-50 text-emerald-900 transition-colors hover:bg-emerald-100 md:hidden"
             aria-label={isOpen ? "Close menu" : "Open menu"}
             aria-expanded={isOpen}
+            aria-controls="mobile-navigation"
           >
             {isOpen ? <X size={21} /> : <Menu size={21} />}
           </button>
@@ -179,32 +187,34 @@ export default function Navbar() {
       </header>
 
       {/* MOBILE BACKDROP */}
-      {isOpen && (
-        <button
-          type="button"
-          aria-label="Close navigation menu"
-          onClick={() => setIsOpen(false)}
-          className="fixed inset-0 z-40 bg-slate-950/45 backdrop-blur-[2px] md:hidden"
-        />
-      )}
+      <div
+        onClick={() => setIsOpen(false)}
+        aria-hidden="true"
+        className={`fixed inset-0 z-[40] bg-slate-950/45 backdrop-blur-[2px] transition-opacity duration-300 md:hidden ${
+          isOpen
+            ? "visible opacity-100"
+            : "invisible pointer-events-none opacity-0"
+        }`}
+      />
 
       {/* MOBILE MENU */}
       <div
-        className={`fixed inset-x-0 top-16 z-50 overflow-y-auto border-t border-emerald-900/10 bg-white shadow-xl transition-all duration-300 md:hidden ${
+        id="mobile-navigation"
+        aria-label="Mobile navigation"
+        aria-hidden={!isOpen}
+        className={`fixed inset-x-0 top-16 z-[50] flex max-h-[calc(100dvh-4rem)] flex-col overflow-y-auto overscroll-contain border-t border-emerald-900/10 bg-white shadow-xl transition-all duration-300 ease-in-out md:hidden ${
           isOpen
-            ? "visible max-h-[calc(100dvh-4rem)] translate-y-0 opacity-100"
-            : "invisible max-h-0 -translate-y-2 opacity-0"
+            ? "visible translate-y-0 opacity-100 pointer-events-auto"
+            : "invisible -translate-y-2 opacity-0 pointer-events-none"
         }`}
       >
-        <nav
-          aria-label="Mobile navigation"
-          className="mx-auto flex w-full max-w-175 flex-col gap-1 p-3 sm:p-4"
-        >
+        <nav className="mx-auto flex w-full max-w-175 flex-col gap-1 p-3 sm:p-4">
           {/* MOBILE LINKS */}
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
+              tabIndex={isOpen ? 0 : -1}
               onClick={() => setIsOpen(false)}
               className={`flex items-center justify-between rounded-md px-4 py-3 text-sm font-semibold transition-colors ${
                 isActive(link.href)
@@ -224,6 +234,7 @@ export default function Navbar() {
           <div className="mt-2 grid grid-cols-2 gap-2 border-t border-slate-100 pt-3">
             <Link
               href="/donations"
+              tabIndex={isOpen ? 0 : -1}
               onClick={() => setIsOpen(false)}
               className="flex items-center justify-center gap-2 rounded-md border border-emerald-700/20 px-3 py-3 text-sm font-semibold text-emerald-800 transition-colors hover:bg-emerald-50"
             >
@@ -233,6 +244,7 @@ export default function Navbar() {
 
             <Link
               href="/login"
+              tabIndex={isOpen ? 0 : -1}
               onClick={() => setIsOpen(false)}
               className="flex items-center justify-center gap-2 rounded-md bg-emerald-800 px-3 py-3 text-sm font-semibold text-white transition-colors hover:bg-emerald-900"
             >
@@ -242,6 +254,7 @@ export default function Navbar() {
 
             <Link
               href="/contact"
+              tabIndex={isOpen ? 0 : -1}
               onClick={() => setIsOpen(false)}
               className="col-span-2 flex items-center justify-center gap-2 rounded-md bg-emerald-50 px-3 py-3 text-sm font-semibold text-emerald-900 transition-colors hover:bg-emerald-100"
             >
@@ -255,6 +268,7 @@ export default function Navbar() {
           <div className="mt-2 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 border-t border-slate-100 pt-3 pb-2 text-xs font-medium text-slate-500">
             <Link
               href="/privacy-policy"
+              tabIndex={isOpen ? 0 : -1}
               onClick={() => setIsOpen(false)}
               className="transition-colors hover:text-emerald-800"
             >
@@ -263,6 +277,7 @@ export default function Navbar() {
 
             <Link
               href="/cookie-policy"
+              tabIndex={isOpen ? 0 : -1}
               onClick={() => setIsOpen(false)}
               className="transition-colors hover:text-emerald-800"
             >

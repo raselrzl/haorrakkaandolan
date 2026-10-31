@@ -187,7 +187,7 @@ export default function DashboardSidebar({
                       }}
                       className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium transition ${
                         active
-                          ? "bg-emerald-600 text-white shadow-sm shadow-emerald-900/10"
+                          ? "bg-emerald-900 text-white shadow-sm shadow-emerald-900/10"
                           : "text-slate-600 hover:bg-emerald-50 hover:text-emerald-700"
                       } ${collapsed && !isMobile ? "justify-center px-2" : ""}`}
                     >
