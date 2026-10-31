@@ -198,7 +198,7 @@ export default function Navbar() {
       >
         <nav
           aria-label="Mobile navigation"
-          className="mx-auto flex w-full max-w-[700px] flex-col gap-1 p-3 sm:p-4"
+          className="mx-auto flex w-full max-w-175 flex-col gap-1 p-3 sm:p-4"
         >
           {/* MOBILE LINKS */}
           {navLinks.map((link) => (

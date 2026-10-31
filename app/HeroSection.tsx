@@ -52,9 +52,9 @@ function UpdateList({ items }: { items: HomepageNewsItem[] }) {
               {item.heading}
             </span>
 
-            <span className="mt-1 block text-xs text-slate-500">
+    {/*         <span className="mt-1 block text-xs text-slate-500">
               {formatDate(item.createdAt)}
-            </span>
+            </span> */}
           </span>
 
           <span className="mt-1 shrink-0 text-green-800 transition-transform duration-300 group-hover:translate-x-1">

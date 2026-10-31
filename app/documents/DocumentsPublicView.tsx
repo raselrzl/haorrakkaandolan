@@ -37,7 +37,7 @@ export default function DocumentsPublicView({ documents }: Props) {
         {/* Hero */}
         <section
           className="relative isolate mt-16 overflow-hidden border-b border-emerald-950 bg-emerald-950 bg-cover bg-center"
-          style={{ backgroundImage: "url('/h11.jpg')" }}
+          style={{ backgroundImage: "url('/legal.jpg')" }}
         >
           <div className="absolute inset-0 bg-emerald-950/65" />
 
