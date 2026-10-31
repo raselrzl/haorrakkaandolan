@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -11,6 +12,7 @@ import {
   LogIn,
   ClipboardList,
   Heart,
+  ChevronDown,
 } from "lucide-react";
 
 const navLinks = [
@@ -19,6 +21,7 @@ const navLinks = [
   { label: "Mission & Vision", href: "/mission-and-vision" },
   { label: "News & Activities", href: "/activities" },
   { label: "Research & Publications", href: "/publications" },
+  { label: "Legal Documents", href: "/documents" },
   { label: "Demands", href: "/demands" },
   { label: "Law & Enforcement", href: "/law" },
   { label: "Constitution", href: "/constitution" },
@@ -26,247 +29,212 @@ const navLinks = [
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const isActive = (href: string) =>
-    href === "/"
-      ? pathname === "/"
-      : pathname === href || pathname.startsWith(`${href}/`);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "";
+    setIsOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? "hidden" : "";
 
     return () => {
       document.body.style.overflow = "";
     };
-  }, [menuOpen]);
+  }, [isOpen]);
 
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMenuOpen(false);
-    };
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
 
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
+  const linkClass = (href: string) =>
+    `whitespace-nowrap rounded-md px-2 py-2 text-[12px] font-semibold transition-colors duration-200 lg:px-2.5 lg:text-[13px] ${
+      isActive(href)
+        ? "bg-emerald-50 text-emerald-800"
+        : "text-slate-700 hover:bg-emerald-50 hover:text-emerald-800"
+    }`;
+
+  const moreLinks = navLinks.slice(5);
+  const isMoreActive = moreLinks.some((link) => isActive(link.href));
 
   return (
-    <header className="fixed inset-x-0 top-0 z-9999 w-full border-b border-slate-200 bg-white text-slate-800 shadow-sm">
-      {/* Main navigation */}
-      <div className="mx-auto flex h-16 max-w-full items-center justify-between gap-3 px-4 sm:px-6">
-        {/* Logo and identity */}
-        <Link
-          href="/"
-          onClick={() => setMenuOpen(false)}
-          className="group flex min-w-0 shrink items-center gap-2.5 sm:gap-3"
-        >
-          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-slate-200 bg-white sm:h-11 sm:w-11">
-            <Image
-              src="/ha2.png"
-              alt="Haor Rokkha Andolan"
-              fill
-              sizes="44px"
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-              priority
-            />
-          </div>
+    <>
+      {/* HEADER */}
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-emerald-900/10 bg-white/95 shadow-sm backdrop-blur-md">
+        <div className="mx-auto flex h-16 w-full max-w-[1600px] items-center justify-between gap-2 px-3 sm:gap-3 sm:px-5 lg:px-6">
 
-          <div className="min-w-0">
-            <p
-              translate="no"
-              className="notranslate truncate text-[14px] font-extrabold tracking-tight text-[#123b2b] sm:text-sm"
-            >
-              Wetlands Resilience Initiatives
-            </p>
-
-            <p
-              translate="no"
-              className="notranslate text-[11px] tracking-tight text-slate-500 sm:block sm:text-[14px]"
-            >
-              হাওর রক্ষা আন্দোলন
-            </p>
-          </div>
-        </Link>
-
-        {/* Desktop navigation */}
-        <nav
-          aria-label="Main navigation"
-          className="hidden items-center gap-0.5 lg:flex"
-        >
-          {navLinks.map((link) => {
-            const active = isActive(link.href);
-
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                aria-current={active ? "page" : undefined}
-                className={`relative whitespace-nowrap px-2.5 py-3 text-[12px] font-medium transition-colors xl:px-3 xl:text-[13px] ${
-                  active
-                    ? "text-[#176b45]"
-                    : "text-slate-600 hover:text-[#176b45]"
-                }`}
-              >
-                {link.label}
-
-                <span
-                  className={`absolute inset-x-2 bottom-1 h-0.5 rounded-full bg-[#176b45] transition-transform duration-200 xl:inset-x-3 ${
-                    active ? "scale-x-100" : "scale-x-0"
-                  }`}
-                />
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Desktop actions */}
-        <div className="hidden shrink-0 items-center gap-2 xl:gap-3 lg:flex">
-          {/* Donations */}
+          {/* LOGO */}
           <Link
-            href="/donations"
-            aria-current={isActive("/donations") ? "page" : undefined}
-            className={`inline-flex h-10 items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-3 text-[12px] font-semibold text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 xl:px-4 xl:text-[13px] ${
-              isActive("/donations")
-                ? "bg-red-800"
-                : "bg-red-600 hover:bg-red-700"
-            }`}
+            href="/"
+            className="group flex min-w-0 shrink-0 items-center gap-2 sm:gap-2.5"
+            aria-label="Haor Rokkha Andolan Home"
           >
-            <Heart size={15} />
-            Donations
+            <div className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-emerald-100 bg-emerald-50 shadow-sm sm:h-11 sm:w-11">
+              <Image
+                src="/ha2.png"
+                alt="Haor Rokkha Andolan Logo"
+                fill
+                priority
+                sizes="44px"
+                className="object-contain p-0.5"
+              />
+            </div>
+
+            <div className="min-w-0 leading-tight">
+              <p className="truncate text-[11px] font-extrabold tracking-tight text-emerald-950 sm:text-sm">
+                Wetlands Resilience Initiatives
+              </p>
+              <p className="mt-0.5 truncate text-[10px] font-semibold text-emerald-700 sm:text-xs">
+                হাওর রক্ষা আন্দোলন
+              </p>
+            </div>
           </Link>
 
-          {/* Login */}
-          <Link
-            href="/login"
-            aria-current={isActive("/login") ? "page" : undefined}
-            className={`inline-flex h-10 items-center justify-center rounded-md px-4 text-[12px] font-semibold text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2 xl:px-5 xl:text-[13px] ${
-              isActive("/login")
-                ? "bg-green-800"
-                : "bg-green-600 hover:bg-green-800"
-            }`}
+          {/* TABLET / DESKTOP NAVIGATION */}
+          <nav
+            aria-label="Main navigation"
+            className="hidden min-w-0 w-full max-w-3xl flex-1 items-center justify-center md:flex"
           >
-            Login
-          </Link>
+            <div className="flex w-full min-w-0 items-center justify-center gap-0.5">
 
-          {/* Get involved */}
-          <Link
-            href="/contact"
-            aria-current={isActive("/contact") ? "page" : undefined}
-            className={`group inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-full border px-3 text-[12px] font-semibold transition-colors xl:px-4 xl:text-[13px] ${
-              isActive("/contact")
-                ? "border-[#123b2b] bg-[#123b2b] text-white"
-                : "border-slate-200 text-[#123b2b] hover:border-emerald-200 hover:bg-emerald-50"
-            }`}
-          >
-            Get Involved
-            <ArrowUpRight
-              size={15}
-              className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-            />
-          </Link>
-        </div>
-
-        {/* Mobile menu toggle */}
-        <button
-          type="button"
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={menuOpen}
-          aria-controls="mobile-navigation"
-          onClick={() => setMenuOpen((open) => !open)}
-          className="flex h-9 w-9 shrink-0 items-center justify-center border rounded border-slate-200 bg-green-900 text-green-200 transition-colors hover:bg-slate-50 lg:hidden"
-        >
-          {menuOpen ? <X size={21} /> : <Menu size={21} />}
-        </button>
-      </div>
-
-      {/* Mobile backdrop */}
-      {menuOpen && (
-        <button
-          type="button"
-          aria-label="Close navigation"
-          onClick={() => setMenuOpen(false)}
-          className="fixed inset-x-0 bottom-0 top-16 z-[-1] bg-slate-900/30 lg:hidden"
-        />
-      )}
-
-      {/* Mobile navigation */}
-      <div
-        id="mobile-navigation"
-        aria-hidden={!menuOpen}
-        inert={!menuOpen}
-        className={`fixed inset-x-0 bottom-0 top-16 z-10000 overflow-y-auto border-t border-slate-100 bg-white transition-[opacity,visibility,transform] duration-200 lg:hidden ${
-          menuOpen
-            ? "visible translate-y-0 opacity-100"
-            : "invisible -translate-y-2 opacity-0"
-        }`}
-      >
-        <nav
-          aria-label="Mobile navigation"
-          className="mx-auto flex min-h-full max-w-xl flex-col px-4 pb-6 pt-3 sm:px-6"
-        >
-          <div className="mb-2 border-b border-slate-100 pb-3">
-            <p className="text-xs font-semibold text-[#176b45]">
-              Haor Rokkha Andolan
-            </p>
-            <p className="mt-1 text-[11px] text-slate-500">
-              Protecting Wetlands, Preserving Life.
-            </p>
-          </div>
-
-          <div className="flex-1">
-            {navLinks.map((link) => {
-              const active = isActive(link.href);
-
-              return (
+              {/* VISIBLE LINKS */}
+              {navLinks.slice(0, 5).map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  aria-current={active ? "page" : undefined}
-                  onClick={() => setMenuOpen(false)}
-                  className={`flex min-h-12 items-center justify-between border-b border-slate-100 px-2 text-sm transition-colors ${
-                    active
-                      ? "font-semibold text-[#176b45]"
-                      : "font-medium text-slate-600 hover:text-[#176b45]"
+                  className={linkClass(link.href)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+
+              {/* MORE DROPDOWN */}
+              <div className="group relative shrink-0">
+                <button
+                  type="button"
+                  aria-haspopup="true"
+                  className={`flex items-center gap-1 whitespace-nowrap rounded-md px-2 py-2 text-[12px] font-semibold transition-colors duration-200 lg:px-2.5 lg:text-[13px] ${
+                    isMoreActive
+                      ? "bg-emerald-50 text-emerald-800"
+                      : "text-slate-700 hover:bg-emerald-50 hover:text-emerald-800"
                   }`}
                 >
-                  <span className="flex items-center gap-2.5">
-                    {link.href === "/demands" && <ClipboardList size={17} />}
-                    {link.label}
-                  </span>
+                  More
+                  <ChevronDown
+                    size={14}
+                    className="transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180"
+                  />
+                </button>
 
-                  {active && (
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#176b45]" />
-                  )}
-                </Link>
-              );
-            })}
-          </div>
+                <div className="invisible absolute right-0 top-full z-50 mt-1 w-56 translate-y-1 rounded-lg border border-slate-200 bg-white p-2 opacity-0 shadow-xl transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 lg:w-60">
+                  {moreLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={`block rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
+                        isActive(link.href)
+                          ? "bg-emerald-50 text-emerald-800"
+                          : "text-slate-700 hover:bg-emerald-50 hover:text-emerald-800"
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </nav>
 
-          {/* Mobile actions */}
-          <div className="mt-5 grid grid-cols-2 gap-3">
+          {/* TABLET / DESKTOP ACTIONS */}
+          <div className="hidden shrink-0 items-center gap-1.5 md:flex lg:gap-2">
             <Link
               href="/donations"
-              aria-current={isActive("/donations") ? "page" : undefined}
-              onClick={() => setMenuOpen(false)}
-              className={`col-span-2 flex min-h-11 items-center justify-center gap-2 rounded-full px-3 py-3 text-sm font-semibold text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 ${
-                isActive("/donations")
-                  ? "bg-red-800"
-                  : "bg-red-600 hover:bg-red-700"
-              }`}
+              className="inline-flex items-center gap-1 rounded-md border border-emerald-700/20 px-2 py-2 text-[11px] font-semibold text-emerald-800 transition-colors hover:border-emerald-700 hover:bg-emerald-50 lg:gap-1.5 lg:px-3 lg:text-[13px]"
             >
-              <Heart size={17} />
+              <Heart size={15} />
               Donations
             </Link>
 
             <Link
               href="/login"
-              aria-current={isActive("/login") ? "page" : undefined}
-              onClick={() => setMenuOpen(false)}
-              className={`flex min-h-11 items-center justify-center gap-2 rounded-full border border-slate-200 px-3 py-3 text-sm font-semibold transition-colors ${
-                isActive("/login")
-                  ? "bg-slate-100 text-[#176b45]"
-                  : "text-slate-700 hover:bg-slate-50"
+              className="inline-flex items-center gap-1 rounded-md bg-emerald-800 px-2.5 py-2 text-[11px] font-semibold text-white shadow-sm transition-colors hover:bg-emerald-900 lg:gap-1.5 lg:px-3.5 lg:text-[13px]"
+            >
+              <LogIn size={15} />
+              Login
+            </Link>
+          </div>
+
+          {/* MOBILE MENU BUTTON */}
+          <button
+            type="button"
+            onClick={() => setIsOpen(!isOpen)}
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-emerald-800/15 bg-emerald-50 text-emerald-900 transition-colors hover:bg-emerald-100 md:hidden"
+            aria-label={isOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isOpen}
+          >
+            {isOpen ? <X size={21} /> : <Menu size={21} />}
+          </button>
+        </div>
+      </header>
+
+      {/* MOBILE BACKDROP */}
+      {isOpen && (
+        <button
+          type="button"
+          aria-label="Close navigation menu"
+          onClick={() => setIsOpen(false)}
+          className="fixed inset-0 z-40 bg-slate-950/45 backdrop-blur-[2px] md:hidden"
+        />
+      )}
+
+      {/* MOBILE MENU */}
+      <div
+        className={`fixed inset-x-0 top-16 z-50 overflow-y-auto border-t border-emerald-900/10 bg-white shadow-xl transition-all duration-300 md:hidden ${
+          isOpen
+            ? "visible max-h-[calc(100dvh-4rem)] translate-y-0 opacity-100"
+            : "invisible max-h-0 -translate-y-2 opacity-0"
+        }`}
+      >
+        <nav
+          aria-label="Mobile navigation"
+          className="mx-auto flex w-full max-w-[700px] flex-col gap-1 p-3 sm:p-4"
+        >
+          {/* MOBILE LINKS */}
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setIsOpen(false)}
+              className={`flex items-center justify-between rounded-md px-4 py-3 text-sm font-semibold transition-colors ${
+                isActive(link.href)
+                  ? "bg-emerald-50 text-emerald-800"
+                  : "text-slate-700 hover:bg-emerald-50 hover:text-emerald-800"
               }`}
+            >
+              {link.label}
+
+              {isActive(link.href) && (
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
+              )}
+            </Link>
+          ))}
+
+          {/* MOBILE ACTIONS */}
+          <div className="mt-2 grid grid-cols-2 gap-2 border-t border-slate-100 pt-3">
+            <Link
+              href="/donations"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center justify-center gap-2 rounded-md border border-emerald-700/20 px-3 py-3 text-sm font-semibold text-emerald-800 transition-colors hover:bg-emerald-50"
+            >
+              <Heart size={16} />
+              Donations
+            </Link>
+
+            <Link
+              href="/login"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center justify-center gap-2 rounded-md bg-emerald-800 px-3 py-3 text-sm font-semibold text-white transition-colors hover:bg-emerald-900"
             >
               <LogIn size={16} />
               Login
@@ -274,34 +242,35 @@ export default function Navbar() {
 
             <Link
               href="/contact"
-              aria-current={isActive("/contact") ? "page" : undefined}
-              onClick={() => setMenuOpen(false)}
-              className="flex min-h-11 items-center justify-center gap-1.5 rounded-full bg-[#176b45] px-3 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#123b2b]"
+              onClick={() => setIsOpen(false)}
+              className="col-span-2 flex items-center justify-center gap-2 rounded-md bg-emerald-50 px-3 py-3 text-sm font-semibold text-emerald-900 transition-colors hover:bg-emerald-100"
             >
+              <ClipboardList size={16} />
               Get Involved
               <ArrowUpRight size={15} />
             </Link>
           </div>
 
-          {/* Legal links */}
-          <div className="mt-5 flex flex-wrap justify-center gap-x-4 gap-y-2 border-t border-slate-100 pt-4 text-xs text-slate-500">
+          {/* LEGAL LINKS */}
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 border-t border-slate-100 pt-3 pb-2 text-xs font-medium text-slate-500">
             <Link
               href="/privacy-policy"
-              onClick={() => setMenuOpen(false)}
-              className="transition-colors hover:text-[#176b45]"
+              onClick={() => setIsOpen(false)}
+              className="transition-colors hover:text-emerald-800"
             >
               Privacy Policy
             </Link>
+
             <Link
               href="/cookie-policy"
-              onClick={() => setMenuOpen(false)}
-              className="transition-colors hover:text-[#176b45]"
+              onClick={() => setIsOpen(false)}
+              className="transition-colors hover:text-emerald-800"
             >
               Cookie Policy
             </Link>
           </div>
         </nav>
       </div>
-    </header>
+    </>
   );
 }

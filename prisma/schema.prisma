@@ -311,3 +311,23 @@ model Publication {
   @@index([type, publishedAt])
   @@index([createdById])
 }
+
+enum DocumentMediaType {
+  PDF
+  IMAGE
+}
+
+model Document {
+  id           String            @id @default(cuid())
+  heading      String
+  documentDate DateTime
+  documentUrl  String
+  documentName String?
+  mediaType    DocumentMediaType
+  status       Status            @default(ACTIVE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, documentDate])
+}

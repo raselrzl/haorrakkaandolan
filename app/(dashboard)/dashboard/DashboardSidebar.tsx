@@ -76,6 +76,11 @@ const navigation: NavigationGroup[] = [
         icon: FileText,
       },
       {
+        label: "Documents",
+        href: "/dashboard/documents",
+        icon: FileText,
+      },
+      {
         label: "Demands",
         href: "/dashboard/demand",
         icon: ClipboardList,
