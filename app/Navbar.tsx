@@ -54,7 +54,7 @@ export default function Navbar() {
   const linkClass = (href: string) =>
     `whitespace-nowrap rounded-md px-2 py-2 text-[12px] font-semibold transition-colors duration-200 lg:px-2.5 lg:text-[13px] ${
       isActive(href)
-        ? "bg-emerald-50 text-emerald-800"
+        ? "bg-emerald-200 text-emerald-800"
         : "text-slate-700 hover:bg-emerald-50 hover:text-emerald-800"
     }`;
 
@@ -123,7 +123,7 @@ export default function Navbar() {
                   aria-haspopup="true"
                   className={`flex items-center gap-1 whitespace-nowrap rounded-md px-2 py-2 text-[12px] font-semibold transition-colors duration-200 lg:px-2.5 lg:text-[13px] ${
                     isMoreActive
-                      ? "bg-emerald-50 text-emerald-800"
+                      ? "bg-emerald-200 text-emerald-800"
                       : "text-slate-700 hover:bg-emerald-50 hover:text-emerald-800"
                   }`}
                 >
@@ -210,7 +210,7 @@ export default function Navbar() {
       >
         <div className="mx-auto w-full max-w-lg p-3">
           {/* MOBILE BRAND */}
-          <div className="mb-3 flex items-center gap-2.5 border-b border-emerald-100 px-1 pb-3">
+          {/*      <div className="mb-3 flex items-center gap-2.5 border-b border-emerald-100 px-1 pb-3">
             <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-emerald-200 bg-emerald-50">
               <Image
                 src="/ha2.png"
@@ -229,12 +229,12 @@ export default function Navbar() {
                 হাওর রক্ষা আন্দোলন
               </p>
             </div>
-          </div>
+          </div> */}
 
           {/* NAVIGATION LINKS */}
           <nav
             aria-label="Mobile navigation links"
-            className="grid grid-cols-2 gap-1.5"
+            className="grid grid-cols-1 gap-0.75"
           >
             {navLinks.map((link) => {
               const active = isActive(link.href);
@@ -245,9 +245,9 @@ export default function Navbar() {
                   href={link.href}
                   tabIndex={isOpen ? 0 : -1}
                   onClick={() => setIsOpen(false)}
-                  className={`flex min-h-10 items-center justify-between gap-2 border-b px-2.5 py-2 text-[12px] font-semibold transition-colors ${
+                  className={`flex min-h-10 items-center justify-between gap-2 border-b px-2.5 py-1 text-[12px] font-semibold transition-colors ${
                     active
-                      ? "border-emerald-700 bg-emerald-50 text-emerald-900"
+                      ? " bg-emerald-200 text-emerald-900"
                       : "border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50"
                   }`}
                 >
@@ -267,7 +267,7 @@ export default function Navbar() {
               href="/donations"
               tabIndex={isOpen ? 0 : -1}
               onClick={() => setIsOpen(false)}
-              className="flex min-h-10 items-center justify-center gap-1.5 border border-emerald-200 bg-white px-2 text-xs font-bold text-emerald-800 hover:bg-emerald-50"
+              className="flex min-h-10 items-center rounded justify-center gap-1.5 border border-emerald-200 bg-white px-2 text-xs font-bold text-emerald-800 hover:bg-emerald-50"
             >
               <Heart size={15} />
               Donations
