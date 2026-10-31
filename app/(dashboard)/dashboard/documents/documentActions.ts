@@ -1,3 +1,4 @@
+
 "use server";
 
 import { revalidatePath } from "next/cache";
@@ -25,6 +26,40 @@ function validateDocumentUrl(value: string): string {
   }
 }
 
+function validateDocumentDate(value: string): Date {
+  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    throw new Error("A valid document date is required.");
+  }
+
+  const date = new Date(`${value}T12:00:00.000Z`);
+
+  if (
+    Number.isNaN(date.getTime()) ||
+    date.toISOString().slice(0, 10) !== value
+  ) {
+    throw new Error("A valid document date is required.");
+  }
+
+  return date;
+}
+
+function validateMediaType(value: string): DocumentMediaType {
+  if (
+    !Object.values(DocumentMediaType).includes(
+      value as DocumentMediaType,
+    )
+  ) {
+    throw new Error("Select a valid document type.");
+  }
+
+  return value as DocumentMediaType;
+}
+
+function revalidateDocumentPages() {
+  revalidatePath(DASHBOARD_PATH);
+  revalidatePath("/documents");
+}
+
 export async function createDocumentAction(formData: FormData) {
   await requireAdmin();
 
@@ -34,36 +69,97 @@ export async function createDocumentAction(formData: FormData) {
     cleanText(formData.get("documentUrl")),
   );
   const documentName = cleanText(formData.get("documentName"));
-  const mediaType = cleanText(formData.get("mediaType"));
+  const mediaType = validateMediaType(
+    cleanText(formData.get("mediaType")),
+  );
 
-  if (!heading) throw new Error("Heading is required.");
-
-  if (!documentDate || isNaN(new Date(documentDate).getTime())) {
-    throw new Error("A valid document date is required.");
+  if (!heading) {
+    throw new Error("Heading is required.");
   }
 
-  if (
-    !Object.values(DocumentMediaType).includes(mediaType as DocumentMediaType)
-  ) {
-    throw new Error("Select a valid document type.");
+  if (heading.length > 200) {
+    throw new Error("Heading cannot exceed 200 characters.");
+  }
+
+  if (!documentName) {
+    throw new Error("Document name is required.");
   }
 
   await prisma.document.create({
     data: {
       heading,
-      documentDate: new Date(`${documentDate}T12:00:00.000Z`),
+      documentDate: validateDocumentDate(documentDate),
       documentUrl,
-      documentName: documentName || null,
-      mediaType: mediaType as DocumentMediaType,
+      documentName,
+      mediaType,
     },
   });
 
-  revalidatePath(DASHBOARD_PATH);
-  revalidatePath("/documents");
+  revalidateDocumentPages();
 
   return {
     success: true,
     message: "Document added successfully.",
+  };
+}
+
+export async function updateDocumentAction(
+  id: string,
+  formData: FormData,
+) {
+  await requireAdmin();
+
+  if (!id?.trim()) {
+    throw new Error("A valid document must be selected.");
+  }
+
+  const existingDocument = await prisma.document.findUnique({
+    where: { id },
+    select: { id: true },
+  });
+
+  if (!existingDocument) {
+    throw new Error("Document not found.");
+  }
+
+  const heading = cleanText(formData.get("heading"));
+  const documentDate = cleanText(formData.get("documentDate"));
+  const documentUrl = validateDocumentUrl(
+    cleanText(formData.get("documentUrl")),
+  );
+  const documentName = cleanText(formData.get("documentName"));
+  const mediaType = validateMediaType(
+    cleanText(formData.get("mediaType")),
+  );
+
+  if (!heading) {
+    throw new Error("Heading is required.");
+  }
+
+  if (heading.length > 200) {
+    throw new Error("Heading cannot exceed 200 characters.");
+  }
+
+  if (!documentName) {
+    throw new Error("Document name is required.");
+  }
+
+  await prisma.document.update({
+    where: { id },
+    data: {
+      heading,
+      documentDate: validateDocumentDate(documentDate),
+      documentUrl,
+      documentName,
+      mediaType,
+    },
+  });
+
+  revalidateDocumentPages();
+
+  return {
+    success: true,
+    message: "Document updated successfully.",
   };
 }
 
@@ -86,8 +182,7 @@ export async function deleteDocumentAction(id: string) {
     where: { id },
   });
 
-  revalidatePath(DASHBOARD_PATH);
-  revalidatePath("/documents");
+  revalidateDocumentPages();
 
   return {
     success: true,
@@ -100,7 +195,9 @@ export async function deleteSelectedDocumentsAction(ids: string[]) {
 
   const selectedIds = [
     ...new Set(
-      ids.filter((id) => typeof id === "string" && id.trim().length > 0),
+      ids.filter(
+        (id) => typeof id === "string" && id.trim().length > 0,
+      ),
     ),
   ];
 
@@ -114,8 +211,7 @@ export async function deleteSelectedDocumentsAction(ids: string[]) {
     },
   });
 
-  revalidatePath(DASHBOARD_PATH);
-  revalidatePath("/documents");
+  revalidateDocumentPages();
 
   return {
     success: true,
