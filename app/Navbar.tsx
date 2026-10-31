@@ -85,14 +85,14 @@ export default function Navbar() {
 
             <div className="min-w-0 leading-tight">
               <p
-                translate="yes"
+                translate="no"
                 className="truncate text-[16px] font-extrabold tracking-tight text-emerald-950 sm:text-sm"
               >
                 Wetlands Resilience Initiatives
               </p>
 
               <p
-                translate="yes"
+                translate="no"
                 className="mt-0.5 truncate text-[12px] font-semibold text-emerald-700 sm:text-xs"
               >
                 হাওর রক্ষা আন্দোলন
@@ -197,48 +197,79 @@ export default function Navbar() {
         }`}
       />
 
-      {/* MOBILE MENU */}
+      {/* MOBILE MENU — COMPACT BORDERED DESIGN */}
       <div
         id="mobile-navigation"
         aria-label="Mobile navigation"
         aria-hidden={!isOpen}
-        className={`fixed inset-x-0 top-16 z-[50] flex max-h-[calc(100dvh-4rem)] flex-col overflow-y-auto overscroll-contain border-t border-emerald-900/10 bg-white shadow-xl transition-all duration-300 ease-in-out md:hidden ${
+        className={`fixed inset-x-0 top-16 z-[50] flex max-h-[calc(100dvh-4rem)] flex-col overflow-y-auto overscroll-contain border-t border-emerald-200 bg-white shadow-xl transition-all duration-300 ease-in-out md:hidden ${
           isOpen
             ? "visible translate-y-0 opacity-100 pointer-events-auto"
             : "invisible -translate-y-2 opacity-0 pointer-events-none"
         }`}
       >
-        <nav className="mx-auto flex w-full max-w-175 flex-col gap-1 p-3 sm:p-4">
-          {/* MOBILE LINKS */}
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              tabIndex={isOpen ? 0 : -1}
-              onClick={() => setIsOpen(false)}
-              className={`flex items-center justify-between rounded-md px-4 py-3 text-sm font-semibold transition-colors ${
-                isActive(link.href)
-                  ? "bg-emerald-50 text-emerald-800"
-                  : "text-slate-700 hover:bg-emerald-50 hover:text-emerald-800"
-              }`}
-            >
-              {link.label}
+        <div className="mx-auto w-full max-w-lg p-3">
+          {/* MOBILE BRAND */}
+          <div className="mb-3 flex items-center gap-2.5 border-b border-emerald-100 px-1 pb-3">
+            <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-emerald-200 bg-emerald-50">
+              <Image
+                src="/ha2.png"
+                alt="Haor Rokkha Andolan"
+                fill
+                sizes="40px"
+                className="object-contain p-0.5"
+              />
+            </div>
 
-              {isActive(link.href) && (
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
-              )}
-            </Link>
-          ))}
+            <div className="min-w-0">
+              <p className="truncate text-xs font-extrabold text-emerald-950">
+                Wetlands Resilience Initiatives
+              </p>
+              <p className="mt-0.5 text-[11px] font-semibold text-emerald-700">
+                হাওর রক্ষা আন্দোলন
+              </p>
+            </div>
+          </div>
 
-          {/* MOBILE ACTIONS */}
-          <div className="mt-2 grid grid-cols-2 gap-2 border-t border-slate-100 pt-3">
+          {/* NAVIGATION LINKS */}
+          <nav
+            aria-label="Mobile navigation links"
+            className="grid grid-cols-2 gap-1.5"
+          >
+            {navLinks.map((link) => {
+              const active = isActive(link.href);
+
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  tabIndex={isOpen ? 0 : -1}
+                  onClick={() => setIsOpen(false)}
+                  className={`flex min-h-10 items-center justify-between gap-2 border-b px-2.5 py-2 text-[12px] font-semibold transition-colors ${
+                    active
+                      ? "border-emerald-700 bg-emerald-50 text-emerald-900"
+                      : "border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50"
+                  }`}
+                >
+                  <span className="min-w-0 leading-snug">{link.label}</span>
+
+                  {active && (
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-700" />
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* ACTION BUTTONS */}
+          <div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-emerald-100 pt-3">
             <Link
               href="/donations"
               tabIndex={isOpen ? 0 : -1}
               onClick={() => setIsOpen(false)}
-              className="flex items-center justify-center gap-2 rounded-md border border-emerald-700/20 px-3 py-3 text-sm font-semibold text-emerald-800 transition-colors hover:bg-emerald-50"
+              className="flex min-h-10 items-center justify-center gap-1.5 border border-emerald-200 bg-white px-2 text-xs font-bold text-emerald-800 hover:bg-emerald-50"
             >
-              <Heart size={16} />
+              <Heart size={15} />
               Donations
             </Link>
 
@@ -246,9 +277,9 @@ export default function Navbar() {
               href="/login"
               tabIndex={isOpen ? 0 : -1}
               onClick={() => setIsOpen(false)}
-              className="flex items-center justify-center gap-2 rounded-md bg-emerald-800 px-3 py-3 text-sm font-semibold text-white transition-colors hover:bg-emerald-900"
+              className="flex min-h-10 items-center rounded justify-center gap-1.5 border border-emerald-900 bg-emerald-900 px-2 text-xs font-bold text-white hover:bg-emerald-900"
             >
-              <LogIn size={16} />
+              <LogIn size={15} />
               Login
             </Link>
 
@@ -256,35 +287,37 @@ export default function Navbar() {
               href="/contact"
               tabIndex={isOpen ? 0 : -1}
               onClick={() => setIsOpen(false)}
-              className="col-span-2 flex items-center justify-center gap-2 rounded-md bg-emerald-50 px-3 py-3 text-sm font-semibold text-emerald-900 transition-colors hover:bg-emerald-100"
+              className="col-span-2 flex min-h-10 items-center rounded justify-center gap-1.5 border border-emerald-200 bg-emerald-50 px-2 text-xs font-bold text-emerald-900 hover:bg-emerald-100"
             >
-              <ClipboardList size={16} />
+              <ClipboardList size={15} />
               Get Involved
-              <ArrowUpRight size={15} />
+              <ArrowUpRight size={14} />
             </Link>
           </div>
 
-          {/* LEGAL LINKS */}
-          <div className="mt-2 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 border-t border-slate-100 pt-3 pb-2 text-xs font-medium text-slate-500">
+          {/* FOOTER LINKS */}
+          <div className="mt-3 flex items-center justify-center gap-4 border-t border-slate-100 pt-3 pb-1 text-[10px] font-medium text-slate-500">
             <Link
               href="/privacy-policy"
               tabIndex={isOpen ? 0 : -1}
               onClick={() => setIsOpen(false)}
-              className="transition-colors hover:text-emerald-800"
+              className="hover:text-emerald-800"
             >
               Privacy Policy
             </Link>
+
+            <span className="h-1 w-1 rounded-full bg-slate-300" />
 
             <Link
               href="/cookie-policy"
               tabIndex={isOpen ? 0 : -1}
               onClick={() => setIsOpen(false)}
-              className="transition-colors hover:text-emerald-800"
+              className="hover:text-emerald-800"
             >
               Cookie Policy
             </Link>
           </div>
-        </nav>
+        </div>
       </div>
     </>
   );
