@@ -76,7 +76,7 @@ const navigation: NavigationGroup[] = [
         icon: FileText,
       },
       {
-        label: "Documents",
+        label: "Legal Documents",
         href: "/dashboard/documents",
         icon: FileText,
       },
