@@ -27,36 +27,79 @@ export default async function LatestNews() {
   });
 
   return (
-    <section className="bg-white py-14 sm:py-18">
+    <section className="bg-white py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section heading */}
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
-            <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-emerald-800">
-              <span className="h-px w-7 bg-emerald-700" />
-              Haor Rokkha Andolan
+            <div className="flex items-center gap-3">
+              {/* Animated opening book */}
+              <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-amber-700">
+                <svg
+                  viewBox="0 0 48 48"
+                  fill="none"
+                  className="h-9 w-9"
+                  aria-hidden="true"
+                >
+                  {/* Left page */}
+                  <path
+                    d="M23 13C18 9 11 9 6 11V33C12 31 18 32 23 36V13Z"
+                    fill="#fbbf24"
+                    fillOpacity="0.25"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinejoin="round"
+                  />
+
+                  {/* Right page - animated */}
+                  <path
+                    d="M25 13C30 9 37 9 42 11V33C36 31 30 32 25 36V13Z"
+                    fill="#fbbf24"
+                    fillOpacity="0.25"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinejoin="round"
+                    className="origin-[25px_24px] animate-[book-open_2s_ease-in-out_infinite]"
+                  />
+
+                  {/* Book spine */}
+                  <path
+                    d="M24 12V37"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+
+                  {/* Page details */}
+                  <path
+                    d="M10 17C14 16 18 17 21 19M10 22C14 21 18 22 21 24M27 19C31 17 35 16 38 17M27 24C31 22 35 21 38 22"
+                    stroke="currentColor"
+                    strokeWidth="1.2"
+                    strokeLinecap="round"
+                    opacity="0.65"
+                  />
+                </svg>
+              </div>
+
+              <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                Latest News
+              </h2>
             </div>
 
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-              Latest News
-            </h2>
-
-            <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">
-              The latest news and updates on our efforts to protect the haors,
-              rivers, and natural environment.
-            </p>
+            {/* Tapered curved underline */}
+            <svg
+              viewBox="0 0 420 40"
+              fill="none"
+              className="ml-1 mt-2 h-7 w-52 sm:w-64"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M2 27C75 2 145 5 210 17C285 31 350 10 418 15C350 17 290 39 210 25C130 11 70 13 2 31Z"
+                fill="#d97706"
+              />
+            </svg>
           </div>
-
-        {/*   <Link
-            href="/activities"
-            className="group hidden shrink-0 items-center gap-2 text-sm font-semibold text-emerald-800 transition hover:text-emerald-950 sm:inline-flex"
-          >
-            View all
-            <ArrowUpRight
-              size={17}
-              className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-            />
-          </Link> */}
         </div>
 
         {/* Latest four news */}
@@ -65,10 +108,10 @@ export default async function LatestNews() {
             {news.map((item) => (
               <article
                 key={item.id}
-                className="group flex min-w-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition duration-300 hover:-translate-y-1 hover:border-emerald-800/30 hover:shadow-lg hover:shadow-emerald-950/5"
+                className="group flex min-w-0 flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-md shadow-amber-100/70 transition-all duration-300 hover:-translate-y-1 hover:border-amber-100 hover:shadow-xl hover:shadow-amber-100"
               >
                 {/* Media */}
-                <div className="relative aspect-16/10 overflow-hidden bg-emerald-950">
+                <div className="relative aspect-16/10 overflow-hidden bg-slate-900">
                   {item.mediaUrl && item.mediaType === "IMAGE" ? (
                     <Link
                       href={`/news/${item.id}`}
@@ -79,7 +122,7 @@ export default async function LatestNews() {
                         src={item.mediaUrl}
                         alt={item.heading}
                         loading="lazy"
-                        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     </Link>
                   ) : item.mediaUrl && item.mediaType === "VIDEO" ? (
@@ -98,7 +141,7 @@ export default async function LatestNews() {
                     <Link
                       href={`/news/${item.id}`}
                       aria-label={`Read ${item.heading}`}
-                      className="flex h-full w-full items-center justify-center bg-linear-to-br from-emerald-950 to-green-800"
+                      className="flex h-full w-full items-center justify-center bg-linear-to-br from-slate-900 to-slate-700"
                     >
                       <Waves
                         size={42}
@@ -109,7 +152,7 @@ export default async function LatestNews() {
                   )}
 
                   {/* River / Haor label */}
-                  <span className="pointer-events-none absolute left-3 top-3 rounded-md bg-emerald-950/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
+                  <span className="pointer-events-none absolute left-3 top-3 rounded-md bg-black/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
                     {item.riverOrHaor === "HAOR" ? "Haor" : "River"}
                   </span>
 
@@ -137,18 +180,19 @@ export default async function LatestNews() {
                   </div>
 
                   <Link href={`/news/${item.id}`}>
-                    <h3 className="line-clamp-2 text-base font-bold leading-6 text-slate-900 transition group-hover:text-emerald-800">
+                    <h3 className="line-clamp-2 text-base font-bold leading-6 text-slate-900 transition-colors group-hover:text-amber-900">
                       {item.heading}
                     </h3>
                   </Link>
 
-                  <p className="mt-2 flex-1 text-sm leading-6 text-slate-500 line-clamp-2">
+                  <p className="mt-2 line-clamp-2 flex-1 text-sm leading-6 text-slate-600">
                     {item.details}
                   </p>
+
                   <div className="mt-4 flex justify-end">
                     <Link
                       href={`/news/${item.id}`}
-                      className="group inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-800 transition-colors hover:text-emerald-950"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-900 transition-colors hover:text-amber-800"
                     >
                       Details
                       <ArrowUpRight
@@ -162,7 +206,7 @@ export default async function LatestNews() {
             ))}
           </div>
         ) : (
-          <div className="rounded-xl border border-dashed border-slate-200 px-5 py-12 text-center">
+          <div className="rounded-xl border border-dashed border-slate-200 bg-white px-5 py-12 text-center">
             <Newspaper size={30} className="mx-auto mb-3 text-slate-300" />
             <p className="text-sm font-semibold text-slate-700">
               No news available yet
@@ -172,16 +216,6 @@ export default async function LatestNews() {
             </p>
           </div>
         )}
-
-   {/*      <div className="mt-6 sm:hidden">
-          <Link
-            href="/news"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-800"
-          >
-            View all news
-            <ArrowUpRight size={17} />
-          </Link>
-        </div> */}
       </div>
     </section>
   );

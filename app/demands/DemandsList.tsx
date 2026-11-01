@@ -1,15 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import {
-  ArrowLeft,
   CalendarDays,
   ClipboardList,
   Languages,
   ListChecks,
 } from "lucide-react";
-import Navbar from "../Navbar";
 
 type DemandPoint = {
   id: string;
@@ -50,275 +47,208 @@ function formatDate(date: string, language: Language) {
   }).format(new Date(date));
 }
 
-export default function DemandsPublicView({ demands }: Props) {
+export default function DemandsList({ demands }: Props) {
   const [language, setLanguage] = useState<Language>("en");
   const isBangla = language === "bn";
 
   return (
-    <>
-      {/*     <Navbar /> */}
+    <main className="min-h-screen bg-[#f7f9f6] text-slate-800">
+      <section
+        id="published-demands"
+        className="mx-auto max-w-6xl px-3 py-7 sm:px-6 sm:py-8 lg:px-8"
+      >
+        {/* SECTION HEADER */}
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-amber-200 pb-4">
+          <div className="flex min-w-0 items-center gap-2">
+            <ListChecks size={19} className="shrink-0 text-amber-700" />
 
-      <main className="mt-16 min-h-screen bg-slate-50 text-slate-900">
-        {/* Hero */}
-        <section
-          className="relative overflow-hidden border-b border-emerald-950 bg-emerald-950 bg-cover bg-center"
-          style={{ backgroundImage: "url('/monu1.jpg')" }}
-        >
-          <div className="absolute inset-0 bg-emerald-950/75" />
-
-          <div className="relative mx-auto flex h-130 max-w-6xl items-center px-5 py-10 sm:min-h-82.5 sm:px-8">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="min-w-0">
-                <Link
-                  href="/"
-                  className="mb-4 inline-flex items-center gap-1.5 text-xs font-medium text-white/75 transition hover:text-white"
-                >
-                  <ArrowLeft size={14} />
-                  {isBangla ? "হোম" : "Home"}
-                </Link>
-
-                <div className="flex items-center gap-3">
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-white backdrop-blur-sm">
-                    <ClipboardList size={21} />
-                  </div>
-
-                  <div className="min-w-0">
-                    <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-200">
-                      Haor Rokkha Andolan / হাওর রক্ষা আন্দোলন
-                    </p>
-
-                    <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                      {isBangla ? "আমাদের দাবিসমূহ" : "Our Demands"}
-                    </h1>
-                  </div>
-                </div>
-
-                <p className="mt-3 max-w-2xl text-sm leading-6 text-white/75">
-                  {isBangla
-                    ? "হাওর, জলাভূমি, জীববৈচিত্র্য ও স্থানীয় মানুষের অধিকার রক্ষায় আমাদের প্রকাশিত দাবিসমূহ।"
-                    : "Our published demands to protect the haors, wetlands, biodiversity, and the rights of local communities."}
-                </p>
-              </div>
-
-              {/* Language toggle */}
-              <div
-                className="inline-flex w-fit shrink-0 items-center gap-0.5 self-start rounded-lg border border-white/20 bg-black/20 p-0.5 backdrop-blur-sm sm:self-center"
-                role="group"
-                aria-label="Select language"
-              >
-                <Languages size={14} className="ml-1.5 mr-1 text-white/60" />
-
-                <button
-                  type="button"
-                  onClick={() => setLanguage("bn")}
-                  aria-pressed={isBangla}
-                  className={`rounded-md px-3 py-1.5 text-xs font-semibold transition ${
-                    isBangla
-                      ? "bg-white text-emerald-950 shadow-sm"
-                      : "text-white/80 hover:bg-white/10 hover:text-white"
-                  }`}
-                >
-                  বাংলা
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setLanguage("en")}
-                  aria-pressed={!isBangla}
-                  className={`rounded-md px-3 py-1.5 text-xs font-semibold transition ${
-                    !isBangla
-                      ? "bg-white text-emerald-950 shadow-sm"
-                      : "text-white/80 hover:bg-white/10 hover:text-white"
-                  }`}
-                >
-                  EN
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Tabular demand list */}
-        <section
-          id="published-demands"
-          className="mx-auto max-w-6xl px-4 py-6 sm:px-8 sm:py-8"
-        >
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <div className="flex min-w-0 items-center gap-2">
-              <ListChecks size={18} className="shrink-0 text-emerald-800" />
-
-              <h2 className="text-base font-bold text-slate-800">
+            <div className="min-w-0">
+              <h2 className="text-base font-extrabold text-slate-900 sm:text-lg">
                 {isBangla ? "প্রকাশিত দাবিসমূহ" : "Published Demands"}
               </h2>
             </div>
-
-            <span className="shrink-0 rounded-md border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-500">
-              {demands.length}{" "}
-              {isBangla
-                ? "টি প্রকাশনা"
-                : demands.length === 1
-                  ? "document"
-                  : "documents"}
-            </span>
           </div>
 
-          {demands.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-slate-300 bg-white px-5 py-12 text-center">
-              <ClipboardList className="mx-auto text-slate-300" size={32} />
+          <div className="flex shrink-0 items-center gap-2">
+            {/* LANGUAGE TOGGLE */}
+            <div
+              className="inline-flex items-center gap-0.5 rounded-full border border-slate-200 bg-white p-1 shadow-sm"
+              role="group"
+              aria-label="Select language"
+            >
+              <Languages size={14} className="ml-1 mr-1 text-amber-700" />
 
-              <h3 className="mt-3 text-sm font-semibold text-slate-800">
-                {isBangla ? "কোনো দাবি প্রকাশিত হয়নি" : "No demands published"}
-              </h3>
+              <button
+                type="button"
+                onClick={() => setLanguage("bn")}
+                aria-pressed={isBangla}
+                className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
+                  isBangla
+                    ? "bg-amber-500 text-amber-950 shadow-sm"
+                    : "text-slate-600 hover:bg-amber-50 hover:text-amber-900"
+                }`}
+              >
+                বাংলা
+              </button>
 
-              <p className="mt-1 text-xs text-slate-500">
-                {isBangla
-                  ? "প্রকাশিত দাবিসমূহ এখানে দেখা যাবে।"
-                  : "Published demands will appear here."}
-              </p>
+              <button
+                type="button"
+                onClick={() => setLanguage("en")}
+                aria-pressed={!isBangla}
+                className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
+                  !isBangla
+                    ? "bg-amber-500 text-amber-950 shadow-sm"
+                    : "text-slate-600 hover:bg-amber-50 hover:text-amber-900"
+                }`}
+              >
+                EN
+              </button>
             </div>
-          ) : (
-            <div className="space-y-5">
-              {demands.map((demand, demandIndex) => {
-                const title = isBangla ? demand.titleBn : demand.titleEn;
-                const description = isBangla
-                  ? demand.descriptionBn
-                  : demand.descriptionEn;
+          </div>
+        </div>
 
-                return (
-                  <article
-                    key={demand.id}
-                    className="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
-                  >
-                    {/* Table title and metadata */}
-                    <div className="flex flex-col gap-3 border-b border-slate-200 bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
-                      <div className="flex min-w-0 items-start gap-3">
-                        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-800">
-                          <ClipboardList size={19} />
-                        </div>
+        {/* EMPTY STATE */}
+        {demands.length === 0 ? (
+          <div className="rounded-xl border border-slate-100 bg-white px-5 py-14 text-center shadow-md shadow-amber-100/70">
+            <ClipboardList className="mx-auto text-amber-300" size={36} />
 
-                        <div className="min-w-0">
-                          <h3 className="whitespace-pre-wrap wrap-break-words text-sm font-bold leading-6 text-slate-900 sm:text-base">
-                            {title || (isBangla ? "দাবিসমূহ" : "Our Demands")}
-                          </h3>
+            <h3 className="mt-3 text-sm font-bold text-slate-900">
+              {isBangla ? "কোনো দাবি প্রকাশিত হয়নি" : "No demands published"}
+            </h3>
 
-                          <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500">
-                            <span className="inline-flex items-center gap-1.5">
-                              <CalendarDays size={12} />
-                              {formatDate(demand.publishedAt, language)}
-                            </span>
+            <p className="mt-1 text-xs text-slate-500">
+              {isBangla
+                ? "প্রকাশিত দাবিসমূহ এখানে দেখা যাবে।"
+                : "Published demands will appear here."}
+            </p>
+          </div>
+        ) : (
+          /* DEMAND PUBLICATIONS */
+          <div className="space-y-4">
+            {demands.map((demand, demandIndex) => {
+              const title = isBangla ? demand.titleBn : demand.titleEn;
+              const description = isBangla
+                ? demand.descriptionBn
+                : demand.descriptionEn;
 
-                            <span className="rounded bg-emerald-50 px-2 py-0.5 font-medium text-emerald-800">
-                              {isBangla ? "প্রকাশিত" : "Published"}
-                            </span>
-                          </div>
-                        </div>
+              return (
+                <article
+                  key={demand.id}
+                  className="group min-w-0 overflow-hidden rounded-xl border border-slate-100 bg-white shadow-md shadow-amber-100/70 transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-200 hover:shadow-lg hover:shadow-amber-100"
+                >
+                  {/* PUBLICATION HEADER */}
+                  <div className="flex flex-col gap-3 border-b border-slate-100 p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+                    <div className="flex min-w-0 items-start gap-3">
+                      <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-amber-100 bg-amber-50 text-amber-800">
+                        <ClipboardList size={19} />
                       </div>
 
-                      <span className="inline-flex w-fit shrink-0 items-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-600">
-                        <ListChecks size={13} />
-                        {demand.points.length} {isBangla ? "টি দাবি" : "points"}
-                      </span>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="whitespace-pre-wrap break-words text-sm font-extrabold leading-6 text-slate-900 transition-colors group-hover:text-amber-900 sm:text-base">
+                          {title || (isBangla ? "দাবিসমূহ" : "Our Demands")}
+                        </h3>
+
+                        <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+                          <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-500">
+                            <CalendarDays
+                              size={12}
+                              className="text-amber-700"
+                            />
+                            {formatDate(demand.publishedAt, language)}
+                          </span>
+
+                          <span className="rounded-full border border-amber-100 bg-amber-50 px-2.5 py-0.5 text-[10px] font-bold text-amber-900">
+                            {isBangla ? "প্রকাশিত" : "Published"}
+                          </span>
+                        </div>
+                      </div>
                     </div>
 
-                    {description && (
-                      <div className="border-b border-slate-200 px-4 py-3 sm:px-5">
-                        <p className="whitespace-pre-wrap wrap-break-words text-sm leading-6 text-slate-600">
-                          {description}
-                        </p>
-                      </div>
-                    )}
+                    <span className="inline-flex w-fit shrink-0 items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-semibold text-slate-600">
+                      <ListChecks size={13} className="text-amber-700" />
+                      {demand.points.length} {isBangla ? "টি দাবি" : "Points"}
+                    </span>
+                  </div>
 
-                    {demand.points.length > 0 ? (
-                      <div className="overflow-x-auto">
-                        <table className="w-full min-w-135 border-collapse text-left text-sm">
-                          <thead>
-                            <tr className="bg-emerald-900 text-white">
-                              <th className="w-16 border-r border-white/10 px-3 py-2.5 text-center text-[11px] font-semibold">
-                                {isBangla ? "ক্রম" : "No."}
-                              </th>
-
-                              <th className="w-[32%] border-r border-white/10 px-4 py-2.5 text-[11px] font-semibold">
-                                {isBangla ? "দাবির শিরোনাম" : "Demand"}
-                              </th>
-
-                              <th className="px-4 py-2.5 text-[11px] font-semibold">
-                                {isBangla ? "বিস্তারিত" : "Description"}
-                              </th>
-                            </tr>
-                          </thead>
-
-                          <tbody className="divide-y divide-slate-100">
-                            {demand.points.map((point, pointIndex) => {
-                              const heading = isBangla
-                                ? point.headingBn
-                                : point.headingEn;
-
-                              const pointDescription = isBangla
-                                ? point.descriptionBn
-                                : point.descriptionEn;
-
-                              return (
-                                <tr
-                                  key={point.id}
-                                  className={`align-top transition hover:bg-emerald-50/60 ${
-                                    pointIndex % 2 === 0
-                                      ? "bg-white"
-                                      : "bg-slate-50/70"
-                                  }`}
-                                >
-                                  <td className="border-r border-slate-100 px-3 py-3 text-center">
-                                    <span className="inline-flex size-7 items-center justify-center rounded-full bg-emerald-50 text-xs font-bold text-emerald-800">
-                                      {point.pointNumber}
-                                    </span>
-                                  </td>
-
-                                  <td className="border-r border-slate-100 px-4 py-3">
-                                    <p className="whitespace-pre-wrap wrap-break-words text-[13px] font-semibold leading-6 text-slate-800">
-                                      {heading}
-                                    </p>
-                                  </td>
-
-                                  <td className="px-4 py-3">
-                                    <p className="whitespace-pre-wrap wrap-break-words text-[13px] leading-6 text-slate-600">
-                                      {pointDescription}
-                                    </p>
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
-                      </div>
-                    ) : (
-                      <p className="px-4 py-6 text-center text-xs text-slate-500">
-                        {isBangla
-                          ? "এই প্রকাশনায় কোনো দাবি যোগ করা হয়নি।"
-                          : "No demand points have been added to this publication."}
+                  {/* PUBLICATION DESCRIPTION */}
+                  {description && (
+                    <div className="border-b border-slate-100 bg-amber-50/30 px-4 py-3 sm:px-5">
+                      <p className="whitespace-pre-wrap break-words text-sm leading-7 text-slate-600">
+                        {description}
                       </p>
-                    )}
-
-                    <div className="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-4 py-2 text-[10px] text-slate-400 sm:px-5">
-                      <span>
-                        {isBangla
-                          ? "হাওর রক্ষা আন্দোলন"
-                          : "Haor Rokkha Andolan"}
-                      </span>
-                      <span>
-                        {isBangla ? "প্রকাশনা" : "Publication"}{" "}
-                        {demandIndex + 1}
-                      </span>
                     </div>
-                  </article>
-                );
-              })}
-            </div>
-          )}
+                  )}
 
-          <footer className="mt-7 border-t border-slate-200 pt-4 text-center text-xs text-slate-400">
-            © {new Date().getFullYear()} Haor Rokkha Andolan
-          </footer>
-        </section>
-      </main>
-    </>
+                  {/* DEMAND POINTS */}
+                  {demand.points.length > 0 ? (
+                    <div className="space-y-2.5 p-3 sm:p-4">
+                      {demand.points.map((point) => {
+                        const heading = isBangla
+                          ? point.headingBn
+                          : point.headingEn;
+
+                        const pointDescription = isBangla
+                          ? point.descriptionBn
+                          : point.descriptionEn;
+
+                        return (
+                          <div
+                            key={point.id}
+                            className="flex min-w-0 flex-col gap-2 rounded-lg border border-slate-100 bg-white p-3 shadow-sm shadow-amber-100/50 transition-colors hover:border-amber-200 hover:bg-amber-50/30 sm:flex-row sm:items-start sm:gap-4 sm:p-4"
+                          >
+                            {/* POINT NUMBER */}
+                            <div className="flex shrink-0 items-center gap-2 sm:w-10 sm:justify-center">
+                              <span className="flex size-8 items-center justify-center rounded-full border border-amber-200 bg-amber-50 text-xs font-extrabold tabular-nums text-amber-900">
+                                {point.pointNumber}
+                              </span>
+
+                              <span className="text-[10px] font-bold uppercase tracking-wide text-slate-400 sm:hidden">
+                                {isBangla ? "দাবি" : "Demand"}
+                              </span>
+                            </div>
+
+                            {/* HEADING AND DESCRIPTION */}
+                            <div className="grid min-w-0 flex-1 grid-cols-1 gap-2 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.5fr)] sm:gap-5">
+                              <div className="min-w-0">
+                                <p className="whitespace-pre-wrap break-words text-[13px] font-bold leading-6 text-slate-800">
+                                  {heading}
+                                </p>
+                              </div>
+
+                              <div className="min-w-0 border-t border-slate-100 pt-2 sm:border-l sm:border-t-0 sm:pl-5 sm:pt-0">
+                                <p className="whitespace-pre-wrap break-words text-[13px] leading-6 text-slate-600">
+                                  {pointDescription}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p className="px-4 py-7 text-center text-xs text-slate-500">
+                      {isBangla
+                        ? "এই প্রকাশনায় কোনো দাবি যোগ করা হয়নি।"
+                        : "No demand points have been added to this publication."}
+                    </p>
+                  )}
+
+                  {/* PUBLICATION FOOTER */}
+                  <div className="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50/70 px-4 py-3 text-[10px] text-slate-400 sm:px-5">
+                    <span className="font-medium">
+                      {isBangla ? "হাওর রক্ষা আন্দোলন" : "Haor Rokkha Andolan"}
+                    </span>
+
+                    <span className="shrink-0 tabular-nums">
+                      {isBangla ? "প্রকাশনা" : "Publication"} {demandIndex + 1}
+                    </span>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </section>
+    </main>
   );
 }

@@ -1,21 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import {
-  ArrowLeft,
-  ArrowUpRight,
   BookOpen,
   CheckCircle2,
   ExternalLink,
   Gavel,
   Leaf,
-  Scale,
   ShieldCheck,
   Waves,
+  ArrowUpRight,
 } from "lucide-react";
-import Navbar from "../Navbar";
 
 type Language = "en" | "bn";
 
@@ -288,191 +283,193 @@ const principles: BilingualText[] = [
 
 const mainActUrl = "https://bdlaws.minlaw.gov.bd/act-1639.html";
 
-const primaryButton =
-  "inline-flex items-center justify-center gap-1.5 rounded-full bg-emerald-700 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700";
-
-const secondaryButton =
-  "inline-flex items-center justify-center gap-1.5 rounded-full border border-white/40 bg-white/10 px-4 py-2 text-xs font-semibold text-white backdrop-blur-sm transition hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white";
-
 export default function LawPageContent() {
   const [language, setLanguage] = useState<Language>("en");
   const bn = language === "bn";
 
   return (
-    <main lang={language} className="min-h-screen bg-[#f5f8f5] text-slate-700">
-      <Navbar />
+    <main lang={language} className="min-h-screen bg-[#faf9f6] text-slate-800">
+      {/* INTRODUCTION */}
+      <section className="px-4 pb-12 pt-8 sm:pb-16 sm:pt-12">
+        <div className="mx-auto max-w-6xl">
+          <div className="flex flex-col gap-8 border-b border-amber-200 pb-8 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-3xl">
+              <div className="mb-4 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-700">
+                <span className="h-px w-8 bg-amber-500" />
+                {bn ? "আইন ও পরিবেশ সুরক্ষা" : "LAW & ENVIRONMENTAL PROTECTION"}
+              </div>
 
-      {/* HERO */}
-      <section className="relative isolate mt-16 overflow-hidden bg-emerald-950">
-        <div className="absolute inset-0">
-          <Image
-            src="/hm3.jpg"
-            alt="Wetland landscape in Bangladesh"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center"
-          />
-          <div className="absolute inset-0 bg-linear-to-r from-emerald-950/95 via-emerald-950/80 to-emerald-950/50" />
-        </div>
+              <h1 className="text-3xl font-bold leading-tight tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
+                {bn
+                  ? "হাওর ও জলাভূমি সুরক্ষায় আইন"
+                  : "Laws that protect our wetlands"}
+              </h1>
 
-        <div className="relative mx-auto flex h-130 max-w-7xl items-center px-5 py-10 sm:min-h-82.5">
-          <div className="max-w-3xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-900/50 px-3 py-1.5 text-[10px] font-bold tracking-wider text-emerald-100 uppercase">
-              <Scale size={14} />
-              {bn ? "আইন ও পরিবেশ সুরক্ষা" : "Law & environmental protection"}
-            </span>
+          
+            </div>
 
-            <h1 className="mt-4 max-w-3xl text-3xl leading-tight font-bold tracking-tight text-white sm:text-4xl">
-              {bn
-                ? "হাওর, নদী ও জলাভূমি রক্ষার আইন"
-                : "Haor, River & Wetland Protection Laws"}
-            </h1>
-
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-emerald-50/90 sm:text-base">
-              {bn
-                ? "বাংলাদেশের হাওর, নদী, জলাভূমি, পানি সম্পদ ও জীববৈচিত্র্য সংরক্ষণে প্রাসঙ্গিক আইন সম্পর্কে জানুন।"
-                : "Explore the laws relevant to protecting Bangladesh's haors, rivers, wetlands, water resources and biodiversity."}
-            </p>
-
-            <div className="mt-5 flex flex-wrap gap-2">
-              <a href="#laws" className={primaryButton}>
-                <BookOpen size={14} />
-                {bn ? "আইনসমূহ" : "Explore the laws"}
-                <ArrowUpRight size={13} />
-              </a>
-              <a href="#responsibility" className={secondaryButton}>
-                {bn ? "আমাদের দায়িত্ব" : "Our responsibility"}
-              </a>
-              <div className="flex w-fit items-center gap-1 rounded-full border border-slate-200 bg-slate-100 p-1">
+            <div className="flex flex-wrap items-center gap-3">
+              <div
+                className="flex w-fit items-center gap-1 rounded-full border border-amber-200 bg-white p-1"
+                role="group"
+                aria-label="Select language"
+              >
                 <button
                   type="button"
                   onClick={() => setLanguage("en")}
                   aria-pressed={!bn}
-                  className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
+                  className={`rounded-full px-5 py-2 text-xs font-bold transition-all duration-200 ${
                     !bn
-                      ? "bg-emerald-700 text-white shadow-sm"
-                      : "text-slate-600 hover:text-emerald-800"
+                      ? "bg-amber-600 text-white shadow-sm"
+                      : "bg-transparent text-slate-600 hover:bg-amber-50 hover:text-amber-700"
                   }`}
                 >
                   English
                 </button>
+
                 <button
                   type="button"
                   onClick={() => setLanguage("bn")}
                   aria-pressed={bn}
-                  className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
+                  className={`rounded-full px-5 py-2 text-xs font-bold transition-all duration-200 ${
                     bn
-                      ? "bg-emerald-700 text-white shadow-sm"
-                      : "text-slate-600 hover:text-emerald-800"
+                      ? "bg-amber-600 text-white shadow-sm"
+                      : "bg-transparent text-slate-600 hover:bg-amber-50 hover:text-amber-700"
                   }`}
                 >
                   বাংলা
                 </button>
               </div>
+
+              <a
+                href={mainActUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-amber-600 px-4 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-amber-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600"
+              >
+                <BookOpen size={15} />
+                {bn ? "সরকারি আইন" : "Official Act"}
+                <ArrowUpRight size={14} />
+              </a>
+            </div>
+          </div>
+
+          <div className="grid gap-8 pt-7 md:grid-cols-[1fr_2fr] md:gap-12">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-amber-700">
+                {bn ? "ভূমিকা" : "INTRODUCTION"}
+              </p>
+
+              <h2 className="mt-2 text-xl font-bold tracking-tight text-slate-900">
+                {bn ? "আইন জানা কেন জরুরি?" : "Why these laws matter"}
+              </h2>
+            </div>
+
+            <div className="space-y-3 text-sm leading-7 text-slate-600">
+              <p>
+                {bn
+                  ? "হাওর, নদী ও জলাভূমি বাংলাদেশের পরিবেশ, কৃষি, মৎস্যসম্পদ, জীববৈচিত্র্য এবং মানুষের জীবন-জীবিকার গুরুত্বপূর্ণ অংশ। এসব প্রাকৃতিক সম্পদ রক্ষায় আইন জানা, পরিবেশগত দায়িত্ব পালন এবং প্রয়োজনে সংশ্লিষ্ট কর্তৃপক্ষের সহায়তা নেওয়া জরুরি।"
+                  : "Haors, rivers and wetlands are essential to Bangladesh's environment, agriculture, fisheries, biodiversity and local livelihoods. Understanding relevant laws helps communities recognise their environmental responsibilities and identify the appropriate authorities when protection is needed."}
+              </p>
+
+              <p>
+                {bn
+                  ? "এই পৃষ্ঠায় প্রাসঙ্গিক আইনগুলোর পরিচিতি ও বিষয়ভিত্তিক সারসংক্ষেপ দেওয়া হয়েছে। সঠিক আইনি ভাষা, ধারা, ব্যতিক্রম ও প্রয়োগ জানতে সরকারি মূল আইন পড়ুন।"
+                  : "This page introduces relevant legislation and summarises its subject matter. Consult the official legal text for exact wording, section numbers, exceptions and application."}
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* INTRODUCTION */}
-      <section className="px-4 py-7">
-        <article className="mx-auto max-w-4xl rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm sm:p-7">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-800">
-              <Scale size={19} />
-            </div>
-            <div>
-              <p className="text-[10px] font-bold tracking-[0.14em] text-emerald-700 uppercase">
-                {bn ? "ভূমিকা" : "INTRODUCTION"}
-              </p>
-              <h2 className="mt-0.5 text-xl font-bold tracking-tight text-slate-900">
-                {bn ? "আইন জানা কেন জরুরি?" : "Why do these laws matter?"}
-              </h2>
-            </div>
-          </div>
-
-          <div className="mt-4 space-y-3 text-sm leading-7 text-slate-600">
-            <p>
-              {bn
-                ? "হাওর, নদী ও জলাভূমি বাংলাদেশের পরিবেশ, কৃষি, মৎস্যসম্পদ, জীববৈচিত্র্য এবং মানুষের জীবন-জীবিকার গুরুত্বপূর্ণ অংশ। এসব প্রাকৃতিক সম্পদ রক্ষায় আইন জানা, পরিবেশগত দায়িত্ব পালন এবং প্রয়োজনে সংশ্লিষ্ট কর্তৃপক্ষের সহায়তা নেওয়া জরুরি।"
-                : "Haors, rivers and wetlands are essential to Bangladesh's environment, agriculture, fisheries, biodiversity and local livelihoods. Understanding relevant laws helps communities recognise their environmental responsibilities and identify the appropriate authorities when protection is needed."}
-            </p>
-            <p>
-              {bn
-                ? "এই পৃষ্ঠায় প্রাসঙ্গিক আইনগুলোর পরিচিতি ও বিষয়ভিত্তিক সারসংক্ষেপ দেওয়া হয়েছে। সঠিক আইনি ভাষা, ধারা, ব্যতিক্রম ও প্রয়োগ জানতে সরকারি মূল আইন পড়ুন।"
-                : "This page introduces relevant legislation and summarises its subject matter. Consult the official legal text for exact wording, section numbers, exceptions and application."}
-            </p>
-          </div>
-        </article>
-      </section>
-
       {/* LAW SUMMARIES */}
-      <section id="laws" className="scroll-mt-20 px-4 sm:py-10">
-        <div className="mx-auto max-w-4xl">
-          <div className="mb-5">
-            <p className="text-[10px] font-bold tracking-[0.14em] text-emerald-700 uppercase">
-              {bn ? "প্রাসঙ্গিক আইনসমূহ" : "RELEVANT LEGISLATION"}
-            </p>
-            <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
-              {bn ? "আইন ও সংশ্লিষ্ট বিধান" : "Laws and relevant provisions"}
-            </h2>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-              {bn
-                ? "প্রতিটি আইন ধারাবাহিকভাবে নম্বর দিয়ে উপস্থাপন করা হয়েছে। এখানে দেওয়া সারসংক্ষেপগুলো সরকারি আইনের পূর্ণ পাঠের বিকল্প নয়।"
-                : "Each law is presented as a numbered section. These summaries do not replace the complete official legislation."}
-            </p>
+      <section id="laws" className="scroll-mt-20 px-4 pb-14 sm:pb-20">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-7 flex flex-wrap items-end justify-between gap-4 border-b border-amber-200 pb-5">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-amber-700">
+                {bn ? "প্রাসঙ্গিক আইনসমূহ" : "LEGISLATIVE FRAMEWORK"}
+              </p>
+
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                {bn ? "আইন ও সংশ্লিষ্ট বিধান" : "Laws and relevant provisions"}
+              </h2>
+
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+                {bn
+                  ? "প্রতিটি আইন ধারাবাহিকভাবে নম্বর দিয়ে উপস্থাপন করা হয়েছে। এখানে দেওয়া সারসংক্ষেপগুলো সরকারি আইনের পূর্ণ পাঠের বিকল্প নয়।"
+                  : "Explore the legislation and its relevant subject areas. These summaries do not replace the complete official legislation."}
+              </p>
+            </div>
+
+            <span className="text-xs font-semibold tracking-wide text-slate-500">
+              05 {bn ? "টি আইন" : "LEGISLATIVE ENTRIES"}
+            </span>
           </div>
 
-          <div className="space-y-4">
+          <div>
             {laws.map((law) => {
               const Icon = law.icon;
 
               return (
                 <article
                   key={law.number}
-                  className="overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-sm transition-shadow hover:shadow-md"
+                  className="group grid gap-5 border-b border-amber-200 py-8 transition-colors first:pt-2 last:border-b-0 hover:border-amber-400 md:grid-cols-[100px_minmax(0,1fr)] md:gap-8 md:py-10"
                 >
-                  <div className="p-4 sm:p-6">
-                    <div className="flex items-start gap-3">
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-700 text-xs font-bold text-white">
-                        {law.number}
+                  <div className="flex items-start justify-between md:block">
+                    <span className="block text-4xl font-light leading-none tracking-tighter text-amber-600/65 transition-colors group-hover:text-amber-700 sm:text-5xl">
+                      {law.number}
+                    </span>
+
+                    <Icon
+                      size={23}
+                      strokeWidth={1.5}
+                      className="text-amber-700 transition-colors group-hover:text-amber-800 md:mt-5"
+                    />
+                  </div>
+
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                      <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-amber-700">
+                        {law.category}
                       </span>
 
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-1.5">
-                          <Icon size={14} className="text-emerald-700" />
-                          <p className="text-[10px] font-bold tracking-[0.12em] text-emerald-700 uppercase">
-                            {law.category}
-                          </p>
-                        </div>
+                      <span className="h-1 w-1 rounded-full bg-amber-500/70" />
 
-                        <h3 className="mt-1.5 text-base leading-snug font-bold text-slate-900 sm:text-lg">
-                          {law.title[language]}
-                        </h3>
-                        <p className="mt-1 text-xs leading-5 text-slate-500">
-                          {law.reference[language]}
-                        </p>
-                      </div>
+                      <span className="text-xs text-slate-500">
+                        {law.reference[language]}
+                      </span>
                     </div>
 
-                    <p className="mt-4 text-sm leading-7 text-slate-600">
+                    <h3 className="mt-3 max-w-4xl text-xl font-bold leading-snug tracking-tight text-slate-900 transition-colors group-hover:text-amber-800 sm:text-2xl">
+                      {law.title[language]}
+                    </h3>
+
+                    <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">
                       {law.description[language]}
                     </p>
 
-                    <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                      {law.provisions.map((provision) => (
-                        <section
+                    <div className="mt-7 border-t border-amber-200">
+                      {law.provisions.map((provision, index) => (
+                        <div
                           key={provision.heading.en}
-                          className="rounded-xl border border-slate-100 bg-slate-50/80 p-3.5"
+                          className="grid gap-2 border-b border-amber-100 py-4 last:border-b-0 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.5fr)] sm:gap-8"
                         >
-                          <h4 className="text-sm leading-6 font-bold text-slate-800">
-                            {provision.heading[language]}
+                          <h4 className="text-sm font-bold leading-6 text-slate-800">
+                            <span className="mr-2 text-amber-700">
+                              {String(index + 1).padStart(2, "0")}
+                            </span>
+
+                            {provision.heading[language].replace(
+                              /^\d+\.\d+\s*—\s*/,
+                              "",
+                            )}
                           </h4>
-                          <p className="mt-1.5 text-sm leading-6 text-slate-600">
+
+                          <p className="text-sm leading-6 text-slate-600">
                             {provision.text[language]}
                           </p>
-                        </section>
+                        </div>
                       ))}
                     </div>
                   </div>
@@ -486,46 +483,45 @@ export default function LawPageContent() {
       {/* CONSERVATION RESPONSIBILITY */}
       <section
         id="responsibility"
-        className="scroll-mt-20 px-2 py-8 sm:py-10"
+        className="scroll-mt-20 bg-[#29251f] px-4 py-12 text-white sm:py-16"
       >
-        <div className="mx-auto max-w-4xl rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm sm:p-7">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-800">
-              <ShieldCheck size={19} />
+        <div className="mx-auto grid max-w-6xl gap-9 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+          <div>
+            <div className="flex h-11 w-11 items-center justify-center border border-amber-300/35 text-amber-300">
+              <ShieldCheck size={21} strokeWidth={1.6} />
             </div>
-            <div>
-              <p className="text-[10px] font-bold tracking-[0.14em] text-emerald-700 uppercase">
-                {bn ? "জনসচেতনতা" : "PUBLIC AWARENESS"}
-              </p>
-              <h2 className="mt-0.5 text-xl font-bold text-slate-900 sm:text-2xl">
-                {bn
-                  ? "হাওর ও নদী রক্ষায় আমাদের দায়িত্ব"
-                  : "Our responsibility to protect haors and rivers"}
-              </h2>
-            </div>
+
+            <p className="mt-6 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-300">
+              {bn ? "জনসচেতনতা" : "PUBLIC AWARENESS"}
+            </p>
+
+            <h2 className="mt-2 text-2xl font-bold leading-snug tracking-tight text-white sm:text-3xl">
+              {bn
+                ? "হাওর ও নদী রক্ষায় আমাদের দায়িত্ব"
+                : "Our responsibility to protect haors and rivers"}
+            </h2>
+
+            <p className="mt-4 text-sm leading-7 text-slate-300">
+              {bn
+                ? "নিচের বিষয়গুলো হাওর রক্ষা আন্দোলনের জনসচেতনতামূলক নীতি, আইনের সরাসরি উদ্ধৃতি নয়।"
+                : "The following principles support Haor Rokkha Andolan's public-awareness work; they are not direct quotations from legislation."}
+            </p>
           </div>
 
-          <p className="mt-3 text-sm leading-7 text-slate-600">
-            {bn
-              ? "নিচের বিষয়গুলো হাওর রক্ষা আন্দোলনের জনসচেতনতামূলক নীতি, আইনের সরাসরি উদ্ধৃতি নয়।"
-              : "The following principles support Haor Rokkha Andolan's public-awareness work; they are not direct quotations from legislation."}
-          </p>
-
-          <ol className="mt-4 space-y-2">
+          <ol className="divide-y divide-white/15 border-y border-white/15">
             {principles.map((principle, index) => (
-              <li
-                key={index}
-                className="flex items-start gap-3 rounded-xl border border-slate-100 bg-slate-50/80 px-3.5 py-3"
-              >
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-900">
+              <li key={index} className="flex items-start gap-4 py-4">
+                <span className="pt-0.5 text-sm font-semibold tracking-wider text-amber-300">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <p className="flex-1 pt-0.5 text-sm leading-6 font-medium text-slate-700">
+
+                <p className="flex-1 text-sm leading-7 text-white/90">
                   {principle[language]}
                 </p>
+
                 <CheckCircle2
-                  size={16}
-                  className="mt-1 shrink-0 text-emerald-700"
+                  size={17}
+                  className="mt-1 shrink-0 text-amber-300"
                 />
               </li>
             ))}
@@ -534,55 +530,34 @@ export default function LawPageContent() {
       </section>
 
       {/* LEGAL NOTICE */}
-      <section className="px-4 pb-7 ">
-        <div className="mx-auto flex max-w-4xl items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 sm:px-5">
-          <Gavel size={18} className="mt-0.5 shrink-0 text-amber-800" />
-          <div>
+      <section className="bg-[#faf9f6] px-4 py-9 sm:py-12">
+        <div className="mx-auto flex max-w-6xl flex-col gap-5 border-l-2 border-amber-500 bg-amber-50/70 px-5 py-5 sm:flex-row sm:items-start sm:gap-7 sm:px-7">
+          <Gavel size={21} className="shrink-0 text-amber-700" />
+
+          <div className="min-w-0 flex-1">
             <h2 className="text-sm font-bold text-slate-900">
               {bn ? "আইনি বিজ্ঞপ্তি" : "Legal notice"}
             </h2>
-            <p className="mt-1.5 text-sm leading-6 text-slate-600">
+
+            <p className="mt-2 text-sm leading-7 text-slate-600">
               {bn
                 ? "এই পৃষ্ঠাটি সাধারণ তথ্য ও জনসচেতনতার জন্য তৈরি। এটি আইনের পূর্ণ পাঠ বা আইনগত পরামর্শের বিকল্প নয়। আইন সংশোধিত হতে পারে। কোনো অভিযোগ, প্রকল্প, নিষেধাজ্ঞা বা দণ্ডের বিষয়ে সিদ্ধান্ত নেওয়ার আগে হালনাগাদ সরকারি আইন, প্রযোজ্য বিধিমালা ও সংশ্লিষ্ট কর্তৃপক্ষের নির্দেশনা যাচাই করুন।"
                 : "This page is for general information and public awareness. It does not replace the full legislation or legal advice. Laws may be amended. Before acting on a complaint, project, restriction or penalty, verify the current official text, applicable rules and guidance from the relevant authority."}
             </p>
           </div>
+
+          <a
+            href={mainActUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex shrink-0 items-center gap-2 text-xs font-bold text-amber-800 transition hover:text-amber-600"
+          >
+            <BookOpen size={14} />
+            {bn ? "সরকারি আইন যাচাই করুন" : "Verify official Act"}
+            <ExternalLink size={12} />
+          </a>
         </div>
       </section>
-
-      {/* COMPACT FOOTER */}
-      <footer className="border-t border-emerald-900 bg-emerald-950 px-4 py-2 text-white sm:px-8">
-        <div className="mx-auto flex max-w-4xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs font-semibold text-emerald-50">
-            <span className="font-normal text-emerald-100/70">
-              {bn
-                ? "হাওর ও প্রকৃতি রক্ষায় জনসচেতনতা"
-                : "Environmental awareness"}
-            </span>
-          </p>
-
-          <div className="flex flex-wrap items-center gap-3">
-            <a
-              href={mainActUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-full border border-emerald-700 px-3 py-1.5 text-[11px] font-medium text-emerald-50 transition hover:bg-emerald-900"
-            >
-              <BookOpen size={13} />
-              {bn ? "সরকারি আইন" : "Official Act"}
-              <ExternalLink size={11} />
-            </a>
-
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-100/80 transition hover:text-white"
-            >
-              <ArrowLeft size={12} />
-              {bn ? "হোম" : "Home"}
-            </Link>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }

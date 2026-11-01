@@ -63,7 +63,7 @@ async function HomepageSections() {
         riverOrHaor: "HAOR",
       },
       orderBy: { createdAt: "desc" },
-      take: 3,
+      take: 4,
       select: {
         id: true,
         heading: true,
@@ -81,7 +81,7 @@ async function HomepageSections() {
         riverOrHaor: "RIVER",
       },
       orderBy: { createdAt: "desc" },
-      take: 3,
+      take: 4,
       select: {
         id: true,
         heading: true,
@@ -128,12 +128,15 @@ async function HomepageSections() {
 
   return (
     <>
-      <div className="fixed right-4 top-1/2 z-9999 -translate-y-1/2">
+      <div className="fixed right-4 bottom-1/4 z-9999 -translate-y-1/2">
         <LanguageSwitcher />
       </div>
+
       <HeroSection updates={updates} news={news} />
 
-      <HaorSection />
+      <Navbar />
+
+      {/* <HaorSection /> */}
 
       <HaorActivities
         activities={haorActivities}
@@ -144,6 +147,7 @@ async function HomepageSections() {
         activities={riverActivities}
         fallbackImage={photos.river}
       />
+
       <LatestNews />
       <LatestVideos />
     </>
@@ -154,7 +158,7 @@ function HomepageFallback() {
   return (
     <>
       <HeroSection updates={[]} news={[]} />
-      <HaorSection />
+
       <HaorActivities activities={[]} />
       <RiverActivities activities={[]} />
     </>
@@ -165,13 +169,12 @@ export default function Home() {
   return (
     <main
       id="home"
-      className="min-h-screen overflow-x-hidden bg-white font-sans text-slate-800 antialiased"
+      className="min-h-screen overflow-x-clip bg-white font-sans text-slate-800 antialiased"
     >
-      <Navbar />
-
       <Suspense fallback={<HomepageFallback />}>
         <HomepageSections />
       </Suspense>
+
       <FloatingContact />
       <Footer />
     </main>

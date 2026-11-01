@@ -194,36 +194,42 @@ export default function LanguageSwitcher() {
           onClick={() => setOpen((previous) => !previous)}
           aria-label="Change website language"
           aria-expanded={open}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-800/20 bg-white px-2 py-1.5 text-xs font-semibold text-emerald-900 shadow-sm transition hover:bg-emerald-50 sm:gap-2 sm:px-3 sm:py-2 sm:text-sm"
+          className="group inline-flex items-center gap-2 rounded-full border border-amber-600/30 bg-white px-3 py-2 text-xs font-semibold text-slate-800 shadow-sm transition-all duration-200 hover:border-amber-600 hover:bg-amber-50 hover:shadow-md sm:px-4 sm:py-2.5 sm:text-sm"
         >
-          <Languages size={14} className="sm:h-4 sm:w-4" />
+          <Languages
+            size={15}
+            className="text-amber-700 transition-transform duration-300 group-hover:rotate-12 sm:h-4 sm:w-4"
+          />
 
           <span>{language === "bn" ? "Bengali" : "English"}</span>
 
           <ChevronDown
-            size={12}
-            className={`transition-transform sm:h-[14px] sm:w-[14px] ${
+            size={13}
+            className={`text-amber-700 transition-transform duration-200 sm:h-3.5 sm:w-3.5 ${
               open ? "rotate-180" : ""
             }`}
           />
         </button>
 
         {open && (
-          <div className="absolute right-0 top-full z-[10000] mt-2 min-w-36 overflow-hidden rounded-lg border border-slate-200 bg-white p-1 shadow-lg">
+          <div className="absolute right-0 top-full z-[10000] mt-2 min-w-36 overflow-hidden rounded-xl border border-amber-200/80 bg-white p-1.5 shadow-xl shadow-slate-900/10">
             {(["en", "bn"] as const).map((item) => (
               <button
                 key={item}
                 type="button"
                 onClick={() => changeLanguage(item)}
-                className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-sm hover:bg-emerald-50 ${
+                className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm transition-colors duration-150 ${
                   language === item
-                    ? "font-semibold text-emerald-800"
-                    : "text-slate-700"
+                    ? "bg-amber-50 font-semibold text-amber-800"
+                    : "text-slate-700 hover:bg-slate-50 hover:text-slate-950"
                 }`}
               >
-                {item === "en" ? "English" : "Bengali"}
+                <span>{item === "en" ? "English" : "Bengali"}</span>
+
                 {language === item && (
-                  <span className="text-emerald-700">✓</span>
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-600 text-xs font-bold text-white">
+                    ✓
+                  </span>
                 )}
               </button>
             ))}

@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import type { Metadata } from "next";
 import Image from "next/image";
-import { Target, Eye, ArrowDown } from "lucide-react";
+import { Target, Eye } from "lucide-react";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
+import LanguageSwitcher from "../LanguageSwitcher";
 
 const content = {
   en: {
@@ -72,12 +72,16 @@ export default function MissionVisionPage() {
   return (
     <main
       lang={language}
-      className="mt-16 min-h-screen bg-white font-sans text-slate-800 antialiased"
+      className="min-h-screen bg-white font-sans text-slate-800 antialiased"
     >
-      <Navbar />
+      {/* HERO — KEEPING ORIGINAL DESIGN */}
+      <section className="relative isolate overflow-hidden bg-emerald-950">
+        {/* Top gradient border — 10px */}
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 z-20 h-[10px] bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-300"
+          aria-hidden="true"
+        />
 
-      {/* HERO */}
-      <section className="relative isolate mt-16 overflow-hidden bg-emerald-950">
         <Image
           src="/monu.jpg"
           alt={
@@ -91,36 +95,25 @@ export default function MissionVisionPage() {
           className="object-cover object-center"
         />
 
+        {/* Image overlay */}
         <div className="absolute inset-0 bg-linear-to-r from-emerald-950/30 via-emerald-950/50 to-emerald-950/30" />
 
-        <div className="relative mx-auto flex h-130 max-w-7xl items-center justify-center px-5 py-10 sm:min-h-82.5 sm:px-8">
-          <div className="w-full max-w-4xl text-center">
-            <p className="text-xs font-semibold tracking-[0.15em] text-white/90 sm:text-sm">
-              {t.eyebrow}
-            </p>
-
-            <h1 className="mt-4 text-3xl leading-tight font-bold tracking-tight text-white sm:text-4xl">
+        <div className="relative mx-auto flex h-[340px] max-w-7xl items-center justify-center px-5 py-10 text-center sm:h-[360px] sm:px-8 lg:h-[390px]">
+          <div className="w-full max-w-4xl">
+            <h1 className="mt-4 text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
               {t.title}
             </h1>
 
-            {/*     <p className="mt-3 text-xl font-semibold text-white sm:text-2xl">
-              {t.banglaTitle}
-            </p> */}
-
-            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/90 sm:text-base sm:leading-8">
-              {t.description}
-            </p>
-
             {/* LANGUAGE SWITCH */}
-            <div
-              className="mx-auto mt-4 inline-flex items-center rounded-md border border-white/40 bg-black/25 p-0.5"
+            {/*    <div
+              className="mx-auto mt-5 inline-flex items-center rounded-md border border-white/40 bg-black/25 p-0.5"
               aria-label="Choose language"
             >
               <button
                 type="button"
                 onClick={() => setLanguage("bn")}
                 aria-pressed={language === "bn"}
-                className={`min-w-14 rounded px-2.5 py-1 text-xs font-semibold transition ${
+                className={`min-w-14 rounded px-2.5 py-1.5 text-xs font-semibold transition ${
                   language === "bn"
                     ? "bg-white text-emerald-900"
                     : "text-white hover:bg-white/15"
@@ -133,7 +126,7 @@ export default function MissionVisionPage() {
                 type="button"
                 onClick={() => setLanguage("en")}
                 aria-pressed={language === "en"}
-                className={`min-w-14 rounded px-2.5 py-1 text-xs font-semibold transition ${
+                className={`min-w-14 rounded px-2.5 py-1.5 text-xs font-semibold transition ${
                   language === "en"
                     ? "bg-white text-emerald-900"
                     : "text-white hover:bg-white/15"
@@ -141,10 +134,15 @@ export default function MissionVisionPage() {
               >
                 English
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
+      <div className="fixed right-4 top-1/2 z-9999 -translate-y-1/2">
+        <LanguageSwitcher />
+      </div>
+      {/* NAVIGATION — AFTER HERO */}
+      <Navbar />
 
       {/* MISSION & VISION */}
       <section
@@ -154,20 +152,20 @@ export default function MissionVisionPage() {
         <div className="mx-auto max-w-4xl">
           <div className="grid items-stretch gap-0 md:grid-cols-2">
             {/* MISSION */}
-            <article className="border-y border-slate-200 py-7 md:border-r md:border-b-0 md:pr-7 lg:py-9 lg:pr-9">
-              <div className="flex h-11 w-11 items-center justify-center rounded-md bg-emerald-50 text-emerald-800">
+            <article className="border-y border-amber-200 py-7 md:border-r md:border-b-0 md:pr-7 lg:py-9 lg:pr-9">
+              <div className="flex h-11 w-11 items-center justify-center border border-amber-200 bg-amber-50 text-amber-800 shadow-sm shadow-amber-900/5">
                 <Target size={23} strokeWidth={1.8} />
               </div>
 
-              <p className="mt-5 text-xs font-bold tracking-[0.15em] text-emerald-800">
+              <p className="mt-5 text-xs font-bold tracking-[0.15em] text-amber-800">
                 {t.missionLabel}
               </p>
 
-              <h2 className="mt-2 text-2xl font-bold tracking-tight text-emerald-950 sm:text-3xl">
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-amber-950 sm:text-3xl">
                 {t.missionTitle}
               </h2>
 
-              <div className="mt-3 h-1 w-12 bg-emerald-700" />
+              <div className="mt-3 h-1 w-12 bg-gradient-to-r from-amber-400 to-yellow-500 shadow-sm shadow-amber-600/20" />
 
               {t.missionParagraphs.map((paragraph, index) => (
                 <p
@@ -180,20 +178,20 @@ export default function MissionVisionPage() {
             </article>
 
             {/* VISION */}
-            <article className="border-b border-slate-200 py-7 md:pl-7 lg:py-9 lg:pl-9">
-              <div className="flex h-11 w-11 items-center justify-center rounded-md bg-emerald-50 text-emerald-800">
+            <article className="border-b border-amber-200 py-7 md:pl-7 lg:py-9 lg:pl-9">
+              <div className="flex h-11 w-11 items-center justify-center border border-amber-200 bg-amber-50 text-amber-800 shadow-sm shadow-amber-900/5">
                 <Eye size={23} strokeWidth={1.8} />
               </div>
 
-              <p className="mt-5 text-xs font-bold tracking-[0.15em] text-emerald-800">
+              <p className="mt-5 text-xs font-bold tracking-[0.15em] text-amber-800">
                 {t.visionLabel}
               </p>
 
-              <h2 className="mt-2 text-2xl font-bold tracking-tight text-emerald-950 sm:text-3xl">
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-amber-950 sm:text-3xl">
                 {t.visionTitle}
               </h2>
 
-              <div className="mt-3 h-1 w-12 bg-emerald-700" />
+              <div className="mt-3 h-1 w-12 bg-gradient-to-r from-amber-400 to-yellow-500 shadow-sm shadow-amber-600/20" />
 
               {t.visionParagraphs.map((paragraph, index) => (
                 <p
@@ -209,17 +207,20 @@ export default function MissionVisionPage() {
       </section>
 
       {/* CLOSING */}
-      <section className="border-t border-slate-200 bg-slate-50 px-4 py-9 sm:px-6 sm:py-11 lg:px-8">
+      <section className="border-t border-amber-200 bg-gradient-to-b from-amber-50/70 to-white px-4 py-9 sm:px-6 sm:py-11 lg:px-8">
         <div className="mx-auto max-w-4xl">
-          <h2 className="text-xl font-bold text-emerald-950 sm:text-2xl">
+          <h2 className="text-xl font-bold text-amber-950 sm:text-2xl">
             {t.footerTitle}
           </h2>
 
-          <p className="mt-2 text-sm leading-7 text-slate-600 sm:text-base">
+          <div className="mt-3 h-1 w-12 bg-gradient-to-r from-amber-400 to-yellow-500" />
+
+          <p className="mt-3 text-sm leading-7 text-slate-600 sm:text-base">
             {t.footerDescription}
           </p>
         </div>
       </section>
+
       <Footer />
     </main>
   );

@@ -1,4 +1,3 @@
-
 import { Suspense } from "react";
 import { getCurrentUser } from "@/app/utils/auth";
 import { redirect } from "next/navigation";
@@ -44,21 +43,16 @@ function LoginFallback() {
 }
 
 async function LoginContent({ searchParams }: LoginPageProps) {
-  const [user, params] = await Promise.all([
-    getCurrentUser(),
-    searchParams,
-  ]);
+  const [user, params] = await Promise.all([getCurrentUser(), searchParams]);
 
   if (user) {
     redirect(user.role === "ADMIN" ? "/dashboard" : "/account");
   }
 
   const token = params.token ?? "";
-  const requestedMode = token ? "reset" : params.mode ?? "login";
+  const requestedMode = token ? "reset" : (params.mode ?? "login");
 
-  const initialMode: Mode = isMode(requestedMode)
-    ? requestedMode
-    : "login";
+  const initialMode: Mode = isMode(requestedMode) ? requestedMode : "login";
 
   return (
     <AuthForm

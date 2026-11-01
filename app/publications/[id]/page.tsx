@@ -8,6 +8,8 @@ import {
   CalendarDays,
   FileText,
   UserRound,
+  ArrowUpRight,
+  BookOpen,
 } from "lucide-react";
 import LanguageSwitcher from "@/app/LanguageSwitcher";
 
@@ -28,16 +30,18 @@ function PublicationLoading() {
   return (
     <div className="mx-auto max-w-4xl px-3 py-8 sm:px-6 lg:px-8">
       <div className="animate-pulse">
-        <div className="h-4 w-48 bg-emerald-100" />
-        <div className="mt-6 border border-emerald-100 bg-white p-5 sm:p-8">
-          <div className="h-5 w-24 bg-emerald-100" />
-          <div className="mt-5 h-8 w-3/4 bg-slate-100" />
-          <div className="mt-3 h-4 w-1/2 bg-slate-100" />
-          <div className="mt-8 h-24 bg-emerald-50" />
+        <div className="h-9 w-52 rounded-full bg-slate-100" />
+
+        <div className="mt-6 overflow-hidden rounded-xl border border-slate-100 bg-white p-5 shadow-md shadow-amber-100/70 sm:p-8">
+          <div className="h-5 w-24 rounded-full bg-amber-100" />
+          <div className="mt-5 h-8 w-3/4 rounded bg-slate-100" />
+          <div className="mt-3 h-4 w-1/2 rounded bg-slate-100" />
+          <div className="mt-8 h-24 rounded bg-amber-50" />
+
           <div className="mt-6 space-y-3">
-            <div className="h-4 bg-slate-100" />
-            <div className="h-4 bg-slate-100" />
-            <div className="h-4 w-4/5 bg-slate-100" />
+            <div className="h-4 rounded bg-slate-100" />
+            <div className="h-4 rounded bg-slate-100" />
+            <div className="h-4 w-4/5 rounded bg-slate-100" />
           </div>
         </div>
       </div>
@@ -69,64 +73,77 @@ async function PublicationDetailContent({ params }: Props) {
 
   return (
     <article className="mx-auto max-w-4xl px-3 py-8 sm:px-6 lg:px-8">
+      {/* BACK NAVIGATION */}
       <Link
         href="/publications"
-        className="inline-flex items-center gap-2 text-sm font-bold text-[#176b45] transition-colors hover:text-[#123b2b]"
+        className="group inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm transition-all hover:border-amber-400 hover:bg-amber-50 hover:text-amber-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2"
       >
-        <ArrowLeft size={16} />
+        <ArrowLeft
+          size={15}
+          className="transition-transform group-hover:-translate-x-1"
+        />
         All Research & Publications
       </Link>
 
-      <div className="mt-6 border border-emerald-100 bg-white shadow-sm">
+      {/* PUBLICATION CARD */}
+      <div className="mt-6 overflow-hidden rounded-xl border border-slate-100 bg-white shadow-md shadow-amber-100/70">
+        {/* COVER IMAGE */}
         {item.coverImageUrl && (
-          <img
-            src={item.coverImageUrl}
-            alt={item.title}
-            className="max-h-[460px] w-full bg-emerald-50 object-cover"
-          />
+          <div className="relative overflow-hidden bg-slate-100">
+            <img
+              src={item.coverImageUrl}
+              alt={item.title}
+              className="max-h-[460px] w-full object-cover"
+            />
+          </div>
         )}
 
         <div className="p-5 sm:p-8">
-          <span className="inline-block rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#176b45] ring-1 ring-inset ring-emerald-200">
-            {item.type === "RESEARCH" ? "Research" : "Publication"}
-          </span>
+          {/* CATEGORY */}
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-900">
+              <BookOpen size={12} />
+              {item.type === "RESEARCH" ? "Research" : "Publication"}
+            </span>
+          </div>
 
-          <h1 className="mt-4 text-2xl font-black leading-tight text-[#123b2b] sm:text-4xl">
+          {/* TITLE */}
+          <h1 className="mt-4 text-2xl font-black leading-tight tracking-tight text-slate-900 sm:text-4xl">
             {item.title}
           </h1>
 
+          {/* SUBTITLE */}
           {item.subtitle && (
-            <p className="mt-3 text-lg leading-7 text-slate-600">
+            <p className="mt-3 text-base leading-7 text-slate-600 sm:text-lg">
               {item.subtitle}
             </p>
           )}
 
+          {/* PUBLICATION DATE */}
           <p className="mt-4 flex items-center gap-2 text-xs text-slate-500">
-            <CalendarDays size={14} className="text-[#176b45]" />
+            <CalendarDays size={14} className="text-amber-700" />
             Published {formatDate(item.publishedAt)}
           </p>
 
-          {/* Author information */}
-          <div className="my-6 flex items-start gap-3 border-y border-emerald-100 py-5">
+          {/* AUTHOR INFORMATION */}
+          <div className="my-6 flex items-start gap-3 border-y border-slate-100 py-5">
             {item.authorImageUrl ? (
               <img
                 src={item.authorImageUrl}
                 alt={item.authorName}
-                className="h-14 w-14 shrink-0 rounded-full border border-emerald-100 object-cover"
+                className="h-14 w-14 shrink-0 rounded-full border border-amber-200 object-cover"
               />
             ) : (
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-emerald-100 bg-emerald-50 text-[#176b45]">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-amber-200 bg-amber-50 text-amber-800">
                 <UserRound size={24} />
               </div>
             )}
 
-            <div className="min-w-0">
-              <p className="font-bold text-[#123b2b]">
-                {item.authorName}
-              </p>
+            <div className="min-w-0 flex-1">
+              <p className="font-bold text-slate-900">{item.authorName}</p>
 
               {item.authorDesignation && (
-                <p className="mt-0.5 text-sm text-slate-600">
+                <p className="mt-0.5 text-sm text-slate-500">
                   {item.authorDesignation}
                 </p>
               )}
@@ -139,33 +156,47 @@ async function PublicationDetailContent({ params }: Props) {
             </div>
           </div>
 
-          {/* Summary */}
+          {/* SUMMARY */}
           {item.excerpt && (
-            <p className="mb-6 border-l-4 border-[#176b45] bg-emerald-50/80 px-4 py-3 text-sm font-medium leading-6 text-slate-700">
-              {item.excerpt}
-            </p>
+            <div className="mb-7 rounded-lg border border-amber-100 bg-amber-50/60 p-4">
+              <p className="border-l-[3px] border-amber-500 pl-3 text-sm font-medium leading-7 text-slate-700">
+                {item.excerpt}
+              </p>
+            </div>
           )}
 
-          {/* Full publication content */}
+          {/* FULL PUBLICATION CONTENT */}
           <div className="whitespace-pre-wrap break-words text-sm leading-8 text-slate-700 sm:text-base">
             {item.content}
           </div>
 
-          {/* Supporting document */}
+          {/* SUPPORTING DOCUMENT */}
           {item.documentUrl && (
-            <div className="mt-8 border-t border-emerald-100 pt-5">
+            <div className="mt-8 border-t border-slate-100 pt-5">
               <a
                 href={item.documentUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-[#176b45] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#123b2b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
+                className="inline-flex items-center gap-2 rounded-full bg-amber-500 px-5 py-3 text-sm font-bold text-amber-950 transition-colors hover:bg-amber-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2"
               >
                 <FileText size={16} />
                 {item.documentName || "Open Supporting Document"}
+                <ArrowUpRight size={15} />
               </a>
             </div>
           )}
         </div>
+      </div>
+
+      {/* BACK TO PUBLICATIONS */}
+      <div className="mt-5">
+        <Link
+          href="/publications"
+          className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 transition-colors hover:text-amber-800"
+        >
+          <ArrowLeft size={14} />
+          Back to all publications
+        </Link>
       </div>
     </article>
   );
@@ -173,11 +204,12 @@ async function PublicationDetailContent({ params }: Props) {
 
 export default function PublicationDetailPage({ params }: Props) {
   return (
-    <main className="min-h-screen bg-[#f5f8f5] text-slate-800">
+    <main className="min-h-screen bg-[#f7f9f6] text-slate-800">
       <Suspense fallback={<PublicationLoading />}>
         <PublicationDetailContent params={params} />
       </Suspense>
 
+      {/* FLOATING LANGUAGE SWITCHER */}
       <div className="fixed right-4 top-1/2 z-[9999] -translate-y-1/2">
         <LanguageSwitcher />
       </div>

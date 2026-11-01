@@ -1,218 +1,191 @@
+
 "use client";
 
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
-import type { HomepageNewsItem } from "./newsActions";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { HomepageNewsItem } from "./contactTypes";
 
 type HeroSectionProps = {
   updates?: HomepageNewsItem[];
   news?: HomepageNewsItem[];
 };
 
-function AnimatedChevron() {
+const backgroundImages = [
+  "/h2.jpg",
+  "/h11.jpg",
+  "/hm2.jpg",
+  "/hm1.jpg",
+  "/hm3.jpg",
+  "/monu.jpg",
+];
+
+const slogan = "“হাওর -নদী- পরিবেশ, রক্ষা করো বাংলাদেশ।”";
+
+export default function HeroSection(_props: HeroSectionProps) {
+  const [activeImage, setActiveImage] = useState(0);
+  const [typedSlogan, setTypedSlogan] = useState("");
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setActiveImage((current) => (current + 1) % backgroundImages.length);
+    }, 6000);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  // BENGALI SLOGAN TYPEWRITER EFFECT
+  useEffect(() => {
+    const characters = Array.from(slogan);
+    let currentIndex = 0;
+    let timeout: ReturnType<typeof setTimeout>;
+
+    const typeNextCharacter = () => {
+      if (currentIndex < characters.length) {
+        setTypedSlogan(characters.slice(0, currentIndex + 1).join(""));
+        currentIndex++;
+
+        timeout = setTimeout(typeNextCharacter, 110);
+      } else {
+        timeout = setTimeout(() => {
+          currentIndex = 0;
+          setTypedSlogan("");
+          timeout = setTimeout(typeNextCharacter, 500);
+        }, 3000);
+      }
+    };
+
+    timeout = setTimeout(typeNextCharacter, 500);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
   return (
-    <span className="relative flex items-center" aria-hidden="true">
-      <ChevronRight className="-mr-2 h-4 w-4 animate-chevron-one" />
-      <ChevronRight className="h-4 w-4 animate-chevron-two" />
-    </span>
-  );
-}
-
-function formatDate(date: string) {
-  const parsedDate = new Date(date);
-
-  if (Number.isNaN(parsedDate.getTime())) {
-    return "Date unavailable";
-  }
-
-  return parsedDate.toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-}
-
-function UpdateList({ items }: { items: HomepageNewsItem[] }) {
-  if (items.length === 0) {
-    return (
-      <p className="py-2 text-sm text-slate-500">No items available yet.</p>
-    );
-  }
-
-  return (
-    <div className="mt-3 divide-y divide-slate-100">
-      {items.map((item) => (
-        <Link
-          key={item.id}
-          href={`/news/${item.id}`}
-          className="group flex items-start justify-between gap-3 py-3 first:pt-0 last:pb-0"
-        >
-          <span className="min-w-0">
-            <span className="block text-sm font-semibold leading-6 text-slate-800 transition-colors group-hover:text-green-800">
-              {item.heading}
-            </span>
-
-    {/*         <span className="mt-1 block text-xs text-slate-500">
-              {formatDate(item.createdAt)}
-            </span> */}
-          </span>
-
-          <span className="mt-1 shrink-0 text-green-800 transition-transform duration-300 group-hover:translate-x-1">
-            <AnimatedChevron />
-          </span>
-        </Link>
+    <section className="relative isolate h-[370px] w-full overflow-hidden border-t-8 border-amber-300 bg-slate-950 sm:h-[370px] lg:h-[390px]">
+      {/* BACKGROUND IMAGE SLIDESHOW */}
+      {backgroundImages.map((image, index) => (
+        <div
+          key={image}
+          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-[1500ms] ease-in-out ${
+            activeImage === index ? "opacity-100" : "opacity-0"
+          }`}
+          style={{ backgroundImage: `url('${image}')` }}
+          aria-hidden="true"
+        />
       ))}
-    </div>
-  );
-}
 
-export default function HeroSection({
-  updates = [],
-  news = [],
-}: HeroSectionProps) {
-  // Limit the panel to two records per category.
-  const latestUpdates = updates.slice(0, 2);
-  const latestNews = news.slice(0, 2);
-
-  return (
-    <section className="relative isolate mt-16 w-full overflow-hidden">
-      {/* Background image */}
+      {/* IMAGE OVERLAYS */}
       <div
-        className="absolute inset-0 h-130 w-full bg-cover bg-center sm:h-140 lg:h-[55vh] lg:min-h-120 lg:max-h-162.5"
-        style={{ backgroundImage: "url('/hm1.jpg')" }}
+        className="absolute inset-0 bg-gradient-to-r from-[#031c2b]/90 via-[#062b38]/60 to-black/15"
         aria-hidden="true"
       />
 
-      {/* Readability overlay */}
       <div
-        className="absolute inset-0 h-full bg-linear-to-b from-black/80 via-black/50 to-black/0"
+        className="absolute inset-0 bg-gradient-to-t from-[#031b25]/80 via-transparent to-black/15"
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto flex min-h-130 max-w-7xl flex-col px-5 pb-8 pt-16 sm:min-h-140 sm:px-8 sm:pt-20 lg:min-h-[55vh] lg:max-h-162.5 lg:justify-center lg:px-10 lg:pb-20 lg:pt-12">
-        {/* Main hero content */}
-        <div className="max-w-2xl text-white">
-          <h1 className="mt-6 animate-[fadeInUp_0.8s_ease-out_both] text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
-            Protect our haors.
-            <span className="mt-1 block animate-[fadeInUp_0.8s_ease-out_0.25s_both] text-green-300">
-              Protect our future.
+      {/* ENVIRONMENTAL SLOGAN — TOP RIGHT */}
+      <div className="absolute right-4 top-5 z-20 max-w-[230px] text-right sm:right-8 sm:top-7 sm:max-w-sm lg:right-12 lg:top-8">
+        <p
+          lang="bn"
+          translate="no"
+          className="notranslate text-sm font-extrabold italic leading-relaxed text-white drop-shadow-[0_2px_5px_rgba(0,0,0,0.95)] sm:text-lg md:text-xl lg:text-2xl"
+        >
+          {typedSlogan.startsWith("“হাওর -নদী- পরিবেশ,")
+            ? "“হাওর -নদী- পরিবেশ,"
+            : typedSlogan}
+
+          {typedSlogan.startsWith("“হাওর -নদী- পরিবেশ,") && (
+            <span className="block text-amber-300">
+              {typedSlogan.slice("“হাওর -নদী- পরিবেশ,".length)}
             </span>
-          </h1>
+          )}
 
-          <p className="mt-5 max-w-xl animate-[fadeInUp_0.8s_ease-out_0.4s_both] text-sm leading-7 text-white/90 sm:text-base sm:leading-8">
-            Standing together to protect haors, rivers, wetlands, fisheries,
-            agriculture and the natural heritage of Bangladesh.
-          </p>
+          {/* TYPEWRITER CURSOR */}
+          <span
+            className="ml-1 inline-block h-[1em] w-[2px] translate-y-[2px] animate-pulse bg-amber-300"
+            aria-hidden="true"
+          />
+        </p>
+      </div>
 
-          <div className="mt-7 flex flex-wrap gap-3 animate-[fadeInUp_0.8s_ease-out_0.6s_both]">
-            <Link
-              href="/contact"
-              className="group inline-flex items-center justify-center gap-3 rounded-full bg-green-700 px-6 py-2 text-sm font-semibold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:bg-green-800"
-            >
-              Get Involved
-              <AnimatedChevron />
-            </Link>
+      {/* ORGANIZATION IDENTITY — BOTTOM LEFT */}
+      <div className="absolute inset-x-0 bottom-[13%] z-10 mx-auto w-full max-w-7xl px-4 sm:bottom-[14%] sm:px-8 lg:px-10">
+        <div className="flex max-w-5xl items-center gap-3 sm:gap-5 lg:gap-7">
+          {/* ORGANIZATION LOGO */}
+          <div className="relative h-[76px] w-[76px] shrink-0 rounded-full border-[3px] border-amber-400 bg-white p-1 shadow-[0_8px_30px_rgba(0,0,0,0.5)] sm:h-[100px] sm:w-[100px] sm:border-4 lg:h-[122px] lg:w-[122px]">
+            <div className="relative h-full w-full overflow-hidden rounded-full bg-white">
+              <Image
+                src="/ha2.png"
+                alt="Haor Rokkha Andolan logo"
+                fill
+                priority
+                sizes="(max-width: 640px) 76px, (max-width: 1024px) 100px, 122px"
+                className="object-contain"
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Updates panel: four items maximum */}
-        <div className="mt-10 w-full self-end lg:absolute lg:-bottom-4 lg:-right-12 lg:mt-0 lg:w-110">
-          <div className="rounded-xl border border-green-200/90 bg-white p-5 shadow shadow-green-100 sm:border-0 sm:p-6">
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-1">
-              {/* Latest Updates: two items maximum */}
-              <div id="updates">
-                <div className="flex items-center justify-between gap-3">
-                  <h2 className="text-xs font-bold uppercase tracking-[0.16em] text-green-800">
-                    Latest Updates
-                  </h2>
-                  {/* 
-                  <span className="text-xs font-medium text-slate-400">
-                    {latestUpdates.length} items
-                  </span> */}
-                </div>
+          {/* ORGANIZATION TITLES */}
+          <div className="min-w-0 flex-1">
+            {/* ENGLISH TITLE */}
+            <h1
+              translate="no"
+              className="notranslate font-serif text-[17px] font-black leading-tight tracking-[-0.03em] text-amber-300 drop-shadow-[0_3px_5px_rgba(0,0,0,0.8)] sm:text-2xl md:text-3xl lg:text-[39px]"
+            >
+              Wetlands Resilience Initiatives
+            </h1>
 
-                <UpdateList items={latestUpdates} />
-              </div>
-
-              {/* Latest News: two items maximum */}
-              <div id="news">
-                <div className="flex items-center justify-between gap-3">
-                  <h2 className="text-xs font-bold uppercase tracking-[0.16em] text-green-800">
-                    Latest News
-                  </h2>
-
-                  {/*  <span className="text-xs font-medium text-slate-400">
-                    {latestNews.length} items
-                  </span> */}
-                </div>
-
-                <UpdateList items={latestNews} />
-              </div>
+            {/* DECORATIVE TITLE SEPARATOR */}
+            <div className="my-2 flex items-center gap-2 sm:my-3">
+              <span className="h-[3px] w-8 rounded-full bg-amber-400 sm:w-12" />
+              <span className="h-1.5 w-1.5 rotate-45 bg-yellow-200" />
+              <span className="h-px w-12 bg-gradient-to-r from-amber-300/80 to-transparent sm:w-20" />
             </div>
 
-            {/* View all links */}
-            <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
-              <Link
-                href="/activities"
-                className="text-xs font-semibold text-green-800 transition-colors hover:text-green-950"
-              >
-                All Activities
-              </Link>
+            {/* BANGLA TITLE */}
+            <h2
+              lang="bn"
+              translate="no"
+              className="notranslate text-[20px] font-extrabold leading-[1.5] tracking-normal text-white drop-shadow-[0_3px_6px_rgba(0,0,0,0.9)] sm:text-2xl md:text-3xl lg:text-[40px]"
+            >
+              হাওর রক্ষা আন্দোলন
+            </h2>
 
-              <Link
-                href="/activities"
-                className="text-xs font-semibold text-green-800 transition-colors hover:text-green-950"
-              >
-                All News →
-              </Link>
-            </div>
+            {/* GOLDEN BIRD-WING UNDERLINE */}
+            <svg
+              className="mt-2 h-5 w-36 sm:mt-3 sm:h-6 sm:w-52"
+              viewBox="0 0 220 28"
+              fill="none"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <defs>
+                <linearGradient id="goldBirdWing" x1="0" y1="0" x2="220" y2="0">
+                  <stop offset="0%" stopColor="#fde047" />
+                  <stop offset="45%" stopColor="#f59e0b" />
+                  <stop offset="100%" stopColor="#fef3c7" />
+                </linearGradient>
+              </defs>
+
+              {/* Main sweeping wing */}
+              <path
+                d="M2 18 C28 2 48 1 76 9 C112 19 151 19 218 3 C177 25 117 28 72 18 C42 11 22 12 2 18Z"
+                fill="url(#goldBirdWing)"
+              />
+
+              {/* Fine feather detail */}
+              <path
+                d="M8 20 C45 12 68 17 100 22 C139 27 179 17 213 5"
+                stroke="#fde68a"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+                opacity=".8"
+              />
+            </svg>
           </div>
         </div>
       </div>
-
-      {/* Chevron animations */}
-      <style jsx>{`
-        @keyframes chevron-one {
-          0%,
-          100% {
-            opacity: 0.45;
-            transform: translateX(-2px);
-          }
-
-          50% {
-            opacity: 1;
-            transform: translateX(2px);
-          }
-        }
-
-        @keyframes chevron-two {
-          0%,
-          100% {
-            opacity: 1;
-            transform: translateX(0);
-          }
-
-          50% {
-            opacity: 0.5;
-            transform: translateX(3px);
-          }
-        }
-
-        :global(.animate-chevron-one) {
-          animation: chevron-one 1.1s ease-in-out infinite;
-        }
-
-        :global(.animate-chevron-two) {
-          animation: chevron-two 1.1s ease-in-out infinite;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          :global(.animate-chevron-one),
-          :global(.animate-chevron-two) {
-            animation: none;
-          }
-        }
-      `}</style>
     </section>
   );
 }

@@ -1,324 +1,425 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   Menu,
   X,
-  ArrowUpRight,
-  LogIn,
-  ClipboardList,
-  Heart,
   ChevronDown,
+  FileText,
+  Megaphone,
+  Scale,
+  BookOpen,
+  HeartHandshake,
+  Users,
+  LogIn,
+  ChevronsRight,
 } from "lucide-react";
 
-const navLinks = [
-  { label: "Home", href: "/" },
-  { label: "About Us", href: "/about-us" },
-  { label: "Mission & Vision", href: "/mission-and-vision" },
-  { label: "News & Activities", href: "/activities" },
-  { label: "Research & Publications", href: "/publications" },
-  { label: "Legal Documents", href: "/documents" },
-  { label: "Demands", href: "/demands" },
-  { label: "Law & Enforcement", href: "/law" },
-  { label: "Constitution", href: "/constitution" },
+const firstRow = [
+  { label: "Home", mobileLabel: "Home", href: "/" },
+  { label: "About Us", mobileLabel: "About", href: "/about-us" },
+  {
+    label: "Mission & Vision",
+    mobileLabel: "Mission",
+    href: "/mission-and-vision",
+  },
+  { label: "Activities", mobileLabel: "News", href: "/activities" },
+  {
+    label: "Publications",
+    mobileLabel: "Research",
+    href: "/publications",
+  },
+];
+
+const secondRow = [
+  { label: "Legal Documents", href: "/documents", icon: FileText },
+  { label: "Demands", href: "/demands", icon: Megaphone },
+  { label: "Law & Enforcement", href: "/law", icon: Scale },
+  { label: "Constitution", href: "/constitution", icon: BookOpen },
+  { label: "Donations", href: "/donations", icon: HeartHandshake },
+  { label: "Get Involved", href: "/contact", icon: Users },
+  { label: "Login", href: "/login", icon: LogIn },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
+
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isSticky, setIsSticky] = useState(false);
+
+  const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
+    const header = headerRef.current;
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    if (!header) return;
+
+    const handleScroll = () => {
+      setIsSticky(header.getBoundingClientRect().top <= 0);
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
+
+    window.addEventListener("resize", handleScroll);
 
     return () => {
-      document.body.style.overflow = "";
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
     };
-  }, [isOpen]);
+  }, []);
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
-  const linkClass = (href: string) =>
-    `whitespace-nowrap rounded-md px-2 py-2 text-[12px] font-semibold transition-colors duration-200 lg:px-2.5 lg:text-[13px] ${
-      isActive(href)
-        ? "bg-emerald-200 text-emerald-800"
-        : "text-slate-700 hover:bg-emerald-50 hover:text-emerald-800"
-    }`;
+  const renderPrimaryTab = (
+    link: (typeof firstRow)[number],
+    mobile = false,
+  ) => {
+    const active = isActive(link.href);
 
-  const moreLinks = navLinks.slice(5);
-  const isMoreActive = moreLinks.some((link) => isActive(link.href));
+    return (
+      <Link
+        key={link.href}
+        href={link.href}
+        aria-current={active ? "page" : undefined}
+        title={mobile ? link.label : undefined}
+        onClick={() => setMobileMenuOpen(false)}
+        className={`relative isolate flex min-w-0 flex-1 items-center justify-center text-center leading-tight transition-colors ${
+          mobile
+            ? "h-8 text-[10px] font-bold sm:text-[11px]"
+            : "-ml-2 h-8 text-[11px] lg:text-xs"
+        } ${active ? "z-20" : "z-10"}`}
+      >
+        <span
+          aria-hidden="true"
+          className={`absolute inset-0 -z-10 border border-b-0 ${
+            mobile ? "" : "rounded-t-md"
+          } ${
+            active
+              ? "border-amber-400 bg-amber-300"
+              : "border-amber-300 bg-gradient-to-b from-white to-slate-200"
+          }`}
+          style={{
+            transform: mobile
+              ? "none"
+              : "perspective(30px) rotateX(2deg) skewX(30deg)",
+            transformOrigin: "bottom",
+          }}
+        />
 
-  return (
-    <>
-      {/* HEADER */}
-      <header className="fixed inset-x-0 top-0 z-[60] border-b border-emerald-900/10 bg-white/95 shadow-sm backdrop-blur-md">
-        <div className="mx-auto flex h-16 w-full max-w-[1600px] items-center justify-between gap-2 px-3 sm:gap-3 sm:px-5 lg:px-6">
-          {/* LOGO */}
-          <Link
-            href="/"
-            className="group flex min-w-0 shrink-0 items-center gap-2 sm:gap-2.5"
-            aria-label="Haor Rokkha Andolan Home"
-          >
-            <div className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-emerald-100 bg-emerald-50 shadow-sm sm:h-11 sm:w-11">
-              <Image
-                src="/ha2.png"
-                alt="Haor Rokkha Andolan Logo"
-                fill
-                priority
-                sizes="44px"
-                className="object-contain p-0.5"
-              />
-            </div>
+        <span
+          className={`relative z-10 line-clamp-2 ${
+            active
+              ? "font-extrabold text-[#17150f]"
+              : mobile
+                ? "font-bold text-black"
+                : "font-medium text-black"
+          }`}
+        >
+          {mobile ? link.mobileLabel : link.label}
+        </span>
+      </Link>
+    );
+  };
 
-            <div className="min-w-0 leading-tight">
-              <p
-                translate="no"
-                className="truncate text-[16px] font-extrabold tracking-tight text-emerald-950 sm:text-sm"
-              >
-                Wetlands Resilience Initiatives
-              </p>
+  const renderSecondaryTab = (link: (typeof secondRow)[number]) => {
+    const active = isActive(link.href);
 
-              <p
-                translate="no"
-                className="mt-0.5 truncate text-[12px] font-semibold text-emerald-700 sm:text-xs"
-              >
-                হাওর রক্ষা আন্দোলন
-              </p>
-            </div>
-          </Link>
-
-          {/* TABLET / DESKTOP NAVIGATION */}
-          <nav
-            aria-label="Main navigation"
-            className="hidden min-w-0 w-full max-w-3xl flex-1 items-center justify-center md:flex"
-          >
-            <div className="flex w-full min-w-0 items-center justify-center gap-0.5">
-              {navLinks.slice(0, 5).map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={linkClass(link.href)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-
-              {/* MORE DROPDOWN */}
-              <div className="group relative shrink-0">
-                <button
-                  type="button"
-                  aria-haspopup="true"
-                  className={`flex items-center gap-1 whitespace-nowrap rounded-md px-2 py-2 text-[12px] font-semibold transition-colors duration-200 lg:px-2.5 lg:text-[13px] ${
-                    isMoreActive
-                      ? "bg-emerald-200 text-emerald-800"
-                      : "text-slate-700 hover:bg-emerald-50 hover:text-emerald-800"
-                  }`}
-                >
-                  More
-                  <ChevronDown
-                    size={14}
-                    className="transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180"
-                  />
-                </button>
-
-                <div className="invisible absolute right-0 top-full z-[70] mt-1 w-56 translate-y-1 rounded-lg border border-slate-200 bg-white p-2 opacity-0 shadow-xl transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 lg:w-60">
-                  {moreLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className={`block rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
-                        isActive(link.href)
-                          ? "bg-emerald-50 text-emerald-800"
-                          : "text-slate-700 hover:bg-emerald-50 hover:text-emerald-800"
-                      }`}
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </nav>
-
-          {/* TABLET / DESKTOP ACTIONS */}
-          <div className="hidden shrink-0 items-center gap-1.5 md:flex lg:gap-2">
-            <Link
-              href="/donations"
-              className="inline-flex items-center gap-1 rounded-md border border-emerald-700/20 px-2 py-2 text-[11px] font-semibold text-emerald-800 transition-colors hover:border-emerald-700 hover:bg-emerald-50 lg:gap-1.5 lg:px-3 lg:text-[13px]"
-            >
-              <Heart size={15} />
-              Donations
-            </Link>
-
-            <Link
-              href="/login"
-              className="inline-flex items-center gap-1 rounded-md bg-emerald-800 px-2.5 py-2 text-[11px] font-semibold text-white shadow-sm transition-colors hover:bg-emerald-900 lg:gap-1.5 lg:px-3.5 lg:text-[13px]"
-            >
-              <LogIn size={15} />
-              Login
-            </Link>
-          </div>
-
-          {/* MOBILE MENU BUTTON */}
-          <button
-            type="button"
-            onClick={() => setIsOpen((current) => !current)}
-            className="relative z-[80] flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-emerald-800/15 bg-emerald-50 text-emerald-900 transition-colors hover:bg-emerald-100 md:hidden"
-            aria-label={isOpen ? "Close menu" : "Open menu"}
-            aria-expanded={isOpen}
-            aria-controls="mobile-navigation"
-          >
-            {isOpen ? <X size={21} /> : <Menu size={21} />}
-          </button>
-        </div>
-      </header>
-
-      {/* MOBILE BACKDROP */}
-      <div
-        onClick={() => setIsOpen(false)}
-        aria-hidden="true"
-        className={`fixed inset-0 z-[40] bg-slate-950/45 backdrop-blur-[2px] transition-opacity duration-300 md:hidden ${
-          isOpen
-            ? "visible opacity-100"
-            : "invisible pointer-events-none opacity-0"
-        }`}
-      />
-
-      {/* MOBILE MENU — COMPACT BORDERED DESIGN */}
-      <div
-        id="mobile-navigation"
-        aria-label="Mobile navigation"
-        aria-hidden={!isOpen}
-        className={`fixed inset-x-0 top-16 z-[50] flex max-h-[calc(100dvh-4rem)] flex-col overflow-y-auto overscroll-contain border-t border-emerald-200 bg-white shadow-xl transition-all duration-300 ease-in-out md:hidden ${
-          isOpen
-            ? "visible translate-y-0 opacity-100 pointer-events-auto"
-            : "invisible -translate-y-2 opacity-0 pointer-events-none"
+    return (
+      <Link
+        key={link.href}
+        href={link.href}
+        aria-current={active ? "page" : undefined}
+        onClick={() => setMobileMenuOpen(false)}
+        className={`relative flex min-h-8 min-w-0 items-center justify-center border-r border-b border-white/80 px-2 text-center text-[11px] leading-tight transition-colors duration-200 ${
+          active
+            ? "z-10 bg-amber-200 font-extrabold text-[#17150f]"
+            : "font-semibold text-[#382b13] hover:bg-yellow-200/60 hover:text-black"
         }`}
       >
-        <div className="mx-auto w-full max-w-lg p-3">
-          {/* MOBILE BRAND */}
-          {/*      <div className="mb-3 flex items-center gap-2.5 border-b border-emerald-100 px-1 pb-3">
-            <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-emerald-200 bg-emerald-50">
-              <Image
-                src="/ha2.png"
-                alt="Haor Rokkha Andolan"
-                fill
-                sizes="40px"
-                className="object-contain p-0.5"
-              />
-            </div>
+        <span>{link.label}</span>
+      </Link>
+    );
+  };
 
-            <div className="min-w-0">
-              <p className="truncate text-xs font-extrabold text-emerald-950">
-                Wetlands Resilience Initiatives
-              </p>
-              <p className="mt-0.5 text-[11px] font-semibold text-emerald-700">
-                হাওর রক্ষা আন্দোলন
-              </p>
-            </div>
-          </div> */}
+  return (
+    <header
+      ref={headerRef}
+      className="sticky top-0 z-[60] w-full bg-white shadow-md"
+    >
+      {/* MOBILE — ORGANIZATION NAME AND BIRD-WING UNDERLINE (ONLY WHEN STICKY) */}
+      <div
+        className={`grid overflow-hidden transition-all duration-300 ease-in-out sm:hidden ${
+          isSticky
+            ? "grid-rows-[1fr] opacity-100"
+            : "grid-rows-[0fr] border-b-0 opacity-0"
+        }`}
+        aria-hidden={!isSticky}
+      >
+        <div className="min-h-0">
+          <div className="bg-gradient-to-t from-white via-gray-50 to-red-50 px-3 py-2">
+            <div className="flex flex-col items-center justify-center">
+              <div className="flex items-center justify-center gap-2">
+                <span
+                  lang="bn"
+                  translate="no"
+                  className="notranslate text-[17px] font-extrabold tracking-wide text-amber-900 drop-shadow-sm"
+                >
+                  হাওর রক্ষা আন্দোলন
+                </span>
+              </div>
 
-          {/* NAVIGATION LINKS */}
-          <nav
-            aria-label="Mobile navigation links"
-            className="grid grid-cols-1 gap-0.75"
+              {/* GOLDEN BIRD-WING UNDERLINE */}
+              <svg
+                className="mt-0.5 h-4 w-36"
+                viewBox="0 0 220 28"
+                fill="none"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <defs>
+                  <linearGradient
+                    id="goldBirdWing"
+                    x1="0"
+                    y1="0"
+                    x2="220"
+                    y2="0"
+                  >
+                    <stop offset="0%" stopColor="#fde047" />
+                    <stop offset="45%" stopColor="#f59e0b" />
+                    <stop offset="100%" stopColor="#fef3c7" />
+                  </linearGradient>
+                </defs>
+
+                <path
+                  d="M2 18 C28 2 48 1 76 9 C112 19 151 19 218 3 C177 25 117 28 72 18 C42 11 22 12 2 18Z"
+                  fill="url(#goldBirdWing)"
+                />
+
+                <path
+                  d="M8 20 C45 12 68 17 100 22 C139 27 179 17 213 5"
+                  stroke="#fde68a"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                  opacity=".8"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* DESKTOP — COMPACT ORGANIZATION NAME AND BIRD-WING UNDERLINE */}
+      <div
+        className={`hidden overflow-hidden transition-all duration-300 ease-in-out sm:grid ${
+          isSticky
+            ? "grid-rows-[1fr] opacity-100"
+            : "grid-rows-[0fr] border-b-0 opacity-0"
+        }`}
+        aria-hidden={!isSticky}
+      >
+        <div className="min-h-0">
+          <div className="bg-gradient-to-t from-white via-gray-50 to-red-50 px-2 py-1">
+            <div className="flex flex-col items-center justify-center">
+              <div className="flex items-center justify-center gap-3">
+                <span
+                  lang="bn"
+                  translate="no"
+                  className="notranslate text-lg font-extrabold tracking-wide text-amber-900 drop-shadow-sm"
+                >
+                  হাওর রক্ষা আন্দোলন
+                </span>
+              </div>
+
+              {/* GOLDEN BIRD-WING UNDERLINE */}
+              <svg
+                className="mt-0 h-3 w-40"
+                viewBox="0 0 220 28"
+                fill="none"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <defs>
+                  <linearGradient
+                    id="goldBirdWingDesktop"
+                    x1="0"
+                    y1="0"
+                    x2="220"
+                    y2="0"
+                  >
+                    <stop offset="0%" stopColor="#fde047" />
+                    <stop offset="45%" stopColor="#f59e0b" />
+                    <stop offset="100%" stopColor="#fef3c7" />
+                  </linearGradient>
+                </defs>
+
+                <path
+                  d="M2 18 C28 2 48 1 76 9 C112 19 151 19 218 3 C177 25 117 28 72 18 C42 11 22 12 2 18Z"
+                  fill="url(#goldBirdWingDesktop)"
+                />
+
+                <path
+                  d="M8 20 C45 12 68 17 100 22 C139 27 179 17 213 5"
+                  stroke="#fde68a"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                  opacity=".8"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* DESKTOP — COMPACT CONNECTED PRIMARY TABS */}
+      <div className="mx-auto hidden max-w-4xl px-1 sm:block sm:px-2">
+        <nav
+          aria-label="Primary navigation"
+          className="flex h-9 items-end overflow-visible pl-2 pt-0.5"
+        >
+          {firstRow.map((link) => renderPrimaryTab(link))}
+        </nav>
+      </div>
+
+      {/* MOBILE — PRIMARY NAVIGATION WITH MENU BUTTON */}
+      <div className="overflow-visible bg-white sm:hidden">
+        <nav
+          aria-label="Mobile primary navigation"
+          className="grid grid-cols-[repeat(5,minmax(0,1fr))_auto] items-end gap-0 pt-0"
+        >
+          {firstRow.map((link) => renderPrimaryTab(link, true))}
+
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen((previous) => !previous)}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-secondary-navigation"
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            className={`relative z-30 flex h-8 min-w-[43px] items-center justify-center gap-0.5 border border-b-0 px-1 text-[10px] font-bold transition-colors ${
+              mobileMenuOpen
+                ? "border-amber-500 bg-amber-300 text-[#17150f]"
+                : "border-amber-300 bg-gradient-to-b from-white to-slate-200 text-slate-800"
+            }`}
           >
-            {navLinks.map((link) => {
+            {mobileMenuOpen ? (
+              <X className="h-4 w-4" />
+            ) : (
+              <Menu className="h-4 w-4" />
+            )}
+            <span>Menu</span>
+          </button>
+        </nav>
+
+        {/* MOBILE — COMPACT DROPDOWN MENU */}
+        <div
+          id="mobile-secondary-navigation"
+          aria-label="Additional navigation"
+          aria-hidden={!mobileMenuOpen}
+          className={`absolute inset-x-0 top-full z-[70] overflow-hidden border-t border-amber-500/50 bg-white shadow-lg transition-all duration-200 ease-in-out ${
+            mobileMenuOpen
+              ? "visible translate-y-0 opacity-100"
+              : "invisible pointer-events-none -translate-y-2 opacity-0"
+          }`}
+        >
+          <div className="border-b border-amber-200 bg-gradient-to-r from-yellow-300 to-amber-400 px-3 py-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-extrabold uppercase tracking-wider text-[#382b13]">
+                Wetlands Resilience Initiatives
+              </span>
+              <ChevronDown className="h-4 w-4 text-[#382b13]" />
+            </div>
+          </div>
+
+          <nav
+            aria-label="Additional mobile navigation"
+            className="grid grid-cols-1 gap-px bg-slate-200 p-px"
+          >
+            {secondRow.map((link) => {
               const active = isActive(link.href);
+              const Icon = link.icon;
+              const isLogin = link.href === "/login";
 
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  tabIndex={isOpen ? 0 : -1}
-                  onClick={() => setIsOpen(false)}
-                  className={`flex min-h-10 items-center justify-between gap-2 border-b px-2.5 py-1 text-[12px] font-semibold transition-colors ${
-                    active
-                      ? " bg-emerald-200 text-emerald-900"
-                      : "border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50"
+                  aria-current={active ? "page" : undefined}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex min-h-11 items-center justify-between gap-3 px-3 py-2 text-xs transition-colors ${
+                    isLogin
+                      ? "bg-gradient-to-r from-yellow-300 to-amber-400 font-extrabold text-[#382b13] hover:from-yellow-400 hover:to-amber-500"
+                      : active
+                        ? "bg-amber-100 font-extrabold text-[#17150f]"
+                        : "bg-white font-bold text-slate-700 hover:bg-amber-50"
                   }`}
                 >
-                  <span className="min-w-0 leading-snug">{link.label}</span>
+                  <span className="flex min-w-0 items-center gap-3">
+                    <Icon
+                      className={`h-[17px] w-[17px] shrink-0 ${
+                        isLogin
+                          ? "text-[#704900]"
+                          : active
+                            ? "text-amber-700"
+                            : "text-slate-500"
+                      }`}
+                      strokeWidth={2.2}
+                      aria-hidden="true"
+                    />
+                    <span>{link.label}</span>
+                  </span>
 
-                  {active && (
-                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-700" />
-                  )}
+                  <ChevronsRight
+                    className={`h-4 w-4 shrink-0 ${
+                      isLogin
+                        ? "text-[#704900]"
+                        : active
+                          ? "text-amber-700"
+                          : "text-slate-400"
+                    }`}
+                    strokeWidth={2.4}
+                    aria-hidden="true"
+                  />
                 </Link>
               );
             })}
           </nav>
-
-          {/* ACTION BUTTONS */}
-          <div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-emerald-100 pt-3">
-            <Link
-              href="/donations"
-              tabIndex={isOpen ? 0 : -1}
-              onClick={() => setIsOpen(false)}
-              className="flex min-h-10 items-center rounded justify-center gap-1.5 border border-emerald-200 bg-white px-2 text-xs font-bold text-emerald-800 hover:bg-emerald-50"
-            >
-              <Heart size={15} />
-              Donations
-            </Link>
-
-            <Link
-              href="/login"
-              tabIndex={isOpen ? 0 : -1}
-              onClick={() => setIsOpen(false)}
-              className="flex min-h-10 items-center rounded justify-center gap-1.5 border border-emerald-900 bg-emerald-900 px-2 text-xs font-bold text-white hover:bg-emerald-900"
-            >
-              <LogIn size={15} />
-              Login
-            </Link>
-
-            <Link
-              href="/contact"
-              tabIndex={isOpen ? 0 : -1}
-              onClick={() => setIsOpen(false)}
-              className="col-span-2 flex min-h-10 items-center rounded justify-center gap-1.5 border border-emerald-200 bg-emerald-50 px-2 text-xs font-bold text-emerald-900 hover:bg-emerald-100"
-            >
-              <ClipboardList size={15} />
-              Get Involved
-              <ArrowUpRight size={14} />
-            </Link>
-          </div>
-
-          {/* FOOTER LINKS */}
-          <div className="mt-3 flex items-center justify-center gap-4 border-t border-slate-100 pt-3 pb-1 text-[10px] font-medium text-slate-500">
-            <Link
-              href="/privacy-policy"
-              tabIndex={isOpen ? 0 : -1}
-              onClick={() => setIsOpen(false)}
-              className="hover:text-emerald-800"
-            >
-              Privacy Policy
-            </Link>
-
-            <span className="h-1 w-1 rounded-full bg-slate-300" />
-
-            <Link
-              href="/cookie-policy"
-              tabIndex={isOpen ? 0 : -1}
-              onClick={() => setIsOpen(false)}
-              className="hover:text-emerald-800"
-            >
-              Cookie Policy
-            </Link>
-          </div>
         </div>
       </div>
-    </>
+
+      {/* DESKTOP — COMPACT FULL-WIDTH YELLOW SECONDARY BAR */}
+      <nav
+        aria-label="Secondary navigation"
+        className="relative z-30 hidden w-full bg-gradient-to-b from-yellow-300 to-amber-400 sm:block"
+      >
+        <div className="mx-auto grid min-h-9 max-w-6xl grid-cols-7 px-1 sm:px-3 lg:px-5">
+          {secondRow.map((link) => {
+            const active = isActive(link.href);
+
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-current={active ? "page" : undefined}
+                className={`flex min-h-9 min-w-0 items-center justify-center border-l border-white px-1.5 text-center text-[11px] leading-tight transition-colors duration-200 lg:text-xs ${
+                  active
+                    ? "bg-amber-200 font-bold text-[#17150f]"
+                    : "font-semibold text-[#382b13] hover:text-black"
+                }`}
+              >
+                <span className="line-clamp-2">{link.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+    </header>
   );
 }

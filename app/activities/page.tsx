@@ -13,6 +13,7 @@ import {
   MapPin,
   ChevronLeft,
   ChevronRight,
+  Leaf,
 } from "lucide-react";
 import { getPublicNewsPageAction, type PublicNewsFilter } from "../newsActions";
 import Footer from "../Footer";
@@ -84,8 +85,8 @@ function MediaPreview({ item }: { item: NewsItem }) {
 
   if (!url) {
     return (
-      <div className="flex h-full min-h-40 items-center justify-center bg-emerald-950 text-emerald-300">
-        <Waves size={40} strokeWidth={1.4} />
+      <div className="flex h-full min-h-40 items-center justify-center bg-gradient-to-br from-amber-50 via-white to-slate-100">
+        <Waves size={40} strokeWidth={1.3} className="text-amber-700" />
       </div>
     );
   }
@@ -240,25 +241,59 @@ export default function ActivitiesPage() {
 
   return (
     <main className="min-h-screen bg-[#f7f9f6]">
+      {/* NEWS & ACTIVITIES HERO — ORIGINAL DESIGN UNCHANGED */}
+      <section className="relative isolate h-[260px] w-full overflow-hidden bg-emerald-950 sm:h-[310px] lg:h-[350px]">
+        <Image
+          src="/monu.jpg"
+          alt="Rivers and wetlands of Moulvibazar"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+
+        {/* Dark overlays */}
+        <div className="absolute inset-0 bg-emerald-950/65" />
+        <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/75 via-emerald-950/25 to-emerald-950/35" />
+
+        {/* Top yellow accent */}
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 z-20 h-[10px] bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-300"
+          aria-hidden="true"
+        />
+
+        {/* Hero content */}
+        <div className="relative z-10 flex h-full items-center justify-center px-4 pt-2 text-center">
+          <div className="mx-auto max-w-3xl">
+            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+              News & Activities
+            </h1>
+
+            <div className="mx-auto mt-5 h-1 w-14 bg-gradient-to-r from-yellow-300 to-amber-400" />
+          </div>
+        </div>
+      </section>
+
+      {/* NAVIGATION */}
       <Navbar />
 
-      {/* News and activities */}
-      <section className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8 mt-16">
+      {/* NEWS AND ACTIVITIES */}
+      <section className="mx-auto w-full max-w-7xl px-3 py-8 sm:px-6 sm:py-10">
         {/* News Header, Search & Filters */}
-        <div className="mb-5 border-b border-emerald-900/10 pb-4">
+        <div className="mb-5 border-b border-amber-200 pb-4">
           <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            {/* Horizontally Scrollable Filters — Left */}
-            <div className="grid min-w-0 grid-cols-5 gap-1.5 sm:flex sm:flex-1 sm:order-1 sm:gap-1.5 sm:overflow-x-auto sm:pb-1">
+            {/* FILTERS */}
+            <div className="grid min-w-0 grid-cols-5 gap-1 sm:order-1 sm:flex sm:flex-1 sm:flex-wrap sm:gap-2">
               {filters.map((option) => (
                 <button
                   key={option.value}
                   type="button"
                   onClick={() => changeFilter(option.value)}
                   aria-pressed={filter === option.value}
-                  className={`h-9 w-full min-w-0 whitespace-nowrap rounded-md px-1 text-[10px] font-semibold transition sm:h-10 sm:w-auto sm:shrink-0 sm:px-3 sm:text-xs ${
+                  className={`inline-flex h-9 w-full min-w-0 items-center justify-center whitespace-nowrap rounded-full border px-1.5 text-[10px] font-semibold transition sm:h-10 sm:w-auto sm:px-4 sm:text-xs ${
                     filter === option.value
-                      ? "bg-emerald-900 text-white"
-                      : "border border-slate-200 bg-white text-slate-600 hover:border-emerald-700 hover:text-emerald-800"
+                      ? "border-amber-500 bg-gradient-to-b from-amber-200 to-amber-400 text-amber-950 shadow-sm shadow-amber-900/10"
+                      : "border-slate-200 bg-white text-slate-700 hover:border-amber-500 hover:text-amber-900"
                   }`}
                 >
                   {option.label}
@@ -266,7 +301,7 @@ export default function ActivitiesPage() {
               ))}
             </div>
 
-            {/* Search — Right */}
+            {/* SEARCH */}
             <div className="w-full shrink-0 sm:order-2 sm:w-52 lg:w-64">
               <input
                 type="search"
@@ -274,7 +309,7 @@ export default function ActivitiesPage() {
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search news and activities..."
                 aria-label="Search news and activities"
-                className="h-9 w-full rounded-md border border-slate-200 bg-white px-3 text-xs text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/10 sm:h-10 sm:text-sm"
+                className="h-9 w-full rounded-full border border-slate-200 bg-white px-4 text-xs text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 sm:h-10 sm:text-sm"
               />
             </div>
           </div>
@@ -284,18 +319,18 @@ export default function ActivitiesPage() {
         {loading && (
           <div
             aria-label="Loading news and activities"
-            className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4"
+            className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4"
           >
             {Array.from({ length: 8 }).map((_, index) => (
               <div
                 key={index}
-                className="animate-pulse overflow-hidden rounded-lg border border-slate-200 bg-white"
+                className="animate-pulse flex min-w-0 flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-md shadow-amber-100/70"
               >
-                <div className="aspect-4/3 bg-slate-200" />
+                <div className="aspect-video bg-slate-200" />
                 <div className="space-y-3 p-3 sm:p-4">
-                  <div className="h-3 w-20 rounded bg-slate-200" />
-                  <div className="h-4 w-full rounded bg-slate-200" />
-                  <div className="h-4 w-2/3 rounded bg-slate-200" />
+                  <div className="h-3 w-20 bg-slate-200" />
+                  <div className="h-4 w-full bg-slate-200" />
+                  <div className="h-4 w-2/3 bg-slate-200" />
                 </div>
               </div>
             ))}
@@ -306,14 +341,14 @@ export default function ActivitiesPage() {
         {!loading && error && (
           <div
             role="alert"
-            className="rounded-md border border-red-200 bg-red-50 p-5 text-sm text-red-700"
+            className="border border-red-200 bg-red-50 p-5 text-sm text-red-700 shadow-sm shadow-red-900/5"
           >
             <p>{error}</p>
 
             <button
               type="button"
               onClick={() => goToPage(page)}
-              className="mt-3 rounded-md bg-emerald-900 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-800"
+              className="mt-3 bg-amber-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-amber-800"
             >
               Try again
             </button>
@@ -322,64 +357,90 @@ export default function ActivitiesPage() {
 
         {/* Cards */}
         {!loading && !error && items.length > 0 && (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-1 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4">
             {items.map((item) => {
               const video = isVideo(item);
 
               return (
                 <article
                   key={item.id}
-                  className="group overflow-hidden rounded-lg border border-slate-200/80 bg-white transition duration-300 hover:-translate-y-1 hover:border-emerald-700/30 hover:shadow-lg hover:shadow-emerald-950/5"
+                  className="group flex min-w-0 flex-col overflow-hidden rounded-md border border-slate-100 bg-white shadow-md shadow-amber-100/70 transition-all duration-300 hover:-translate-y-1 hover:border-amber-100 hover:shadow-xl hover:shadow-amber-100"
                 >
-                  <div className="relative aspect-4/3 overflow-hidden bg-slate-950">
+                  {/* IMAGE / VIDEO */}
+                  <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-slate-100">
                     <MediaPreview item={item} />
 
-                    <div className="pointer-events-none absolute left-2 top-2 z-10 flex items-center gap-1.5 rounded-sm bg-emerald-950/90 px-2 py-1 text-[9px] font-bold uppercase tracking-wide text-white sm:text-[10px]">
+                    {/* IMAGE OVERLAY */}
+                    {!video && (
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-transparent" />
+                    )}
+
+                    {/* NEWS / ACTIVITY LABEL */}
+                    {/*      <span className="pointer-events-none absolute left-2 top-2 inline-flex items-center gap-1.5 rounded-md bg-amber-950/85 px-2 py-1.5 text-[9px] font-bold uppercase tracking-wide text-amber-50 shadow-sm sm:left-3 sm:top-3 sm:px-2.5 sm:text-[10px]">
                       {item.type === "ACTIVITY" ? (
-                        <Waves size={12} />
+                        <Waves size={11} />
                       ) : (
-                        <Newspaper size={12} />
+                        <Newspaper size={11} />
                       )}
                       {item.type === "ACTIVITY" ? "Activity" : "News"}
-                    </div>
+                    </span> */}
 
+                    {/* VIDEO LABEL */}
                     {video && (
-                      <div className="pointer-events-none absolute bottom-2 right-2 z-10 flex items-center gap-1 rounded-sm bg-black/75 px-2 py-1 text-[10px] font-semibold text-white">
+                      <span className="pointer-events-none absolute bottom-2 right-2 inline-flex items-center gap-1.5 rounded-md bg-black/75 px-2 py-1.5 text-[9px] font-bold tracking-wider text-white sm:text-[10px]">
                         <Play size={11} fill="currentColor" />
-                        Video
-                      </div>
+                        VIDEO
+                      </span>
                     )}
                   </div>
 
-                  <div className="p-3 sm:p-4">
-                    <div className="mb-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-semibold text-emerald-800 sm:text-xs">
-                      <span>
+                  {/* CONTENT */}
+                  <div className="flex min-w-0 flex-1 flex-col p-3">
+                    {/* CATEGORY AND DATE */}
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-medium text-slate-500 sm:gap-x-3 sm:text-[11px]">
+                      {/*          <span className="font-bold uppercase tracking-wide text-amber-800">
                         {item.riverOrHaor === "HAOR" ? "Haor" : "River"}
-                      </span>
+                      </span> */}
 
-                      <span className="text-slate-300">•</span>
-
-                      <span className="inline-flex items-center gap-1 text-slate-500">
-                        <CalendarDays size={11} />
+                      <span className="inline-flex items-center gap-1">
+                        <CalendarDays
+                          size={11}
+                          className="shrink-0 text-amber-700"
+                        />
                         {formatDate(item.createdAt)}
                       </span>
                     </div>
 
-                    <h3 className="line-clamp-2 text-sm font-bold leading-snug text-slate-900 transition-colors group-hover:text-emerald-800 sm:text-base">
+                    {/* TITLE */}
+                    <h3 className="mt-2 line-clamp-2 break-words text-sm font-bold leading-5 text-slate-900 transition-colors group-hover:text-amber-900 sm:text-base sm:leading-6">
                       {item.heading}
                     </h3>
 
-                    <p className="mt-2 line-clamp-3 whitespace-pre-line text-xs leading-5 text-slate-600 sm:text-sm">
+                    {/* DESCRIPTION */}
+                    <p className="mt-2 min-w-0 flex-1 whitespace-pre-line break-words text-xs leading-5 text-slate-600 line-clamp-2 sm:text-sm sm:leading-6">
                       {item.details}
                     </p>
 
-                    <button
-                      type="button"
-                      onClick={() => setSelectedItem(item)}
-                      className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-emerald-800 transition hover:text-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
-                    >
-                      Read full story <ArrowUpRight size={14} />
-                    </button>
+                    {/* READ MORE */}
+                    <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3 sm:mt-4">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedItem(item)}
+                        className="group/link inline-flex items-center gap-1 text-[11px] font-semibold text-slate-800 transition-colors hover:text-amber-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 sm:gap-1.5 sm:text-xs"
+                      >
+                        Read More
+                        <ArrowUpRight
+                          size={13}
+                          className="text-amber-700 transition-transform duration-200 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
+                        />
+                      </button>
+
+                      <Leaf
+                        size={14}
+                        strokeWidth={1.6}
+                        className="text-amber-600/70"
+                      />
+                    </div>
                   </div>
                 </article>
               );
@@ -389,25 +450,27 @@ export default function ActivitiesPage() {
 
         {/* Empty state */}
         {!loading && !error && items.length === 0 && (
-          <div className="rounded-lg border border-dashed border-slate-300 bg-white px-5 py-14 text-center">
-            <Newspaper
-              size={32}
-              className="mx-auto mb-3 text-emerald-800"
-              strokeWidth={1.5}
-            />
+          <div className="rounded-xl border border-dashed border-slate-200 bg-white px-5 py-12 text-center shadow-sm shadow-amber-100/50">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-50">
+              <Newspaper
+                size={25}
+                className="text-amber-800"
+                strokeWidth={1.4}
+              />
+            </div>
 
-            <h3 className="text-base font-bold text-slate-800">
+            <h3 className="mt-4 text-base font-bold text-slate-900">
               No news or activities found
             </h3>
 
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-2 text-sm leading-6 text-slate-500">
               Try another filter or search term.
             </p>
 
             <button
               type="button"
               onClick={resetFilters}
-              className="mt-4 rounded-md bg-emerald-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-emerald-800"
+              className="mt-4 rounded-full bg-amber-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-amber-800"
             >
               Show all stories
             </button>
@@ -418,16 +481,16 @@ export default function ActivitiesPage() {
         {!loading && !error && (items.length > 0 || page > 1) && (
           <nav
             aria-label="News pagination"
-            className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-emerald-900/10 pt-5 sm:flex-row"
+            className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-amber-200 pt-5 sm:flex-row"
           >
             <p className="text-xs text-slate-500">
               Showing{" "}
-              <span className="font-semibold text-emerald-950">
+              <span className="font-semibold text-amber-950">
                 {items.length}
               </span>{" "}
-              {items.length === 1 ? "story" : "stories"} on this page
+              {items.length === 1 ? "story" : "stories"}
               <span className="mx-1.5 text-slate-300">·</span>
-              Page <span className="font-bold text-emerald-950">{page}</span>
+              Page <span className="font-bold text-amber-950">{page}</span>
             </p>
 
             <div className="flex items-center gap-2">
@@ -435,7 +498,7 @@ export default function ActivitiesPage() {
                 type="button"
                 disabled={page === 1 || loading}
                 onClick={() => goToPage(page - 1)}
-                className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-emerald-700 hover:text-emerald-800 disabled:cursor-not-allowed disabled:opacity-40"
+                className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-amber-500 hover:text-amber-900 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ChevronLeft size={14} />
                 Previous
@@ -443,7 +506,7 @@ export default function ActivitiesPage() {
 
               <span
                 aria-current="page"
-                className="flex h-9 min-w-9 items-center justify-center rounded-md bg-emerald-900 px-3 text-xs font-bold text-white"
+                className="flex h-9 min-w-9 items-center justify-center rounded-full border border-amber-500 bg-gradient-to-b from-amber-200 to-amber-400 px-3 text-xs font-bold text-amber-950 shadow-sm shadow-amber-900/10"
               >
                 {page}
               </span>
@@ -452,7 +515,7 @@ export default function ActivitiesPage() {
                 type="button"
                 disabled={!hasMore || loading}
                 onClick={() => goToPage(page + 1)}
-                className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-emerald-700 hover:text-emerald-800 disabled:cursor-not-allowed disabled:opacity-40"
+                className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-amber-500 hover:text-amber-900 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Next
                 <ChevronRight size={14} />
@@ -465,26 +528,26 @@ export default function ActivitiesPage() {
       {/* Full story popup */}
       {selectedItem && (
         <div
-          className="fixed inset-0 z-100 flex items-center justify-center overflow-y-auto bg-emerald-950/80 p-3 backdrop-blur-sm sm:p-6"
+          className="fixed inset-0 z-100 flex items-center justify-center overflow-y-auto bg-amber-950/80 p-3 backdrop-blur-sm sm:p-6"
           onClick={() => setSelectedItem(null)}
         >
           <section
             role="dialog"
             aria-modal="true"
             aria-labelledby="story-dialog-title"
-            className="relative my-auto flex max-h-[80dvh] w-full max-w-xl flex-col overflow-hidden rounded-lg border border-white/20 bg-white shadow-2xl"
+            className="relative my-auto flex max-h-[80dvh] w-full rounded-lg max-w-xl flex-col overflow-hidden border border-amber-200/40 bg-white shadow-2xl shadow-amber-950/20"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-4 py-1 text-green-900 sm:px-5">
+            <div className="flex shrink-0 items-center justify-between gap-3 border-b border-amber-200 bg-amber-50 px-4 py-1 sm:px-5">
               <div className="flex min-w-0 items-center gap-2">
                 {selectedItem.type === "ACTIVITY" ? (
-                  <Waves size={14} className="shrink-0 text-emerald-300" />
+                  <Waves size={14} className="shrink-0 text-amber-700" />
                 ) : (
-                  <Newspaper size={14} className="shrink-0 text-emerald-300" />
+                  <Newspaper size={14} className="shrink-0 text-amber-700" />
                 )}
 
-                <span className="truncate text-xs font-bold uppercase tracking-[0.15em] text-green-900">
-                  {selectedItem.type === "ACTIVITY" ? "Details" : "Details"}
+                <span className="truncate text-xs font-bold uppercase tracking-[0.15em] text-amber-950">
+                  Details
                 </span>
               </div>
 
@@ -492,7 +555,7 @@ export default function ActivitiesPage() {
                 type="button"
                 onClick={() => setSelectedItem(null)}
                 aria-label="Close story details"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-red-700 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
+                className="flex h-9 w-9 shrink-0 items-center justify-center text-red-700 transition hover:bg-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
               >
                 <X size={16} />
               </button>
@@ -503,7 +566,7 @@ export default function ActivitiesPage() {
                 <MediaPreview item={selectedItem} />
 
                 {!selectedItem.mediaUrl && (
-                  <div className="pointer-events-none absolute bottom-3 left-3 rounded-sm bg-black/50 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">
+                  <div className="pointer-events-none absolute bottom-3 left-3 bg-black/50 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">
                     Haor Rokkha Andolan
                   </div>
                 )}
@@ -511,7 +574,7 @@ export default function ActivitiesPage() {
 
               <div className="p-4 sm:p-6">
                 <div className="mb-3 flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-sm bg-emerald-900 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white">
+                  <span className="inline-flex items-center gap-1 border border-amber-500 bg-gradient-to-b from-amber-200 to-amber-400 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-amber-950">
                     {selectedItem.type === "ACTIVITY" ? (
                       <Waves size={12} />
                     ) : (
@@ -520,13 +583,13 @@ export default function ActivitiesPage() {
                     {selectedItem.type === "ACTIVITY" ? "Activity" : "News"}
                   </span>
 
-                  <span className="inline-flex items-center gap-1.5 rounded-sm bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-900">
+                  <span className="inline-flex items-center gap-1.5 border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-bold text-amber-900">
                     <MapPin size={12} />
                     {selectedItem.riverOrHaor === "HAOR" ? "Haor" : "River"}
                   </span>
 
                   {isVideo(selectedItem) && (
-                    <span className="inline-flex items-center gap-1.5 rounded-sm bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-700">
+                    <span className="inline-flex items-center gap-1.5 border border-slate-200 bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-700">
                       <Play size={11} />
                       Video
                     </span>
@@ -540,30 +603,30 @@ export default function ActivitiesPage() {
 
                 <h2
                   id="story-dialog-title"
-                  className="text-xl font-bold leading-snug tracking-tight text-emerald-950 sm:text-2xl md:text-3xl"
+                  className="text-lg font-bold leading-snug tracking-tight text-amber-950 sm:text-2xl"
                 >
                   {selectedItem.heading}
                 </h2>
 
-                <div className="my-4 h-1 w-12 rounded-full bg-emerald-600" />
+                <div className="my-4 h-1 w-12 bg-gradient-to-r from-amber-400 to-yellow-500" />
 
-                <div className="whitespace-pre-wrap wrap-break-words text-sm leading-7 text-slate-700 sm:text-base sm:leading-8 text-justify">
+                <div className="whitespace-pre-wrap wrap-break-words text-justify text-sm leading-7 text-slate-700 sm:text-base sm:leading-8">
                   {selectedItem.details}
                 </div>
 
-                <div className="mt-6 border-slate-200 pt-4 flex justify-center text-center">
-                  <p className="text-center text-[8px] font-bold uppercase tracking-[0.18em] text-emerald-800">
+                <div className="mt-6 flex justify-center border-slate-200 pt-4 text-center">
+                  <p className="text-center text-[8px] font-bold uppercase tracking-[0.18em] text-amber-800">
                     হাওর রক্ষা আন্দোলন · Moulvibazar
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="flex shrink-0 justify-end border-t border-slate-200 bg-slate-50 px-4 py-1">
+            <div className="flex shrink-0 justify-end border-t border-amber-200 bg-amber-50 px-4 py-1">
               <button
                 type="button"
                 onClick={() => setSelectedItem(null)}
-                className="rounded-md bg-emerald-900 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
+                className="bg-amber-900 px-3 py-1.5 rounded-2xl text-xs font-bold text-white transition hover:bg-amber-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600 focus-visible:ring-offset-2"
               >
                 Close
               </button>
@@ -571,7 +634,10 @@ export default function ActivitiesPage() {
           </section>
         </div>
       )}
+
       <Footer />
+
+      {/* Language Switcher */}
       <div className="fixed right-4 top-1/2 z-[9999] -translate-y-1/2">
         <LanguageSwitcher />
       </div>

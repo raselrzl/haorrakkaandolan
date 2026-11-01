@@ -43,14 +43,14 @@ const modeTitles: Record<Mode, string> = {
 };
 
 const modeDescriptions: Record<Mode, string> = {
-  login: "Sign in to continue your work with Haor Rokkha Andolan.",
+  login: "Sign in",
   register: "Create an account to become part of our community.",
   forgot: "Enter your registered email to receive a verification code.",
   reset: "Enter your verification code and choose a new password.",
 };
 
 const fieldClass =
-  "block w-full rounded-lg border border-slate-200 bg-white px-1.5 py-2 text-sm text-slate-900 outline-none transition duration-200 placeholder:text-slate-400 hover:border-slate-300 focus:border-emerald-800 focus:ring-4 focus:ring-emerald-800/[0.07]";
+  "block w-full rounded-lg border border-slate-200 bg-white px-1.5 py-2 text-sm text-slate-900 outline-none transition duration-200 placeholder:text-slate-400 hover:border-amber-300 focus:border-amber-500 focus:ring-4 focus:ring-amber-500/[0.08]";
 
 function Field({
   name,
@@ -113,7 +113,7 @@ function Field({
             type="button"
             onClick={() => setVisible((current) => !current)}
             aria-label={visible ? "Hide password" : "Show password"}
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-emerald-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-800"
+            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-slate-400 transition hover:bg-amber-50 hover:text-amber-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
           >
             {visible ? (
               <EyeOff className="h-4 w-4" />
@@ -234,16 +234,16 @@ function AuthPanel({
       {mode === "reset" && (
         <>
           {recoveryEmail && (
-            <div className="flex gap-3 rounded-lg border border-emerald-100 bg-emerald-50/70 p-2">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-emerald-800 ring-1 ring-emerald-100">
+            <div className="flex gap-3 rounded-lg border border-amber-200 bg-amber-50/70 p-2">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-amber-800 ring-1 ring-amber-200">
                 <Mail className="h-4 w-4" />
               </span>
 
               <div className="min-w-0">
-                <p className="text-xs font-semibold text-emerald-950">
+                <p className="text-xs font-semibold text-amber-950">
                   Verification email sent to
                 </p>
-                <p className="mt-1 break-all text-sm text-emerald-800">
+                <p className="mt-1 break-all text-sm text-amber-800">
                   {recoveryEmail}
                 </p>
               </div>
@@ -303,7 +303,7 @@ function AuthPanel({
       {state.success && mode !== "forgot" && (
         <div
           role="status"
-          className="rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-3 text-sm leading-5 text-emerald-800"
+          className="rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-3 text-sm leading-5 text-amber-900"
         >
           {state.success}
         </div>
@@ -312,7 +312,7 @@ function AuthPanel({
       <button
         type="submit"
         disabled={pending}
-        className="group flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-900 px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-emerald-950 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-900/15 disabled:cursor-not-allowed disabled:opacity-60"
+        className="group flex w-full items-center justify-center gap-2 rounded-full bg-amber-500 px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-amber-600 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-500/20 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {pending ? (
           <>
@@ -367,19 +367,15 @@ export default function AuthForm({ initialMode, actions }: AuthFormProps) {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center">
+    <main className="flex min-h-screen items-center justify-center px-2">
       <div className="w-full max-w-160">
         {/* Authentication card */}
-        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_40px_-20px_rgba(15,23,42,0.18)]">
-          <div className="border-b border-slate-100 px-6 py-6 sm:px-10 sm:py-7 text-center">
-            {/*       <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-900">
-              {mode === "login" && <LockKeyhole className="h-5 w-5" />}
-              {mode === "register" && <UserRound className="h-5 w-5" />}
-              {mode === "forgot" && <Mail className="h-5 w-5" />}
-              {mode === "reset" && <ShieldCheck className="h-5 w-5" />}
-            </div> */}
+        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_40px_-20px_rgba(41,37,31,0.20)]">
+          <div className="h-1 bg-gradient-to-r from-amber-300 via-amber-500 to-amber-300" />
+
+          <div className="border-b border-slate-100 px-6 py-6 text-center sm:px-10 sm:py-7">
             <Link href="/">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center overflow-hidden">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border border-amber-200 bg-amber-50 p-1">
                 <Image
                   src="/ha2.png"
                   alt="Haor Rokkha Andolan logo"
@@ -404,7 +400,7 @@ export default function AuthForm({ initialMode, actions }: AuthFormProps) {
             {mode === "reset" && recoveryNotice && (
               <div
                 role="status"
-                className="mb-5 rounded-lg border border-emerald-100 bg-emerald-50 px-3.5 py-3 text-sm leading-5 text-emerald-800"
+                className="mb-5 rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-3 text-sm leading-5 text-amber-900"
               >
                 {recoveryNotice}
               </div>
@@ -424,7 +420,7 @@ export default function AuthForm({ initialMode, actions }: AuthFormProps) {
                   <button
                     type="button"
                     onClick={() => changeMode("forgot")}
-                    className="font-medium text-emerald-900 transition hover:text-emerald-700"
+                    className="font-medium text-amber-800 transition hover:text-amber-600"
                   >
                     Forgot your password?
                   </button>
@@ -440,7 +436,7 @@ export default function AuthForm({ initialMode, actions }: AuthFormProps) {
                   <button
                     type="button"
                     onClick={() => changeMode("register")}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 px-4 py-3 font-semibold text-slate-700 transition hover:border-emerald-800 hover:bg-emerald-50/50 hover:text-emerald-900"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-amber-300 px-4 py-3 font-semibold text-slate-700 transition hover:border-amber-500 hover:bg-amber-50 hover:text-amber-900"
                   >
                     Create an account
                     <ArrowRight className="h-4 w-4" />
@@ -454,7 +450,7 @@ export default function AuthForm({ initialMode, actions }: AuthFormProps) {
                   <button
                     type="button"
                     onClick={() => changeMode("login")}
-                    className="font-semibold text-emerald-900 hover:text-emerald-700"
+                    className="font-semibold text-amber-800 hover:text-amber-600"
                   >
                     Sign in
                   </button>
@@ -465,7 +461,7 @@ export default function AuthForm({ initialMode, actions }: AuthFormProps) {
                 <button
                   type="button"
                   onClick={() => changeMode("login")}
-                  className="inline-flex items-center gap-2 font-medium text-slate-500 transition hover:text-emerald-900"
+                  className="inline-flex items-center gap-2 font-medium text-slate-500 transition hover:text-amber-800"
                 >
                   <ArrowLeft className="h-4 w-4" />
                   Back to sign in
@@ -477,7 +473,7 @@ export default function AuthForm({ initialMode, actions }: AuthFormProps) {
                   <button
                     type="button"
                     onClick={() => changeMode("forgot")}
-                    className="font-semibold text-emerald-900 hover:text-emerald-700"
+                    className="font-semibold text-amber-800 hover:text-amber-600"
                   >
                     Send another code
                   </button>
@@ -501,12 +497,12 @@ export default function AuthForm({ initialMode, actions }: AuthFormProps) {
         {/* Footer */}
         <footer className="mt-6 space-y-3 text-center">
           <p className="inline-flex items-center justify-center gap-1.5 text-xs text-slate-500">
-            <ShieldCheck className="h-3.5 w-3.5 text-emerald-800" />
+            <ShieldCheck className="h-3.5 w-3.5 text-amber-700" />
             Secure account access
           </p>
 
           <div className="flex items-center justify-center gap-2 text-xs text-slate-400">
-            <Link href="/" className="transition hover:text-emerald-900">
+            <Link href="/" className="transition hover:text-amber-800">
               Home
             </Link>
             <span aria-hidden="true">·</span>
