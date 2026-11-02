@@ -108,7 +108,7 @@ export default async function LatestNews() {
             {news.map((item) => (
               <article
                 key={item.id}
-                className="group flex min-w-0 flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-md shadow-amber-100/70 transition-all duration-300 hover:-translate-y-1 hover:border-amber-100 hover:shadow-xl hover:shadow-amber-100"
+                className="group flex min-w-0 flex-col overflow-hidden rounded-md border border-slate-100 bg-white shadow-md shadow-amber-100/70 transition-all duration-300 hover:-translate-y-1 hover:border-amber-100 hover:shadow-xl hover:shadow-amber-100"
               >
                 {/* Media */}
                 <div className="relative aspect-16/10 overflow-hidden bg-slate-900">

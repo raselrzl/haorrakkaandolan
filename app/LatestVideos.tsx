@@ -83,7 +83,7 @@ export default async function LatestVideos() {
             {videos.map((item) => (
               <article
                 key={item.id}
-                className="group flex min-w-0 flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-md shadow-amber-100/70 transition-all duration-300 hover:-translate-y-1 hover:border-amber-100 hover:shadow-xl hover:shadow-amber-100"
+                className="group flex min-w-0 flex-col overflow-hidden rounded-md border border-slate-100 bg-white shadow-md shadow-amber-100/70 transition-all duration-300 hover:-translate-y-1 hover:border-amber-100 hover:shadow-xl hover:shadow-amber-100"
               >
                 {/* Video player */}
                 <div className="relative aspect-video overflow-hidden bg-slate-950">
@@ -122,7 +122,7 @@ export default async function LatestVideos() {
             ))}
           </div>
         ) : (
-          <div className="rounded-xl border border-dashed border-slate-200 bg-white px-5 py-12 text-center shadow-sm shadow-amber-100/50">
+          <div className="rounded-md border border-dashed border-slate-200 bg-white px-5 py-12 text-center shadow-sm shadow-amber-100/50">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-50">
               <Video size={25} className="text-amber-800" />
             </div>

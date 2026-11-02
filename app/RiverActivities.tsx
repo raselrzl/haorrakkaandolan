@@ -46,10 +46,8 @@ export default function RiverSection({
   return (
     <section id="river" className="scroll-mt-20 bg-white py-6">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Section heading */}
         <div className="mb-5 flex items-center justify-between border-b border-slate-200 pb-3">
-          <div className="flex items-center gap-3">
-            {/* Flowing river illustration */}
+        {/*   <div className="flex items-center gap-3">
             <svg
               viewBox="0 0 100 60"
               fill="none"
@@ -92,7 +90,7 @@ export default function RiverSection({
                 River Activities
               </h2>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {activities.length > 0 ? (
@@ -111,7 +109,7 @@ export default function RiverSection({
                     <Link
                       href={href}
                       aria-label={`Read ${item.title}`}
-                      className="relative h-24 w-28 shrink-0 overflow-hidden rounded-lg bg-slate-100 sm:h-28 sm:w-32"
+                      className="relative h-24 w-28 shrink-0 overflow-hidden rounded-md bg-slate-100 sm:h-28 sm:w-32"
                     >
                       {item.image && item.mediaType === "VIDEO" ? (
                         <span className="relative block h-full w-full">

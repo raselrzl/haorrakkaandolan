@@ -304,8 +304,6 @@ export default function LawPageContent() {
                   ? "হাওর ও জলাভূমি সুরক্ষায় আইন"
                   : "Laws that protect our wetlands"}
               </h1>
-
-          
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
@@ -483,45 +481,113 @@ export default function LawPageContent() {
       {/* CONSERVATION RESPONSIBILITY */}
       <section
         id="responsibility"
-        className="scroll-mt-20 bg-[#29251f] px-4 py-12 text-white sm:py-16"
+        className="relative isolate scroll-mt-20 overflow-hidden bg-gray-50 px-4 py-24 text-slate-900 sm:py-28"
       >
-        <div className="mx-auto grid max-w-6xl gap-9 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+        {/* TOP ORGANIC WAVE EDGE */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-28 sm:h-36">
+          <svg
+            viewBox="0 0 1440 180"
+            preserveAspectRatio="none"
+            className="h-full w-full"
+          >
+            <path
+              d="M0 0H1440V45C1250 105 1120 125 930 91C700 49 590 12 365 62C190 101 100 88 0 125V0Z"
+              fill="#faf9f6"
+            />
+          </svg>
+        </div>
+
+        {/* BOTTOM ORGANIC WAVE EDGE */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-32 sm:h-40">
+          <svg
+            viewBox="0 0 1440 180"
+            preserveAspectRatio="none"
+            className="h-full w-full"
+          >
+            <path
+              d="M0 75C190 5 340 12 540 67C760 128 900 145 1100 91C1240 54 1350 38 1440 65V180H0V75Z"
+              fill="#faf9f6"
+            />
+          </svg>
+        </div>
+
+        {/* DECORATIVE LEAF */}
+        <div className="pointer-events-none absolute -bottom-5 -left-5 -z-10 opacity-[0.17]">
+          <svg
+            viewBox="0 0 300 280"
+            className="h-52 w-56 text-amber-600 sm:h-64 sm:w-64"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          >
+            <path d="M10 270C75 205 100 125 120 15" strokeWidth="3" />
+            <path
+              d="M60 215C5 185 5 145 15 110C55 120 85 155 60 215Z"
+              fill="currentColor"
+              fillOpacity="0.45"
+            />
+            <path
+              d="M85 165C35 130 45 85 70 55C105 85 115 125 85 165Z"
+              fill="currentColor"
+              fillOpacity="0.45"
+            />
+            <path
+              d="M100 125C135 75 185 80 215 100C190 140 145 155 100 125Z"
+              fill="currentColor"
+              fillOpacity="0.45"
+            />
+            <path
+              d="M65 220C120 170 180 165 255 190C205 245 125 255 65 220Z"
+              fill="currentColor"
+              fillOpacity="0.45"
+            />
+            <path d="M15 110L60 215M70 55L85 165M215 100L100 125M255 190L65 220" />
+          </svg>
+        </div>
+
+        <div className="relative mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-16">
+          {/* LEFT CONTENT */}
           <div>
-            <div className="flex h-11 w-11 items-center justify-center border border-amber-300/35 text-amber-300">
-              <ShieldCheck size={21} strokeWidth={1.6} />
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-amber-700">
+              <ShieldCheck size={23} strokeWidth={1.6} />
             </div>
 
-            <p className="mt-6 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-300">
+            <p className="mt-6 text-[10px] font-bold uppercase tracking-[0.22em] text-amber-700">
               {bn ? "জনসচেতনতা" : "PUBLIC AWARENESS"}
             </p>
 
-            <h2 className="mt-2 text-2xl font-bold leading-snug tracking-tight text-white sm:text-3xl">
+            <h2 className="mt-3 max-w-lg text-3xl font-bold leading-tight tracking-tight text-slate-900 sm:text-4xl">
               {bn
                 ? "হাওর ও নদী রক্ষায় আমাদের দায়িত্ব"
                 : "Our responsibility to protect haors and rivers"}
             </h2>
 
-            <p className="mt-4 text-sm leading-7 text-slate-300">
+            <p className="mt-5 max-w-lg text-sm leading-7 text-slate-600">
               {bn
                 ? "নিচের বিষয়গুলো হাওর রক্ষা আন্দোলনের জনসচেতনতামূলক নীতি, আইনের সরাসরি উদ্ধৃতি নয়।"
                 : "The following principles support Haor Rokkha Andolan's public-awareness work; they are not direct quotations from legislation."}
             </p>
           </div>
 
-          <ol className="divide-y divide-white/15 border-y border-white/15">
+          {/* RIGHT PRINCIPLES — NO STRAIGHT DIVIDERS */}
+          <ol className="space-y-3">
             {principles.map((principle, index) => (
-              <li key={index} className="flex items-start gap-4 py-4">
-                <span className="pt-0.5 text-sm font-semibold tracking-wider text-amber-300">
+              <li
+                key={index}
+                className="group flex items-start gap-4 rounded-2xl px-3 py-4 transition-all duration-300 hover:bg-white hover:shadow-sm sm:gap-5 sm:px-5"
+              >
+                <span className="shrink-0 pt-0.5 text-xl font-bold tracking-wider text-amber-600 sm:text-2xl">
                   {String(index + 1).padStart(2, "0")}
                 </span>
 
-                <p className="flex-1 text-sm leading-7 text-white/90">
+                <p className="flex-1 text-sm leading-7 text-slate-700">
                   {principle[language]}
                 </p>
 
                 <CheckCircle2
-                  size={17}
-                  className="mt-1 shrink-0 text-amber-300"
+                  size={20}
+                  strokeWidth={1.8}
+                  className="mt-1 shrink-0 text-amber-600 transition-transform duration-300 group-hover:scale-110"
                 />
               </li>
             ))}

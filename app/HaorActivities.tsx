@@ -44,32 +44,26 @@ export default function HaorActivities({
   return (
     <section
       id="haor-activities"
-      className="relative scroll-mt-20 overflow-hidden bg-white py-12 sm:py-16"
+      className="relative scroll-mt-20 overflow-hidden bg-white py-6"
     >
-      {/* SUBTLE AMBER DECORATION */}
       <div className="pointer-events-none absolute -right-24 -top-20 h-64 w-64 rounded-full bg-amber-100/40 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-24 -left-20 h-56 w-56 rounded-full bg-amber-50 blur-3xl" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* SECTION HEADER */}
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-          <div className="flex min-w-0 items-center gap-3">
-            {/* Haor water illustration */}
+          {/*  <div className="flex min-w-0 items-center gap-3">
             <svg
               viewBox="0 0 64 52"
               fill="none"
               className="h-12 w-14 shrink-0"
               aria-hidden="true"
             >
-              {/* Distant wetland hills */}
               <path
                 d="M3 23C12 17 19 19 27 22C37 15 48 17 61 23"
                 stroke="#a1a1aa"
                 strokeWidth="2"
                 strokeLinecap="round"
               />
-
-              {/* Water */}
               <path
                 d="M4 30C13 25 19 35 29 30C39 25 47 35 60 29"
                 stroke="#0ea5e9"
@@ -84,8 +78,6 @@ export default function HaorActivities({
                 strokeLinecap="round"
                 className="animate-river-flow-reverse"
               />
-
-              {/* Wetland reeds */}
               <path
                 d="M12 27V9M12 16L7 12M12 20L17 15M49 27V7M49 15L44 11M49 19L54 13"
                 stroke="#a16207"
@@ -103,7 +95,7 @@ export default function HaorActivities({
                 Haor Activities
               </h2>
             </div>
-          </div>
+          </div> */}
           {/* 
           <Link
             href="/activities"
@@ -123,7 +115,7 @@ export default function HaorActivities({
             {activities.map((item) => (
               <article
                 key={item.id}
-                className="group flex min-w-0 flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-md shadow-amber-100/70 transition-all duration-300 hover:-translate-y-1 hover:border-amber-100 hover:shadow-xl hover:shadow-amber-100"
+                className="group flex min-w-0 flex-col overflow-hidden rounded-md border border-slate-100 bg-white shadow-md shadow-amber-100/70 transition-all duration-300 hover:-translate-y-1 hover:border-amber-100 hover:shadow-xl hover:shadow-amber-100"
               >
                 {/* IMAGE / VIDEO */}
                 <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-slate-100">
