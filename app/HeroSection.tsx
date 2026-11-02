@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -125,7 +124,7 @@ export default function HeroSection(_props: HeroSectionProps) {
       <div className="absolute inset-x-0 bottom-[13%] z-10 mx-auto w-full max-w-7xl px-4 sm:bottom-[14%] sm:px-8 lg:px-10">
         <div className="flex max-w-5xl items-center gap-3 sm:gap-5 lg:gap-7">
           {/* ORGANIZATION LOGO */}
-          <div className="relative h-[76px] w-[76px] shrink-0 rounded-full border-[3px] border-amber-400 bg-white p-1 shadow-[0_8px_30px_rgba(0,0,0,0.5)] sm:h-[100px] sm:w-[100px] sm:border-4 lg:h-[122px] lg:w-[122px]">
+          <div className="relative h-[76px] w-[76px] shrink-0 -translate-y-3 sm:-translate-y-6 rounded-full border-[3px] border-amber-400 bg-white p-1 shadow-[0_8px_30px_rgba(0,0,0,0.5)] sm:h-[100px] sm:w-[100px] sm:border-4 lg:h-[122px] lg:w-[122px]">
             <div className="relative h-full w-full overflow-hidden rounded-full bg-white">
               <Image
                 src="/ha2.png"
