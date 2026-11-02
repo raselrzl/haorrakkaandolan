@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -146,9 +145,7 @@ export default function Footer() {
                     size={13}
                     strokeWidth={1.8}
                     className={`shrink-0 transition-transform duration-200 group-hover:-translate-y-0.5 ${
-                      isDonation
-                        ? "text-red-500"
-                        : "text-amber-700"
+                      isDonation ? "text-red-500" : "text-amber-700"
                     }`}
                   />
 
@@ -180,9 +177,7 @@ export default function Footer() {
                     className="shrink-0 text-amber-700 transition-transform duration-200 group-hover:scale-110"
                   />
 
-                  <span className="min-w-0 flex-1 leading-5">
-                    {item.label}
-                  </span>
+                  <span className="min-w-0 flex-1 leading-5">{item.label}</span>
 
                   <ExternalLink
                     size={12}
@@ -196,14 +191,27 @@ export default function Footer() {
 
         {/* COPYRIGHT */}
         <div className="mt-4 flex flex-col items-center gap-2 border-t border-amber-100 pt-3 text-center text-[11px] text-slate-400 sm:flex-row sm:justify-between sm:text-left">
-          <p>
-            © 2026 Haor Rokkha Andolan. All rights reserved.
-          </p>
+          <p>© 2026 Haor Rokkha Andolan. All rights reserved.</p>
 
           <p className="flex items-center gap-1">
             Working together to protect our haors and wetlands.
             <ArrowUpRight size={12} className="text-amber-700" />
           </p>
+          <a
+            href="https://www.souveral.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Website developed by Souveral — opens in a new tab"
+            className="group inline-flex items-center transition-opacity duration-200 hover:opacity-75"
+          >
+            <Image
+              src="/sov.png"
+              alt="Developed by Souveral"
+              width={85}
+              height={24}
+              className="h-10 w-auto object-contain"
+            />
+          </a>
         </div>
       </div>
     </footer>
