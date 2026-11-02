@@ -19,11 +19,21 @@ const backgroundImages = [
   "/monu.jpg",
 ];
 
-const slogan = "“হাওর -নদী- পরিবেশ, রক্ষা করো বাংলাদেশ।”";
+const slogans = [
+  {
+    first: "“হাওর -নদী- পরিবেশ,",
+    second: " রক্ষা করো বাংলাদেশ।”",
+  },
+  {
+    first: "“Protect Bangladesh’s",
+    second: " Haors, Rivers & Environment.”",
+  },
+];
 
 export default function HeroSection(_props: HeroSectionProps) {
   const [activeImage, setActiveImage] = useState(0);
   const [typedSlogan, setTypedSlogan] = useState("");
+  const [activeSlogan, setActiveSlogan] = useState(0);
 
   useEffect(() => {
     const interval = window.setInterval(() => {
@@ -33,9 +43,12 @@ export default function HeroSection(_props: HeroSectionProps) {
     return () => window.clearInterval(interval);
   }, []);
 
-  // BENGALI SLOGAN TYPEWRITER EFFECT
+  // BENGALI AND ENGLISH SLOGAN TYPEWRITER EFFECT
   useEffect(() => {
-    const characters = Array.from(slogan);
+    const currentSlogan = slogans[activeSlogan];
+    const fullSlogan = currentSlogan.first + currentSlogan.second;
+    const characters = Array.from(fullSlogan);
+
     let currentIndex = 0;
     let timeout: ReturnType<typeof setTimeout>;
 
@@ -47,9 +60,8 @@ export default function HeroSection(_props: HeroSectionProps) {
         timeout = setTimeout(typeNextCharacter, 110);
       } else {
         timeout = setTimeout(() => {
-          currentIndex = 0;
           setTypedSlogan("");
-          timeout = setTimeout(typeNextCharacter, 500);
+          setActiveSlogan((current) => (current + 1) % slogans.length);
         }, 3000);
       }
     };
@@ -57,7 +69,9 @@ export default function HeroSection(_props: HeroSectionProps) {
     timeout = setTimeout(typeNextCharacter, 500);
 
     return () => clearTimeout(timeout);
-  }, []);
+  }, [activeSlogan]);
+
+  const currentSlogan = slogans[activeSlogan];
 
   return (
     <section className="relative isolate h-[370px] w-full overflow-hidden border-t-8 border-amber-300 bg-slate-950 sm:h-[370px] lg:h-[390px]">
@@ -87,17 +101,15 @@ export default function HeroSection(_props: HeroSectionProps) {
       {/* ENVIRONMENTAL SLOGAN — TOP RIGHT */}
       <div className="absolute right-4 top-5 z-20 max-w-[230px] text-right sm:right-8 sm:top-7 sm:max-w-sm lg:right-12 lg:top-8">
         <p
-          lang="bn"
+          lang={activeSlogan === 0 ? "bn" : "en"}
           translate="no"
           className="notranslate text-sm font-extrabold italic leading-relaxed text-white drop-shadow-[0_2px_5px_rgba(0,0,0,0.95)] sm:text-lg md:text-xl lg:text-2xl"
         >
-          {typedSlogan.startsWith("“হাওর -নদী- পরিবেশ,")
-            ? "“হাওর -নদী- পরিবেশ,"
-            : typedSlogan}
+          {typedSlogan.slice(0, currentSlogan.first.length)}
 
-          {typedSlogan.startsWith("“হাওর -নদী- পরিবেশ,") && (
+          {typedSlogan.length > currentSlogan.first.length && (
             <span className="block text-amber-300">
-              {typedSlogan.slice("“হাওর -নদী- পরিবেশ,".length)}
+              {typedSlogan.slice(currentSlogan.first.length)}
             </span>
           )}
 
