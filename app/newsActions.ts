@@ -3,13 +3,7 @@ import nodemailer from "nodemailer";
 import { ContactFormState } from "./contactTypes";
 import { prisma } from "./utils/db";
 
-
-export type PublicNewsFilter =
-  | "ALL"
-  | "NEWS"
-  | "ACTIVITY"
-  | "RIVER"
-  | "HAOR";
+export type PublicNewsFilter = "ALL" | "NEWS" | "ACTIVITY" | "RIVER" | "HAOR";
 
 const PAGE_SIZE = 20;
 
@@ -47,21 +41,14 @@ export async function getPublicNewsPageAction({
   filter?: PublicNewsFilter;
   search?: string;
 }) {
-  const currentPage = Math.max(
-    1,
-    Math.floor(Number.isFinite(page) ? page : 1),
-  );
+  const currentPage = Math.max(1, Math.floor(Number.isFinite(page) ? page : 1));
 
   const query = search.trim().slice(0, 150);
 
   const where = {
-    ...(filter === "NEWS" || filter === "ACTIVITY"
-      ? { type: filter }
-      : {}),
+    ...(filter === "NEWS" || filter === "ACTIVITY" ? { type: filter } : {}),
 
-    ...(filter === "RIVER" || filter === "HAOR"
-      ? { riverOrHaor: filter }
-      : {}),
+    ...(filter === "RIVER" || filter === "HAOR" ? { riverOrHaor: filter } : {}),
 
     ...(query
       ? {
@@ -107,8 +94,6 @@ export async function getPublicNewsPageAction({
     pageSize: PAGE_SIZE,
   };
 }
-
-
 
 export type HomepageNewsItem = {
   id: string;
@@ -175,9 +160,7 @@ export async function getHomepageNews(): Promise<{
   };
 }
 
-export async function getNewsById(
-  id: string,
-): Promise<NewsDetailsItem | null> {
+export async function getNewsById(id: string): Promise<NewsDetailsItem | null> {
   if (!id || id.length > 100) {
     return null;
   }
@@ -220,7 +203,6 @@ export async function getNewsById(
   };
 }
 
-
 /* export type ContactFormState = {
   success: boolean;
   message: string;
@@ -230,8 +212,6 @@ export const initialContactFormState: ContactFormState = {
   success: false,
   message: "",
 }; */
-
-
 
 export async function contactMessageAction(
   _previousState: ContactFormState,
@@ -282,10 +262,7 @@ export async function contactMessageAction(
     };
   }
 
-  if (
-    email.length > 254 ||
-    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-  ) {
+  if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return {
       success: false,
       message: "Please enter a valid email address.",
@@ -346,15 +323,18 @@ export async function contactMessageAction(
 
     await transporter.sendMail({
       from: {
-        name: "Haor Rokkha Andolan",
+        name: "Wetlands Resilience Initiatives",
         address: user,
       },
+
       to: email,
       replyTo: user,
-      subject: "Thank you for contacting Haor Rokkha Andolan",
+
+      subject: "Thank you for contacting Wetlands Resilience Initiatives",
+
       text: `Dear ${name},
 
-Thank you for contacting Haor Rokkha Andolan.
+Thank you for contacting Wetlands Resilience Initiatives.
 
 We have received your message and appreciate your interest in protecting wetlands and preserving the environment.
 
@@ -368,32 +348,54 @@ Our team will review your message and contact you if necessary.
 Thank you for your support.
 
 Regards,
-Haor Rokkha Andolan
+Wetlands Resilience Initiatives
 Protecting Wetlands, Preserving Life.`,
+
       html: `
         <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#334155;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;">
-          <div style="background:#065f46;padding:24px;color:#ffffff;">
-            <h2 style="margin:0;font-size:22px;">Haor Rokkha Andolan</h2>
-            <p style="margin:8px 0 0;font-size:13px;">
+
+          <!-- EMAIL HEADER -->
+          <div style="background:#292524;padding:24px;color:#ffffff;border-bottom:3px solid #d4a017;">
+
+            <h2 style="margin:0;font-size:22px;">
+              Wetlands Resilience Initiatives
+            </h2>
+
+            <p style="margin:8px 0 0;font-size:13px;color:#facc15;">
               Protecting Wetlands, Preserving Life
             </p>
+
           </div>
 
+          <!-- EMAIL BODY -->
           <div style="padding:24px;">
-            <h3 style="color:#065f46;">Thank you for contacting us!</h3>
 
-            <p>Dear ${escapeHtml(name)},</p>
+            <h3 style="color:#b8860b;">
+              Thank you for contacting us!
+            </h3>
+
+            <p>
+              Dear ${escapeHtml(name)},
+            </p>
 
             <p>
               We have successfully received your message.
-              Thank you for reaching out to Haor Rokkha Andolan
-              and for your interest in protecting our wetlands
-              and environment.
+              Thank you for reaching out to Wetlands Resilience
+              Initiatives and for your interest in protecting
+              our wetlands and environment.
             </p>
 
-            <div style="background:#f8fafc;border:1px solid #e2e8f0;padding:16px;border-radius:8px;">
-              <p><strong>Reason:</strong> ${escapeHtml(reason)}</p>
-              <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+            <!-- SUBMISSION SUMMARY -->
+            <div style="background:#fffbeb;border:1px solid #f5d98b;padding:16px;border-radius:8px;">
+
+              <p>
+                <strong>Reason:</strong> ${escapeHtml(reason)}
+              </p>
+
+              <p>
+                <strong>Name:</strong> ${escapeHtml(name)}
+              </p>
+
             </div>
 
             <p>
@@ -401,12 +403,24 @@ Protecting Wetlands, Preserving Life.`,
               if necessary.
             </p>
 
-            <p>Thank you for your support.</p>
+            <p>
+              Thank you for your support.
+            </p>
 
+            <!-- SIGNATURE -->
             <p style="margin-top:24px;">
               Regards,<br />
-              <strong>Haor Rokkha Andolan</strong>
+
+              <strong style="color:#b8860b;">
+                Wetlands Resilience Initiatives
+              </strong>
             </p>
+
+            <!-- FOOTER -->
+            <p style="font-size:12px;color:#a16207;border-top:1px solid #f5d98b;padding-top:14px;margin-top:20px;">
+              Protecting Wetlands, Preserving Life.
+            </p>
+
           </div>
         </div>
       `,
