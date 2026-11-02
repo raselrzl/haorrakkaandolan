@@ -323,7 +323,7 @@ export default function Navbar() {
           id="mobile-secondary-navigation"
           aria-label="Additional navigation"
           aria-hidden={!mobileMenuOpen}
-          className={`absolute inset-x-0 top-full z-[70] overflow-hidden border-t border-amber-500/50 bg-white shadow-lg transition-all duration-200 ease-in-out ${
+          className={`absolute right-10 top-full z-[70] w-full max-w-[248px] rounded-b-2xl overflow-hidden border border-amber-500/50 bg-white shadow-lg transition-all duration-200 ease-in-out ${
             mobileMenuOpen
               ? "visible translate-y-0 opacity-100"
               : "invisible pointer-events-none -translate-y-2 opacity-0"
@@ -353,7 +353,7 @@ export default function Navbar() {
                   href={link.href}
                   aria-current={active ? "page" : undefined}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex min-h-11 items-center justify-between gap-3 px-3 py-2 text-xs transition-colors ${
+                  className={`flex min-h-10 items-center justify-between gap-1 px-3 text-xs transition-colors ${
                     isLogin
                       ? "bg-gradient-to-r from-yellow-300 to-amber-400 font-extrabold text-[#382b13] hover:from-yellow-400 hover:to-amber-500"
                       : active
@@ -361,7 +361,7 @@ export default function Navbar() {
                         : "bg-white font-bold text-slate-700 hover:bg-amber-50"
                   }`}
                 >
-                  <span className="flex min-w-0 items-center gap-3">
+                  <span className="flex min-w-0 items-center gap-2">
                     <Icon
                       className={`h-[17px] w-[17px] shrink-0 ${
                         isLogin
