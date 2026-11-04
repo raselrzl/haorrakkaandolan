@@ -377,7 +377,7 @@ export default function AuthForm({ initialMode, actions }: AuthFormProps) {
             <Link href="/">
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border border-amber-200 bg-amber-50 p-1">
                 <Image
-                  src="/ha2.png"
+                  src="/wri.png"
                   alt="Haor Rokkha Andolan logo"
                   width={48}
                   height={48}

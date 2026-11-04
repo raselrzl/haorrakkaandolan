@@ -96,7 +96,7 @@ export default function Footer() {
               className="shrink-0"
             >
               <Image
-                src="/ha2.png"
+                src="/wri.png"
                 alt="হাওর রক্ষা আন্দোলন logo"
                 width={48}
                 height={48}

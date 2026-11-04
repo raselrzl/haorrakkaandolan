@@ -127,7 +127,7 @@ export default function HeroSection(_props: HeroSectionProps) {
           <div className="relative h-[76px] w-[76px] shrink-0 -translate-y-3 sm:-translate-y-6 rounded-full border-[3px] border-amber-400 bg-white p-1 shadow-[0_8px_30px_rgba(0,0,0,0.5)] sm:h-[100px] sm:w-[100px] sm:border-4 lg:h-[122px] lg:w-[122px]">
             <div className="relative h-full w-full overflow-hidden rounded-full bg-white">
               <Image
-                src="/ha2.png"
+                src="/wri.png"
                 alt="Haor Rokkha Andolan logo"
                 fill
                 priority
