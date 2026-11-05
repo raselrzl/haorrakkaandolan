@@ -44,9 +44,7 @@ function detectMediaType(url: string): MediaType {
   return MediaType.IMAGE;
 }
 
-export async function createNewsAction(formData: FormData) {
-  const user = await requireAdmin();
-
+function validateNewsData(formData: FormData) {
   const heading = cleanText(formData.get("heading"));
   const details = cleanText(formData.get("details"));
   const mediaUrl = validateMediaUrl(cleanText(formData.get("mediaUrl")));
@@ -75,15 +73,25 @@ export async function createNewsAction(formData: FormData) {
       : detectMediaType(mediaUrl);
   }
 
+  return {
+    heading,
+    details,
+    mediaUrl,
+    mediaType,
+    riverOrHaor: riverOrHaor as WaterBodyType,
+    type: type as NewsType,
+  };
+}
+
+// CREATE NEWS / ACTIVITY
+export async function createNewsAction(formData: FormData) {
+  const user = await requireAdmin();
+  const data = validateNewsData(formData);
+
   await prisma.news.create({
     data: {
       userId: user.id,
-      heading,
-      details,
-      mediaUrl,
-      mediaType,
-      riverOrHaor: riverOrHaor as WaterBodyType,
-      type: type as NewsType,
+      ...data,
     },
   });
 
@@ -96,6 +104,40 @@ export async function createNewsAction(formData: FormData) {
   };
 }
 
+// EDIT / UPDATE NEWS / ACTIVITY
+export async function updateNewsAction(id: string, formData: FormData) {
+  await requireAdmin();
+
+  if (!id?.trim()) {
+    throw new Error("A news record must be selected.");
+  }
+
+  const data = validateNewsData(formData);
+
+  const existingNews = await prisma.news.findUnique({
+    where: { id },
+    select: { id: true },
+  });
+
+  if (!existingNews) {
+    throw new Error("News or activity record not found.");
+  }
+
+  await prisma.news.update({
+    where: { id },
+    data,
+  });
+
+  revalidatePath(DASHBOARD_PATH);
+  revalidatePath("/news");
+
+  return {
+    success: true,
+    message: "News or activity updated successfully.",
+  };
+}
+
+// GET NEWS / ACTIVITIES
 export async function getNewsAction() {
   await requireAdmin();
 
@@ -109,6 +151,7 @@ export async function getNewsAction() {
   });
 }
 
+// DELETE SINGLE RECORD
 export async function deleteNewsAction(id: string) {
   await requireAdmin();
 
@@ -129,14 +172,13 @@ export async function deleteNewsAction(id: string) {
   };
 }
 
+// DELETE SELECTED RECORDS
 export async function deleteSelectedNewsAction(ids: string[]) {
   await requireAdmin();
 
   const selectedIds = [
     ...new Set(
-      ids.filter(
-        (id) => typeof id === "string" && id.trim().length > 0,
-      ),
+      ids.filter((id) => typeof id === "string" && id.trim().length > 0),
     ),
   ];
 

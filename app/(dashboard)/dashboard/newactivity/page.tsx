@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -8,8 +9,10 @@ import {
   useTransition,
   type FormEvent,
 } from "react";
+
 import { UploadButton } from "@uploadthing/react";
 import type { OurFileRouter } from "@/app/api/uploadthing/core";
+
 import {
   Activity,
   CalendarDays,
@@ -19,6 +22,7 @@ import {
   LoaderCircle,
   Newspaper,
   Plus,
+  Pencil,
   RefreshCw,
   Search,
   Trash2,
@@ -29,12 +33,14 @@ import {
 
 import {
   createNewsAction,
+  updateNewsAction,
   deleteNewsAction,
   deleteSelectedNewsAction,
   getNewsAction,
 } from "./activityActions";
 
 type NewsItem = Awaited<ReturnType<typeof getNewsAction>>[number];
+
 type MediaKind = "IMAGE" | "VIDEO";
 
 const initialForm = {
@@ -69,14 +75,12 @@ function getEmbedUrl(url: string): string | null {
 
     if (hostname === "youtu.be" || hostname.endsWith(".youtu.be")) {
       const id = parsed.pathname.split("/").filter(Boolean)[0];
-
       return id ? `https://www.youtube.com/embed/${id}` : null;
     }
 
     if (hostname === "youtube.com" || hostname.endsWith(".youtube.com")) {
       if (parsed.pathname === "/watch") {
         const id = parsed.searchParams.get("v");
-
         return id ? `https://www.youtube.com/embed/${id}` : null;
       }
 
@@ -86,7 +90,6 @@ function getEmbedUrl(url: string): string | null {
 
       if (parsed.pathname.startsWith("/shorts/")) {
         const id = parsed.pathname.split("/")[2];
-
         return id ? `https://www.youtube.com/embed/${id}` : null;
       }
     }
@@ -108,7 +111,10 @@ function getEmbedUrl(url: string): string | null {
 function inferMediaKind(url: string): MediaKind {
   if (!url.trim()) return "IMAGE";
 
-  if (isDirectVideoUrl(url) || /youtube\.com|youtu\.be|vimeo\.com/i.test(url)) {
+  if (
+    isDirectVideoUrl(url) ||
+    /youtube\.com|youtu\.be|vimeo\.com/i.test(url)
+  ) {
     return "VIDEO";
   }
 
@@ -129,7 +135,6 @@ function MediaPreview({
   const embed = getEmbedUrl(url);
 
   if (kind === "VIDEO") {
-    // YouTube and Vimeo need their embedded players.
     if (embed) {
       return (
         <div
@@ -149,7 +154,6 @@ function MediaPreview({
       );
     }
 
-    // Try to play direct and uploaded video URLs, even without a file extension.
     return (
       <div className="w-full min-w-0">
         <video
@@ -198,9 +202,15 @@ export default function NewsActivitiesPage() {
   const [typeFilter, setTypeFilter] = useState("ALL");
   const [waterFilter, setWaterFilter] = useState("ALL");
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+
   const [isPending, startTransition] = useTransition();
+
+  // Upload loading state
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const loadItems = useCallback(() => {
     startTransition(async () => {
@@ -255,17 +265,42 @@ export default function NewsActivitiesPage() {
   }
 
   function openCreateModal() {
+    setEditingId(null);
     setError("");
     setNotice("");
     setForm(initialForm);
     setMediaKind("IMAGE");
+    setUploadProgress(0);
+    setModalOpen(true);
+  }
+
+  function openEditModal(item: NewsItem) {
+    setError("");
+    setNotice("");
+    setEditingId(item.id);
+
+    setForm({
+      heading: item.heading,
+      details: item.details,
+      riverOrHaor: item.riverOrHaor,
+      type: item.type,
+      mediaUrl: item.mediaUrl ?? "",
+    });
+
+    setMediaKind(
+      item.mediaType === "VIDEO" || item.mediaType === "IMAGE"
+        ? item.mediaType
+        : inferMediaKind(item.mediaUrl ?? ""),
+    );
+
     setModalOpen(true);
   }
 
   function closeCreateModal() {
-    if (isPending) return;
+    if (isPending || isUploading) return;
 
     setModalOpen(false);
+    setEditingId(null);
     setError("");
   }
 
@@ -276,13 +311,15 @@ export default function NewsActivitiesPage() {
 
   function submitForm(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (isUploading || isPending) return;
+
     setError("");
     setNotice("");
 
     const mediaUrl = form.mediaUrl.trim();
     const detectedMediaKind = inferMediaKind(mediaUrl);
 
-    // Detect media type automatically before saving.
     const finalMediaKind = mediaUrl
       ? mediaKind === "VIDEO" || detectedMediaKind === "VIDEO"
         ? "VIDEO"
@@ -300,9 +337,12 @@ export default function NewsActivitiesPage() {
 
     startTransition(async () => {
       try {
-        const result = await createNewsAction(formData);
+        const result = editingId
+          ? await updateNewsAction(editingId, formData)
+          : await createNewsAction(formData);
 
         setNotice(result.message);
+        setEditingId(null);
         setForm(initialForm);
         setMediaKind("IMAGE");
         setModalOpen(false);
@@ -332,7 +372,6 @@ export default function NewsActivitiesPage() {
         );
 
         setSelectedIds((current) => current.filter((id) => id !== item.id));
-
         setNotice(result.message);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unable to delete.");
@@ -373,7 +412,6 @@ export default function NewsActivitiesPage() {
   }
 
   const newsCount = items.filter((item) => item.type === "NEWS").length;
-
   const activityCount = items.filter((item) => item.type === "ACTIVITY").length;
 
   return (
@@ -526,7 +564,6 @@ export default function NewsActivitiesPage() {
           ) : (
             <div className="divide-y divide-slate-100">
               {filteredItems.map((item) => {
-                // Prefer the saved type; infer it for older records.
                 const itemMediaKind: MediaKind =
                   item.mediaType === "VIDEO" || item.mediaType === "IMAGE"
                     ? item.mediaType
@@ -622,21 +659,32 @@ export default function NewsActivitiesPage() {
                           <CalendarDays size={11} className="mr-1 inline" />
                           Created: {formatDate(item.createdAt)}
                         </span>
-
                         <span>Updated: {formatDate(item.updatedAt)}</span>
                         <span>By {item.user.name}</span>
                       </p>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => deleteOne(item)}
-                      disabled={isPending}
-                      className="inline-flex shrink-0 items-center justify-center gap-1 rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50"
-                    >
-                      <Trash2 size={13} />
-                      Delete
-                    </button>
+                    <div className="flex shrink-0 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => openEditModal(item)}
+                        disabled={isPending}
+                        className="inline-flex items-center justify-center gap-1 rounded-lg border border-sky-200 px-3 py-2 text-xs font-semibold text-sky-700 hover:bg-sky-50 disabled:opacity-50"
+                      >
+                        <Pencil size={13} />
+                        Edit
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => deleteOne(item)}
+                        disabled={isPending}
+                        className="inline-flex items-center justify-center gap-1 rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50"
+                      >
+                        <Trash2 size={13} />
+                        Delete
+                      </button>
+                    </div>
                   </article>
                 );
               })}
@@ -655,15 +703,15 @@ export default function NewsActivitiesPage() {
           >
             <div className="flex items-center justify-between bg-emerald-950 px-4 py-3 text-white">
               <h2 id="form-title" className="text-base font-bold">
-                Add news / activity
+                {editingId ? "Edit news / activity" : "Add news / activity"}
               </h2>
 
               <button
                 type="button"
                 onClick={closeCreateModal}
-                disabled={isPending}
+                disabled={isPending || isUploading}
                 aria-label="Close"
-                className="rounded p-1 hover:bg-white/10"
+                className="rounded p-1 hover:bg-white/10 disabled:opacity-50"
               >
                 <X size={19} />
               </button>
@@ -752,54 +800,94 @@ export default function NewsActivitiesPage() {
                   Upload image or video
                 </div>
 
-                <UploadButton<OurFileRouter, "imageUploader">
-                  endpoint="imageUploader"
-                  onClientUploadComplete={(res) => {
-                    const uploadedFile = res?.[0];
+                <div className="flex flex-wrap items-center gap-3">
+                  <UploadButton<OurFileRouter, "imageUploader">
+                    endpoint="imageUploader"
+                    onUploadBegin={() => {
+                      setIsUploading(true);
+                      setUploadProgress(0);
+                      setError("");
+                    }}
+                    onUploadProgress={(progress) => {
+                      setUploadProgress(progress);
+                    }}
+                    onClientUploadComplete={(res) => {
+                      const uploadedFile = res?.[0];
 
-                    if (!uploadedFile?.url) return;
+                      setIsUploading(false);
+                      setUploadProgress(100);
 
-                    const fileInfo = uploadedFile as typeof uploadedFile & {
-                      type?: string;
-                      name?: string;
-                    };
+                      if (!uploadedFile?.url) return;
 
-                    const name = fileInfo.name ?? "";
-                    const mimeType = fileInfo.type ?? "";
+                      const fileInfo = uploadedFile as typeof uploadedFile & {
+                        type?: string;
+                        name?: string;
+                      };
 
-                    const isVideo =
-                      mimeType.startsWith("video/") ||
-                      /\.(mp4|webm|ogg|mov|m4v)$/i.test(name);
+                      const name = fileInfo.name ?? "";
+                      const mimeType = fileInfo.type ?? "";
 
-                    const detectedKind: MediaKind = isVideo ? "VIDEO" : "IMAGE";
+                      const isVideo =
+                        mimeType.startsWith("video/") ||
+                        /\.(mp4|webm|ogg|mov|m4v)$/i.test(name);
 
-                    setMediaKind(detectedKind);
+                      const detectedKind: MediaKind = isVideo
+                        ? "VIDEO"
+                        : "IMAGE";
 
-                    setForm((current) => ({
-                      ...current,
-                      mediaUrl: uploadedFile.url,
-                    }));
+                      setMediaKind(detectedKind);
 
-                    setError("");
-                  }}
-                  onUploadError={(uploadError) => {
-                    setError(uploadError.message);
-                  }}
-                  content={{
-                    button: () => (
-                      <span className="inline-flex items-center gap-2">
-                        <Upload size={14} />
-                        Upload image or video
-                      </span>
-                    ),
-                  }}
-                  appearance={{
-                    container: "flex w-auto flex-row items-center gap-0",
-                    button:
-                      "ut-ready:bg-sky-700 ut-ready:hover:bg-sky-800 ut-uploading:cursor-not-allowed inline-flex h-7 min-w-0 items-center justify-center rounded border border-sky-700 bg-sky-700 px-3 text-[11px] font-semibold text-white shadow-none transition-colors hover:bg-sky-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1 disabled:opacity-60",
-                    allowedContent: "hidden",
-                  }}
-                />
+                      setForm((current) => ({
+                        ...current,
+                        mediaUrl: uploadedFile.url,
+                      }));
+
+                      setError("");
+                    }}
+                    onUploadError={(uploadError) => {
+                      setIsUploading(false);
+                      setUploadProgress(0);
+                      setError(uploadError.message);
+                    }}
+                    content={{
+                      button: () => (
+                        <span className="inline-flex items-center gap-2">
+                          <Upload size={14} />
+                          Upload image or video
+                        </span>
+                      ),
+                    }}
+                    appearance={{
+                      container: "flex w-auto flex-row items-center gap-0",
+                      button:
+                        "ut-ready:bg-sky-700 ut-ready:hover:bg-sky-800 ut-uploading:cursor-not-allowed inline-flex h-7 min-w-0 items-center justify-center rounded border border-sky-700 bg-sky-700 px-3 text-[11px] font-semibold text-white shadow-none transition-colors hover:bg-sky-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1 disabled:opacity-60",
+                      allowedContent: "hidden",
+                    }}
+                  />
+
+                  {isUploading && (
+                    <div className="flex items-center gap-2 text-xs font-semibold text-sky-700">
+                      <LoaderCircle size={15} className="animate-spin" />
+                      Uploading... {uploadProgress}%
+                    </div>
+                  )}
+                </div>
+
+                {isUploading && (
+                  <div
+                    className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-100"
+                    role="progressbar"
+                    aria-label="Media upload progress"
+                    aria-valuenow={uploadProgress}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                  >
+                    <div
+                      className="h-full rounded-full bg-sky-600 transition-all duration-300"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+                )}
 
                 <p className="mt-2 text-[11px] text-slate-500">
                   Select an image or video file from your device. File size
@@ -820,7 +908,6 @@ export default function NewsActivitiesPage() {
                       ) : (
                         <ImagePlus size={12} />
                       )}
-
                       {mediaKind === "VIDEO" ? "Video" : "Image"}
                     </span>
                   </div>
@@ -829,6 +916,7 @@ export default function NewsActivitiesPage() {
 
                   <button
                     type="button"
+                    disabled={isUploading || isPending}
                     onClick={() => {
                       setForm((current) => ({
                         ...current,
@@ -837,7 +925,7 @@ export default function NewsActivitiesPage() {
 
                       setMediaKind("IMAGE");
                     }}
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-red-700 hover:underline"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-red-700 hover:underline disabled:opacity-50"
                   >
                     <X size={13} />
                     Remove media
@@ -858,23 +946,32 @@ export default function NewsActivitiesPage() {
                 <button
                   type="button"
                   onClick={closeCreateModal}
-                  disabled={isPending}
-                  className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold hover:bg-slate-50"
+                  disabled={isPending || isUploading}
+                  className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold hover:bg-slate-50 disabled:opacity-50"
                 >
                   Cancel
                 </button>
 
                 <button
                   type="submit"
-                  disabled={isPending}
-                  className="inline-flex items-center gap-2 rounded-lg bg-emerald-800 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-900 disabled:opacity-50"
+                  disabled={isPending || isUploading}
+                  className="inline-flex items-center gap-2 rounded-lg bg-emerald-800 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-900 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {isPending ? (
+                  {isUploading || isPending ? (
                     <LoaderCircle size={15} className="animate-spin" />
+                  ) : editingId ? (
+                    <Pencil size={15} />
                   ) : (
                     <Plus size={15} />
                   )}
-                  Publish
+
+                  {isUploading
+                    ? "Uploading media..."
+                    : isPending
+                      ? "Saving..."
+                      : editingId
+                        ? "Save Changes"
+                        : "Publish"}
                 </button>
               </div>
             </form>
