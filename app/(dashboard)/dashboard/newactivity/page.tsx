@@ -29,6 +29,8 @@ import {
   Upload,
   Video,
   X,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 import {
@@ -42,6 +44,8 @@ import {
 type NewsItem = Awaited<ReturnType<typeof getNewsAction>>[number];
 
 type MediaKind = "IMAGE" | "VIDEO";
+
+const ITEMS_PER_PAGE = 10;
 
 const initialForm = {
   heading: "",
@@ -212,6 +216,9 @@ export default function NewsActivitiesPage() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+
   const loadItems = useCallback(() => {
     startTransition(async () => {
       try {
@@ -219,6 +226,7 @@ export default function NewsActivitiesPage() {
 
         setItems(data);
         setSelectedIds([]);
+        setCurrentPage(1);
         setError("");
       } catch (err) {
         setError(
@@ -250,12 +258,50 @@ export default function NewsActivitiesPage() {
     });
   }, [items, search, typeFilter, waterFilter]);
 
+  // Pagination calculations
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredItems.length / ITEMS_PER_PAGE),
+  );
+
+  const paginatedItems = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+
+    return filteredItems.slice(
+      startIndex,
+      startIndex + ITEMS_PER_PAGE,
+    );
+  }, [filteredItems, currentPage]);
+
+  const startRecord =
+    filteredItems.length === 0
+      ? 0
+      : (currentPage - 1) * ITEMS_PER_PAGE + 1;
+
+  const endRecord = Math.min(
+    currentPage * ITEMS_PER_PAGE,
+    filteredItems.length,
+  );
+
+  // Reset pagination when search or filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, typeFilter, waterFilter]);
+
+  // Keep current page valid after deleting records
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
+  // Select all records on the current page
   const allSelected =
-    filteredItems.length > 0 &&
-    filteredItems.every((item) => selectedIds.includes(item.id));
+    paginatedItems.length > 0 &&
+    paginatedItems.every((item) => selectedIds.includes(item.id));
 
   function toggleSelectAll() {
-    const visibleIds = filteredItems.map((item) => item.id);
+    const visibleIds = paginatedItems.map((item) => item.id);
 
     setSelectedIds((current) =>
       allSelected
@@ -351,6 +397,7 @@ export default function NewsActivitiesPage() {
 
         setItems(updatedItems);
         setSelectedIds([]);
+        setCurrentPage(1);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unable to publish.");
       }
@@ -521,7 +568,7 @@ export default function NewsActivitiesPage() {
                 onChange={toggleSelectAll}
                 className="accent-emerald-700"
               />
-              Select all ({filteredItems.length})
+              Select all ({paginatedItems.length})
             </label>
 
             <div className="flex gap-2">
@@ -563,7 +610,7 @@ export default function NewsActivitiesPage() {
             </p>
           ) : (
             <div className="divide-y divide-slate-100">
-              {filteredItems.map((item) => {
+              {paginatedItems.map((item) => {
                 const itemMediaKind: MediaKind =
                   item.mediaType === "VIDEO" || item.mediaType === "IMAGE"
                     ? item.mediaType
@@ -688,6 +735,72 @@ export default function NewsActivitiesPage() {
                   </article>
                 );
               })}
+            </div>
+          )}
+
+          {/* Pagination */}
+          {filteredItems.length > 0 && (
+            <div className="flex flex-col gap-3 border-t border-slate-200 bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs text-slate-500">
+                Showing{" "}
+                <span className="font-semibold text-slate-800">
+                  {startRecord}–{endRecord}
+                </span>{" "}
+                of{" "}
+                <span className="font-semibold text-slate-800">
+                  {filteredItems.length}
+                </span>{" "}
+                records
+              </p>
+
+              <div className="flex flex-wrap items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setCurrentPage((page) => Math.max(1, page - 1))
+                  }
+                  disabled={currentPage === 1}
+                  className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  <ChevronLeft size={14} />
+                  Previous
+                </button>
+
+                {Array.from(
+                  { length: totalPages },
+                  (_, index) => index + 1,
+                ).map((page) => (
+                  <button
+                    key={page}
+                    type="button"
+                    onClick={() => setCurrentPage(page)}
+                    aria-current={
+                      currentPage === page ? "page" : undefined
+                    }
+                    className={`h-8 min-w-8 rounded-lg px-2 text-xs font-semibold transition ${
+                      currentPage === page
+                        ? "bg-emerald-800 text-white"
+                        : "border border-slate-200 text-slate-600 hover:bg-slate-50"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setCurrentPage((page) =>
+                      Math.min(totalPages, page + 1),
+                    )
+                  }
+                  disabled={currentPage === totalPages}
+                  className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Next
+                  <ChevronRight size={14} />
+                </button>
+              </div>
             </div>
           )}
         </section>
