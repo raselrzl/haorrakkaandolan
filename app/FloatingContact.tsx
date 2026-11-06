@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useState, type FormEvent } from "react";
 import {
   CheckCircle2,
   LoaderCircle,
@@ -8,6 +9,8 @@ import {
   MessageCircle,
   Send,
   X,
+  ShieldCheck,
+  RefreshCw,
 } from "lucide-react";
 
 import { contactMessageAction } from "./newsActions";
@@ -25,10 +28,55 @@ function ContactForm({
     initialContactFormState,
   );
 
+  const [firstNumber, setFirstNumber] = useState(
+    () => Math.floor(Math.random() * 8) + 2,
+  );
+
+  const [secondNumber, setSecondNumber] = useState(
+    () => Math.floor(Math.random() * 8) + 1,
+  );
+
+  const [captchaAnswer, setCaptchaAnswer] = useState("");
+  const [captchaError, setCaptchaError] = useState("");
+
   const inputClass =
     "w-full rounded-sm border border-amber-200 bg-white px-2.5 py-2 text-xs text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-amber-600 focus:ring-2 focus:ring-amber-500/10";
 
   const labelClass = "mb-1 block text-[11px] font-semibold text-slate-700";
+
+  function refreshCaptcha() {
+    let nextFirst = Math.floor(Math.random() * 8) + 2;
+    let nextSecond = Math.floor(Math.random() * 8) + 1;
+
+    if (
+      nextFirst === firstNumber &&
+      nextSecond === secondNumber
+    ) {
+      nextSecond = (nextSecond % 9) + 1;
+    }
+
+    setFirstNumber(nextFirst);
+    setSecondNumber(nextSecond);
+    setCaptchaAnswer("");
+    setCaptchaError("");
+  }
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    const answer = Number(captchaAnswer);
+
+    if (
+      captchaAnswer.trim() === "" ||
+      !Number.isInteger(answer) ||
+      answer !== firstNumber + secondNumber
+    ) {
+      event.preventDefault();
+      setCaptchaError("Incorrect answer. Please solve the calculation correctly.");
+      setCaptchaAnswer("");
+      return;
+    }
+
+    setCaptchaError("");
+  }
 
   return (
     <section
@@ -50,6 +98,7 @@ function ContactForm({
             >
               হাওর রক্ষা আন্দোলন
             </h2>
+
             <p className="text-[10px] text-slate-500">
               Haor Rokkha Andolan
             </p>
@@ -98,13 +147,18 @@ function ContactForm({
           </div>
         </div>
       ) : (
-        <form action={formAction} className="space-y-2.5 p-3">
-          {/* Honeypot for basic spam protection */}
+        <form
+          action={formAction}
+          onSubmit={handleSubmit}
+          className="space-y-2.5 p-3"
+        >
+          {/* HONEYPOT SPAM PROTECTION */}
           <div
             aria-hidden="true"
             className="absolute left-[-10000px] top-auto h-px w-px overflow-hidden"
           >
             <label htmlFor="contact-website">Website</label>
+
             <input
               id="contact-website"
               name="website"
@@ -114,10 +168,12 @@ function ContactForm({
             />
           </div>
 
+          {/* REASON */}
           <div>
             <label htmlFor="contact-reason" className={labelClass}>
               Reason for contacting *
             </label>
+
             <select
               id="contact-reason"
               name="reason"
@@ -128,25 +184,35 @@ function ContactForm({
               <option value="" disabled>
                 Select a reason
               </option>
+
               <option value="General inquiry">General inquiry</option>
-              <option value="Haor conservation">Haor conservation</option>
+
+              <option value="Haor conservation">
+                Haor conservation
+              </option>
+
               <option value="Report an environmental issue">
                 Report an environmental issue
               </option>
+
               <option value="Volunteer or membership">
                 Volunteer or membership
               </option>
+
               <option value="Partnership or support">
                 Partnership or support
               </option>
+
               <option value="Other">Other</option>
             </select>
           </div>
 
+          {/* NAME */}
           <div>
             <label htmlFor="contact-name" className={labelClass}>
               Full name *
             </label>
+
             <input
               id="contact-name"
               name="name"
@@ -159,12 +225,15 @@ function ContactForm({
             />
           </div>
 
+          {/* EMAIL */}
           <div>
             <label htmlFor="contact-email" className={labelClass}>
               Email address *
             </label>
+
             <div className="relative">
               <Mail className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-amber-700" />
+
               <input
                 id="contact-email"
                 name="email"
@@ -178,10 +247,12 @@ function ContactForm({
             </div>
           </div>
 
+          {/* PHONE */}
           <div>
             <label htmlFor="contact-phone" className={labelClass}>
               Phone number *
             </label>
+
             <input
               id="contact-phone"
               name="phone"
@@ -194,10 +265,12 @@ function ContactForm({
             />
           </div>
 
+          {/* MESSAGE */}
           <div>
             <label htmlFor="contact-message" className={labelClass}>
               Message *
             </label>
+
             <textarea
               id="contact-message"
               name="message"
@@ -210,6 +283,68 @@ function ContactForm({
             />
           </div>
 
+          {/* MATH CAPTCHA */}
+          <div className="rounded-sm border border-amber-200 bg-amber-50/60 p-2.5">
+            <div className="mb-2 flex items-center gap-1.5">
+              <ShieldCheck className="h-3.5 w-3.5 text-amber-800" />
+
+              <label
+                htmlFor="contact-captcha"
+                className="text-[11px] font-bold text-slate-800"
+              >
+                Human verification *
+              </label>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <div className="flex h-9 min-w-[95px] items-center justify-center rounded-sm border border-amber-200 bg-white px-3">
+                <span className="text-sm font-bold tracking-wider text-slate-900">
+                  {firstNumber} + {secondNumber} = ?
+                </span>
+              </div>
+
+              <input
+                id="contact-captcha"
+                name="captchaAnswer"
+                type="number"
+                inputMode="numeric"
+                required
+                value={captchaAnswer}
+                onChange={(event) => {
+                  setCaptchaAnswer(event.target.value);
+                  setCaptchaError("");
+                }}
+                placeholder="Answer"
+                aria-invalid={!!captchaError}
+                className={`${inputClass} min-w-0`}
+              />
+
+              <button
+                type="button"
+                onClick={refreshCaptcha}
+                aria-label="Generate a new calculation"
+                title="Refresh calculation"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-amber-200 bg-white text-amber-800 transition hover:bg-amber-100"
+              >
+                <RefreshCw className="h-3.5 w-3.5" />
+              </button>
+            </div>
+
+            {captchaError && (
+              <p
+                role="alert"
+                className="mt-2 text-[10px] font-medium text-red-600"
+              >
+                {captchaError}
+              </p>
+            )}
+
+            <p className="mt-1.5 text-[10px] text-slate-500">
+              Please solve the calculation to send your message.
+            </p>
+          </div>
+
+          {/* SERVER MESSAGE */}
           {state.message && (
             <p
               role="alert"
@@ -219,6 +354,7 @@ function ContactForm({
             </p>
           )}
 
+          {/* SUBMIT */}
           <button
             type="submit"
             disabled={pending}
