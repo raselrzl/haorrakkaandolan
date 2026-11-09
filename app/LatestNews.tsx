@@ -152,9 +152,9 @@ export default async function LatestNews() {
                   )}
 
                   {/* River / Haor label */}
-                  <span className="pointer-events-none absolute left-3 top-3 rounded-md bg-black/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
+              {/*     <span className="pointer-events-none absolute left-3 top-3 rounded-md bg-black/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
                     {item.riverOrHaor === "HAOR" ? "Haor" : "River"}
-                  </span>
+                  </span> */}
 
                   {/* Video indicator */}
                   {item.mediaType === "VIDEO" && item.mediaUrl && (
