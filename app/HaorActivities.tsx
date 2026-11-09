@@ -5,6 +5,8 @@ import {
   Play,
   ArrowUpRight,
   Newspaper,
+  Bird,
+  Fish,
 } from "lucide-react";
 
 export type HaorActivityItem = {
@@ -263,19 +265,15 @@ export default function HaorActivities({
           </>
         ) : (
           /* EMPTY STATE */
-          <div className="border-y-2 border-slate-900 bg-white px-5 py-12 text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-50">
-              <Leaf size={25} className="text-amber-800" strokeWidth={1.4} />
+          <div className="relative isolate overflow-hidden px-0 py-16 text-center">
+            {/* EMPTY STATE */}
+            <div className="w-full">
+              <img
+                src="/img.png"
+                alt="Haor Activities"
+                className="block h-auto w-full object-cover"
+              />
             </div>
-
-            <h3 className="mt-4 font-serif text-xl font-bold text-slate-900">
-              Haor Activities Coming Soon
-            </h3>
-
-            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
-              Published conservation activities, community programmes and
-              awareness initiatives will appear here automatically.
-            </p>
           </div>
         )}
       </div>

@@ -232,3 +232,82 @@ body.translated-rtl {
   stroke-dasharray: 14 9;
   animation: river-flow-reverse 3.5s linear infinite;
 }
+
+
+/* Haor Birds Flying */
+@keyframes haor-fly {
+  0% {
+    transform: translateX(0) translateY(0) rotate(-5deg);
+  }
+  25% {
+    transform: translateX(35vw) translateY(-12px) rotate(5deg);
+  }
+  50% {
+    transform: translateX(65vw) translateY(5px) rotate(-5deg);
+  }
+  100% {
+    transform: translateX(110vw) translateY(-8px) rotate(5deg);
+  }
+}
+
+.haor-bird {
+  animation: haor-fly 16s linear infinite;
+}
+
+.haor-bird-one {
+  animation-duration: 17s;
+}
+
+.haor-bird-two {
+  animation-duration: 22s;
+  animation-delay: -8s;
+}
+
+.haor-bird-three {
+  animation-duration: 19s;
+  animation-delay: -13s;
+}
+
+/* Haor Fish Swimming */
+@keyframes haor-swim {
+  0% {
+    transform: translateX(0) scaleX(1);
+  }
+  49% {
+    transform: translateX(100vw) scaleX(1);
+  }
+  50% {
+    transform: translateX(100vw) scaleX(-1);
+  }
+  99% {
+    transform: translateX(0) scaleX(-1);
+  }
+  100% {
+    transform: translateX(0) scaleX(1);
+  }
+}
+
+.haor-fish {
+  animation: haor-swim 24s linear infinite;
+}
+
+.haor-fish-one {
+  animation-duration: 24s;
+}
+
+.haor-fish-two {
+  animation-duration: 30s;
+  animation-delay: -10s;
+}
+
+.haor-fish-three {
+  animation-duration: 27s;
+  animation-delay: -17s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .haor-bird,
+  .haor-fish {
+    animation: none;
+  }
+}
