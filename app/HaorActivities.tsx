@@ -8,6 +8,7 @@ import {
   Bird,
   Fish,
 } from "lucide-react";
+import Image from "next/image";
 
 export type HaorActivityItem = {
   id: string;
@@ -267,10 +268,13 @@ export default function HaorActivities({
           /* EMPTY STATE */
           <div className="relative isolate overflow-hidden px-0 py-16 text-center">
             {/* EMPTY STATE */}
-            <div className="w-full">
-              <img
-                src="/img.png"
+            <div className="relative w-full">
+              <Image
+                src="/fish.png"
                 alt="Haor Activities"
+                width={1640}
+                height={900}
+                priority
                 className="block h-auto w-full object-cover"
               />
             </div>
