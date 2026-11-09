@@ -83,7 +83,7 @@ export default function MissionVisionPage() {
         />
 
         <Image
-          src="/monu.jpg"
+          src="/fish.png"
           alt={
             language === "bn"
               ? "বাংলাদেশের হাওর ও জলাভূমির প্রাকৃতিক দৃশ্য"

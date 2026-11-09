@@ -7,7 +7,7 @@ function TeamLoading() {
   return (
     <div className="flex min-h-40 items-center justify-center gap-2 border border-slate-200 bg-white text-sm text-slate-500">
       <div className="h-5 w-5 animate-spin rounded-full border-2 border-emerald-700 border-t-transparent" />
-      Loading organization members...
+      
     </div>
   );
 }
