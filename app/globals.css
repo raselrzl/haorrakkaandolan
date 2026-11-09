@@ -73,7 +73,7 @@ button:lang(bn) {
 /* Global scrollbar */
 html {
   scrollbar-width: thin;
-  scrollbar-color: #047857 #f1f5f9;
+  scrollbar-color: #d4a62a #f8f5eb;
 }
 
 /* Chrome, Edge, Safari */
@@ -83,23 +83,32 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #f8f5eb;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #047857;
-  border: 2px solid #f1f5f9;
+  background: linear-gradient(
+    180deg,
+    #e9c65b 0%,
+    #bd8b20 100%
+  );
+  border: 2px solid #f8f5eb;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #065f46;
+  background: linear-gradient(
+    180deg,
+    #f2d477 0%,
+    #a97813 100%
+  );
 }
 
 /* Horizontal scrollbar */
 ::-webkit-scrollbar-corner {
-  background: #f1f5f9;
+  background: #f8f5eb;
 }
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

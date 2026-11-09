@@ -11,6 +11,7 @@ import Footer from "./Footer";
 import LatestNews from "./LatestNews";
 import LatestVideos from "./LatestVideos";
 import LanguageSwitcher from "./LanguageSwitcher";
+import WebsiteContentSlider from "./WebsiteContentSlider";
 
 const photos = {
   wetland:
@@ -147,7 +148,7 @@ async function HomepageSections() {
         activities={riverActivities}
         fallbackImage={photos.river}
       />
-
+      <WebsiteContentSlider />
       <LatestNews />
       <LatestVideos />
     </>
