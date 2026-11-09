@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/app/utils/db";
-import { ArrowUpRight, Play, Video } from "lucide-react";
+import { ArrowUpRight, CalendarDays, Video, Clapperboard } from "lucide-react";
 
 export default async function LatestVideos() {
   const videos = await prisma.news.findMany({
@@ -11,7 +11,7 @@ export default async function LatestVideos() {
       },
     },
     orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-    take: 4,
+    take: 5,
     select: {
       id: true,
       heading: true,
@@ -20,121 +20,234 @@ export default async function LatestVideos() {
     },
   });
 
-  return (
-    <section className="bg-white py-12 sm:py-16">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Section heading */}
-        <div className="mb-8">
-          <div className="relative inline-block">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-0.5">
-                <span className="text-amber-500">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="h-7 w-7 -rotate-45"
-                    aria-hidden="true"
-                  >
-                    <path d="M20.8 3.2C11.2 3.5 5.4 6.3 3.3 11.1c-1.4 3.2.2 6.9 3.6 7.9 4.1 1.3 8.1-1.7 10.4-6.1 1.5-2.9 2.5-6.2 3.5-9.7ZM5.4 17.8c2.7-3.5 6.3-6.5 10.8-9.1-3.8 3-6.9 6.2-9.2 9.7-.6 0-1.1-.2-1.6-.6Z" />
-                  </svg>
-                </span>
-                <span className="text-emerald-800">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="h-8 w-8 -ml-2 rotate-12"
-                    aria-hidden="true"
-                  >
-                    <path d="M20.8 3.2C11.2 3.5 5.4 6.3 3.3 11.1c-1.4 3.2.2 6.9 3.6 7.9 4.1 1.3 8.1-1.7 10.4-6.1 1.5-2.9 2.5-6.2 3.5-9.7ZM5.4 17.8c2.7-3.5 6.3-6.5 10.8-9.1-3.8 3-6.9 6.2-9.2 9.7-.6 0-1.1-.2-1.6-.6Z" />
-                  </svg>
-                </span>
-              </div>
+  const formatDate = (date: Date) =>
+    date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      timeZone: "Asia/Dhaka",
+    });
 
-              <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-                Our Activities & Initiatives
-              </h2>
-            </div>
+  const VideoCard = ({
+    item,
+    number,
+  }: {
+    item: (typeof videos)[number];
+    number: number;
+  }) => (
+    <article className="group flex min-h-0 min-w-0 overflow-hidden rounded-lg border border-amber-200/10 bg-linear-to-br from-slate-800 via-slate-900 to-amber-950/80 shadow-lg shadow-amber-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-400/40 hover:shadow-xl hover:shadow-amber-700/20">
+      <div className="relative w-[38%] shrink-0 overflow-hidden bg-black sm:w-[42%]">
+        <video
+          key={item.mediaUrl}
+          src={item.mediaUrl!}
+          controls
+          playsInline
+          preload="metadata"
+          className="h-full w-full object-cover"
+          aria-label={item.heading}
+        />
+        {/* 
+        <span className="pointer-events-none absolute left-2 top-2 rounded border border-amber-400/20 bg-slate-950/85 px-2 py-1 text-[9px] font-bold text-amber-400 shadow-md shadow-amber-950/30">
+          0{number}
+        </span> */}
+      </div>
 
-            <svg
-              viewBox="0 0 420 40"
-              fill="none"
-              className="mt-2 h-8 w-[75%] sm:h-10"
-              preserveAspectRatio="none"
-              aria-hidden="true"
-            >
-              <path
-                d="
-      M2 27
-      C75 2 145 5 210 17
-      C285 31 350 10 418 15
-      C350 17 290 39 210 25
-      C130 11 70 13 2 31
-      Z
-    "
-                fill="#d97706"
-              />
-            </svg>
-          </div>
+      <div className="flex min-w-0 flex-1 flex-col justify-center p-3 sm:p-4">
+        <div className="mb-2 flex items-center gap-1.5 text-[10px] text-slate-400 sm:text-xs">
+          <CalendarDays size={12} className="shrink-0 text-amber-400" />
+          {formatDate(item.createdAt)}
         </div>
 
-        {/* Latest four videos */}
+        <Link href={`/news/${item.id}`}>
+          <h3 className="line-clamp-3 text-xs font-bold leading-5 text-white transition-colors group-hover:text-amber-300 sm:text-sm sm:leading-6">
+            {item.heading}
+          </h3>
+        </Link>
+
+        <div className="mt-3">
+          <Link
+            href={`/news/${item.id}`}
+            className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-amber-400 transition-colors hover:text-amber-200 sm:text-xs"
+          >
+            Details
+            <ArrowUpRight size={13} />
+          </Link>
+        </div>
+      </div>
+    </article>
+  );
+
+  return (
+    <section className="relative isolate overflow-hidden bg-linear-to-br from-slate-950 via-slate-900 to-amber-950 py-14 sm:py-20">
+      {/* Gradient background decoration */}
+      <div className="pointer-events-none absolute -right-40 -top-40 h-[500px] w-[500px] rounded-full bg-amber-500/10 blur-[120px]" />
+
+      <div className="pointer-events-none absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-orange-600/10 blur-[120px]" />
+
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-700/10 blur-[130px]" />
+
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-transparent via-transparent to-black/20" />
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Heading */}
+        <div className="mb-9">
+          <div className="mb-3 flex items-center gap-2 text-amber-400">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-amber-400/30 bg-linear-to-br from-amber-400/20 to-orange-600/10 shadow-md shadow-amber-900/20">
+              <Clapperboard size={17} />
+            </span>
+
+            <span className="text-[11px] font-bold uppercase tracking-[0.25em]">
+              Watch & Discover
+            </span>
+          </div>
+
+          <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">
+            Our Activities <span className="text-amber-400">&</span> Initiatives
+          </h2>
+
+          <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300">
+            Watch our environmental activities, community initiatives, and
+            ongoing efforts to protect Bangladesh&apos;s rivers and wetlands.
+          </p>
+
+          {/* Gradient underline */}
+          <div className="mt-5 h-1 w-28 rounded-full bg-linear-to-r from-amber-400 via-orange-500 to-transparent shadow-md shadow-amber-500/30" />
+        </div>
+
+        {/* Five video layout */}
         {videos.length > 0 ? (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {videos.map((item) => (
-              <article
-                key={item.id}
-                className="group flex min-w-0 flex-col overflow-hidden rounded-md border border-slate-100 bg-white shadow-md shadow-amber-100/70 transition-all duration-300 hover:-translate-y-1 hover:border-amber-100 hover:shadow-xl hover:shadow-amber-100"
-              >
-                {/* Video player */}
-                <div className="relative aspect-video overflow-hidden bg-slate-950">
-                  {item.mediaUrl && (
+          <>
+            {/* Desktop: 2 left + 1 center + 2 right */}
+            <div className="hidden grid-cols-[1fr_1.45fr_1fr] gap-4 lg:grid">
+              {/* Left: Two videos */}
+              <div className="grid h-[470px] min-w-0 grid-rows-2 gap-4">
+                {videos[0] && <VideoCard item={videos[0]} number={1} />}
+
+                {videos[1] && <VideoCard item={videos[1]} number={2} />}
+              </div>
+
+              {/* Center: Featured video */}
+              {videos[2] && (
+                <article className="group flex min-h-0 min-w-0 flex-col overflow-hidden rounded-lg border border-amber-400/30 bg-linear-to-br from-slate-800 via-slate-900 to-amber-950 shadow-xl shadow-amber-950/40 transition-all duration-300 hover:border-amber-400/60 hover:shadow-2xl hover:shadow-amber-700/20">
+                  <div className="relative min-h-0 flex-1 overflow-hidden bg-black">
                     <video
-                      key={item.mediaUrl}
-                      src={item.mediaUrl}
+                      key={videos[2].mediaUrl}
+                      src={videos[2].mediaUrl!}
                       controls
                       playsInline
                       preload="metadata"
-                      className="h-full w-full object-cover"
-                      aria-label={item.heading}
-                    >
-                      Your browser does not support video playback.
-                    </video>
-                  )}
-                </div>
+                      className="h-full w-full object-contain"
+                      aria-label={videos[2].heading}
+                    />
+                    {/* 
+                    <span className="pointer-events-none absolute left-4 top-4 flex items-center gap-2 rounded-md border border-amber-400/30 bg-slate-950/85 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-amber-300 shadow-lg shadow-amber-950/30 backdrop-blur-md">
+                      <span className="h-1.5 w-1.5 rounded-full bg-amber-400 shadow-sm shadow-amber-400" />
+                      Featured Video
+                    </span> */}
+                  </div>
 
-                {/* Video details */}
-                <div className="flex flex-1 items-start justify-between gap-3 p-4">
-                  <Link href={`/news/${item.id}`} className="min-w-0 flex-1">
-                    <h3 className="text-sm font-bold leading-6 text-slate-900 transition-colors duration-200 group-hover:text-amber-900 sm:text-base">
-                      {item.heading}
-                    </h3>
-                  </Link>
+                  <div className="shrink-0 bg-linear-to-r from-slate-900 via-slate-900 to-amber-950/70 p-5">
+                    <div className="mb-3 flex items-center gap-2 text-xs text-slate-400">
+                      <CalendarDays size={13} className="text-amber-400" />
+                      {formatDate(videos[2].createdAt)}
+                    </div>
 
-                  <Link
-                    href={`/news/${item.id}`}
-                    aria-label={`View ${item.heading}`}
-                    className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition-all duration-200 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-900"
-                  >
-                    <ArrowUpRight size={15} />
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
-        ) : (
-          <div className="rounded-md border border-dashed border-slate-200 bg-white px-5 py-12 text-center shadow-sm shadow-amber-100/50">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-50">
-              <Video size={25} className="text-amber-800" />
+                    <Link href={`/news/${videos[2].id}`}>
+                      <h3 className="line-clamp-2 text-lg font-bold leading-7 text-white transition-colors group-hover:text-amber-300 xl:text-xl">
+                        {videos[2].heading}
+                      </h3>
+                    </Link>
+
+                    <div className="mt-4 flex justify-between border-t border-amber-400/15 pt-4">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-amber-200/50">
+                        Featured Initiative
+                      </span>
+
+                      <Link
+                        href={`/news/${videos[2].id}`}
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 transition-colors hover:text-amber-200"
+                      >
+                        Explore Story
+                        <ArrowUpRight size={15} />
+                      </Link>
+                    </div>
+                  </div>
+                </article>
+              )}
+
+              {/* Right: Two videos */}
+              <div className="grid h-[470px] min-w-0 grid-rows-2 gap-4">
+                {videos[3] && <VideoCard item={videos[3]} number={4} />}
+
+                {videos[4] && <VideoCard item={videos[4]} number={5} />}
+              </div>
             </div>
 
-            <p className="mt-4 text-sm font-bold text-slate-800">
-              Our Stories Are Coming Soon
-            </p>
+            {/* Mobile and tablet */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:hidden">
+              {videos.map((item, index) => (
+                <article
+                  key={item.id}
+                  className={`group overflow-hidden rounded-lg border border-amber-200/10 bg-linear-to-br from-slate-800 via-slate-900 to-amber-950/80 shadow-lg shadow-amber-950/20 transition-all duration-300 hover:border-amber-400/40 hover:shadow-xl hover:shadow-amber-700/20 ${
+                    index === 2 ? "sm:col-span-2" : ""
+                  }`}
+                >
+                  <div className="relative aspect-video bg-black">
+                    <video
+                      key={item.mediaUrl}
+                      src={item.mediaUrl!}
+                      controls
+                      playsInline
+                      preload="metadata"
+                      className="h-full w-full object-contain"
+                      aria-label={item.heading}
+                    />
 
-            <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500">
-              Stay connected with Haor Rokkha Andolan for upcoming videos
-              highlighting our environmental activities, community initiatives,
-              and efforts to protect our rivers and wetlands.
+                    {index === 2 && (
+                      <span className="pointer-events-none absolute left-3 top-3 rounded-md border border-amber-400/30 bg-slate-950/85 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-amber-300 shadow-md shadow-amber-950/30">
+                        Featured Video
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="p-4">
+                    <div className="mb-2 flex items-center gap-1.5 text-xs text-slate-400">
+                      <CalendarDays size={12} className="text-amber-400" />
+                      {formatDate(item.createdAt)}
+                    </div>
+
+                    <Link href={`/news/${item.id}`}>
+                      <h3 className="line-clamp-2 text-sm font-bold leading-6 text-white transition-colors group-hover:text-amber-300 sm:text-base">
+                        {item.heading}
+                      </h3>
+                    </Link>
+
+                    <Link
+                      href={`/news/${item.id}`}
+                      className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 transition-colors hover:text-amber-200"
+                    >
+                      Explore Story
+                      <ArrowUpRight size={14} />
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="rounded-lg border border-amber-200/15 bg-linear-to-br from-slate-800 via-slate-900 to-amber-950/70 px-5 py-16 text-center shadow-xl shadow-amber-950/20">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-amber-400/25 bg-linear-to-br from-amber-400/20 to-orange-600/10 shadow-lg shadow-amber-900/20">
+              <Video size={26} className="text-amber-400" />
+            </div>
+
+            <h3 className="mt-5 text-base font-bold text-white">
+              Our Stories Are Coming Soon
+            </h3>
+
+            <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-300">
+              Stay connected with Wetlands Resilience Initiatives for upcoming
+              videos highlighting our environmental activities, community
+              initiatives, and efforts to protect our rivers and wetlands.
             </p>
           </div>
         )}
