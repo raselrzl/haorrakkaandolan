@@ -10,6 +10,7 @@ type MemberStatus = "ACTIVE" | "INACTIVE";
 const allowedDesignations = [
   "MEMBER",
   "CHAIRMAN",
+  "PRODHANUPODESHTA",
   "SOVAPOTI",
   "SOHOSOVAPOTI",
   "SADHARONSOMPADOK",

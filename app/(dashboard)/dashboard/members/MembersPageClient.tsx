@@ -70,6 +70,10 @@ const designations = [
   { value: "CHAIRMAN", label: "Chairman" },
   { value: "SOVAPOTI", label: "সভাপতি (President)" },
   { value: "SOHOSOVAPOTI", label: "সহ-সভাপতি (Vice President)" },
+   {
+    value: "PRODHANUPODESHTA",
+    label: "প্রধান উপদেষ্টা (Chief Adviser)",
+  },
   {
     value: "SADHARONSOMPADOK",
     label: "সাধারণ সম্পাদক (General Secretary)",

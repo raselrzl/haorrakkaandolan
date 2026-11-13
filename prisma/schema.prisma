@@ -62,7 +62,7 @@ model User {
   sessions            Session[]
   passwordResetTokens PasswordResetToken[]
   news                News[]
-  createdPublications Publication[] @relation("PublicationCreatedBy")
+  createdPublications Publication[]        @relation("PublicationCreatedBy")
 
   @@index([role, status])
 }
@@ -70,6 +70,7 @@ model User {
 enum Designation {
   MEMBER
   CHAIRMAN
+  PRODHANUPODESHTA
   SOVAPOTI
   SOHOSOVAPOTI
   SADHARONSOMPADOK
