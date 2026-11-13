@@ -185,9 +185,9 @@ export default function AboutTeamClient({ people }: { people: TeamPerson[] }) {
             {person.name}
           </h3>
 
-          <p className="mt-1 break-words text-xs font-semibold text-amber-800">
+    {/*       <p className="mt-1 break-words text-xs font-semibold text-amber-800">
             {formatDesignation(designation)}
-          </p>
+          </p> */}
 
           {/* PHONE */}
           {person.phone && (
