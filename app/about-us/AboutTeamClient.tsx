@@ -20,6 +20,7 @@ const designationOrder = [
   "SOVAPOTI",
   "SADHARONSOMPADOK",
   "SOHOSOVAPOTI",
+  "PRODHANUPODESHTA",
   "SOHOSADHARONSOMPADOK",
   "SANGOTONIKSOMPADOK",
   "SOHOSANGOTONIKSOMPADOK",
@@ -56,6 +57,7 @@ const designationLabels: Record<string, string> = {
   KARJONIRBAHISODOSSHO: "কার্যনির্বাহী সদস্য (Executive Member)",
   MEMBER: "সাধারণ সদস্য (General Member)",
   CHAIRMAN: "চেয়ারম্যান (Chairman)",
+  PRODHANUPODESHTA: "প্রধান উপদেষ্টা (Chief Adviser)",
 };
 
 function getDesignationKey(person: TeamPerson): string {
